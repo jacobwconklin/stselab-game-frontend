@@ -1,0 +1,26 @@
+.Home {
+    
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    min-height: fit-content;
+    background-color: rgb(148, 193, 208); 
+
+    .Contents {
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+
+        .WelcomeCard {
+            width: 50%;
+            background-color: whitesmoke;
+            border-radius: 10px;
+            box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+    }
+}
