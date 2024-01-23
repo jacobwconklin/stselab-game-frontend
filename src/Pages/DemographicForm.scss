@@ -25,6 +25,27 @@
             justify-content: center;
             margin: 25px 0px 0px 15px;
         }
+
+        .ant-input-number, .ant-picker {
+            width: 100%;
+            border: 1px solid black;
+        }
+
+        .ant-select {
+            width: 100%;
+        }
+
+        .ant-select-selector {
+            border: 1px solid black;
+        }
+
+        .ant-color-picker-trigger {
+            width: 100%;
+            border: 1px solid black;
+            &:hover {
+                border: 1px solid rgb(14, 131, 255);
+            }
+        }
     }
 }
 

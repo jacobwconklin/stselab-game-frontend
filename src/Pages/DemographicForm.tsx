@@ -1,16 +1,38 @@
-import { Button, Input } from 'antd';
+import { Button, ColorPicker, DatePicker, Input, InputNumber, Select } from 'antd';
 import './DemographicForm.scss';
 import { useState } from 'react';
+import { postRequest } from '../Utils/Api';
+import { UserInformation } from '../Utils/Types';
 
 // DemographicForm
 const DemographicForm = (props: any) => {
 
     const [isSuccesfullySubmitted, setIsSuccesfullySubmitted] = useState(false);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [birthDate, setBirthDate] = useState('');
+    const [num, setNum] = useState<string | number | null>(0);
+    const [pet, setPet] = useState('None');
+    const [color, setColor] = useState('#FFFFFF');
 
-    const submit = () => {
+    const submit = async () => {
         // if successful give a happy message, else let them know after an error from the backend
         try {
-
+            const newUser: UserInformation = {
+                firstName,
+                lastName,
+                num: num ? parseInt(num.toString()) : 0,
+                birthDate,
+                pet,
+                color
+            }
+            const submitResult = await postRequest('submitform', JSON.stringify({...newUser}))
+            if (submitResult.success) {
+                setIsSuccesfullySubmitted(true);
+            } else {
+                alert("Failed to submit form.");
+                console.log(submitResult)
+            }
         } catch (error) {
             alert("Unable to submit form received the following error: " + (error as Error).message);
         }
@@ -18,6 +40,12 @@ const DemographicForm = (props: any) => {
 
     return (
         <div className='DemographicForm'>
+            
+            {/* example hitting backend successfully
+             <Button onClick={async () => {
+                const count = await getRequest('addcount');
+                alert("Count is: " + count.count);
+            }}></Button> */}
             {
                 isSuccesfullySubmitted ?
                 <div className='SuccessfulSubmit'>
@@ -27,15 +55,75 @@ const DemographicForm = (props: any) => {
                 :
                 <div className='InputForm'>
                     <p>First Name</p>
-                    <Input />
+                    <Input 
+                        placeholder='Jane'
+                        maxLength={20}
+                        value={firstName}
+                        onChange={(event) => {
+                            setFirstName(event.target.value && event.target.value.length > 20 ? event.target.value.substring(0, 20) : event.target.value);
+                        }}
+                    />
                     <p>Last Name</p>
-                    <Input />
-                    <p>Age</p>
-                    <Input type='number' />
+                    <Input 
+                        placeholder='Doe'
+                        maxLength={20}
+                        value={lastName}
+                        onChange={(event) => {
+                            setLastName(event.target.value && event.target.value.length > 20 ? event.target.value.substring(0, 20) : event.target.value);
+                        }}
+                    />
+                    <p>Date of Birth</p>
+                    <DatePicker
+                        onChange={(date, dateString) => {
+                            setBirthDate(dateString);
+                        }}
+                    />
+                    <p>Favorite Number 1 - 99</p>
+                    <InputNumber 
+                        min={1}
+                        max={99}
+                        value={num}
+                        onChange={setNum}
+                    />
+                    <p>Favorite Pet</p>
+                    <Select 
+                        defaultValue="None"
+                        options={[
+                            {value: 'None', label: 'None'},
+                            {value: 'Dog', label: 'Dog'},
+                            {value: 'Cat', label: 'Cat'},
+                            {value: 'Fish', label: 'Fish'},
+                            {value: 'Bird', label: 'Bird'},
+                            {value: 'Other', label: 'Other'},
+                        ]}
+                        onChange={(newValue) => {
+                            setPet(newValue);
+                        }}
+                    />
+                    <p>Favorite Color</p>
+                    <ColorPicker
+                        showText
+                        disabledAlpha
+                        defaultValue={'#FFFFFF'}
+                        onChange={(value, hex) => {
+                            setColor(hex);
+                        }}
+                    />
+                    {/* could assign users random scores <div className='ScoreMaker'>
+                        <div className='ScoreDisplay'>
+                            Score: {score}
+                        </div>
+                        <Button>
+                            Get Random Score
+                        </Button>
+                        <div className='DiceResult'>
+
+                        </div>
+                    </div> */}
                     <br>
                     </br>
                     <div className='ButtonHolder'>
-                        <Button onClick={submit}>Submit</Button>
+                        <Button disabled={!firstName || !lastName || !num || !birthDate } onClick={submit}>Submit</Button>
                     </div>
                 </div>
             }

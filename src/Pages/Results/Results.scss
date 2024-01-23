@@ -4,8 +4,32 @@
     bottom: 0px;
     left: 0px;
     right: 0px;
+    min-width: fit-content;
 
     background-color: rgb(148, 193, 208); 
 
     padding: 50px;
+
+    .GridHeader {
+        min-width: 450px;
+        padding: 5px 15px 5px 15px;
+        display: grid;
+        grid-template-columns: 15% 15% 15% 15% 15% 15%;
+        column-gap: 10px;
+        border: 4px solid black;
+        background-color: whitesmoke;
+    }
+
+    .UserResult {
+        min-width: 450px;
+        padding: 5px 15px 5px 15px;
+        display: grid;
+        grid-template-columns: 15% 15% 15% 15% 15% 15%;
+        column-gap: 10px;
+        background-color: whitesmoke;
+
+        p {
+            word-wrap: break-word;
+        }
+    }
 }
