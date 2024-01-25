@@ -7,6 +7,22 @@ import { useNavigate } from 'react-router-dom';
 // Home
 const Home = (props: any) => {
 
+    const R = require('r-script');
+
+    const runR = () => {
+        let result = R.executeRCommand("max(1,2,3)");
+        console.log(result);
+
+        // let result = R.executeRScript("./scripts/test.R");
+        // console.log(result);
+
+        var out = R("test.r")
+            .data("hello world", 20)
+            .callSync();
+            
+        console.log(out);
+    }
+
     const [formIsStarted, setFormIsStarted] = useState(false);
 
     const navigate = useNavigate();
@@ -24,6 +40,16 @@ const Home = (props: any) => {
                     </p>
                 </div>
                 <p>More cards with information about what and why and how to play and what is host vs join</p>
+                
+                <Button
+                    onClick={() => {
+                        // run local r script here
+                        runR();
+                    }}
+                >
+                    Run R
+                </Button>
+
                 <div className='BeginButtons'>
                     <Button>
                         Host a new Game
