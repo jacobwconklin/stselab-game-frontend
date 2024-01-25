@@ -9,7 +9,7 @@ const NavHeader = (props: any) => {
 
     return (
         <div className='NavHeader'>
-            <h1 className='Title' onClick={() => navigate('/')}>Demo App</h1>
+            <h1 className='Title' onClick={() => navigate('/')}>STSELab Golf</h1>
             <img className='HeaderLogo' src={golfLogo} alt='Golf Hole' />
         </div>
     )

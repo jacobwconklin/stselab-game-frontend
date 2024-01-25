@@ -1,8 +1,13 @@
 // Handle communications to outside applications here such as the backend and potentially R script.
 export const getBackendUrl = () => {
-    // TODO this will handle automatically switching to the deployed backend in a production environment.
-    // for now it just returns the locally run back end url
-    return 'http://127.0.0.1:5000/';
+    // this will handle automatically switching to the deployed backend in a production environment.
+    if (process.env.NODE_ENV === 'production') {
+        return 'https://stse-backend.azurewebsites.net/';
+    } else {
+        // when running locally can switch between these two lines to test locally or against deployed backend
+        // return 'http://127.0.0.1:5000/';
+        return 'https://stse-backend.azurewebsites.net/';
+    }
 }
 
 // generic use for get requests to backend without query parameters

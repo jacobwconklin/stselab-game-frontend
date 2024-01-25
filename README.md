@@ -1,3 +1,13 @@
+# Front-End Demo Deployment to Azure
+Currently deployed and available at:
+https://stselab.azurewebsites.net/
+
+Update build by running npm run build, 
+then compress all of the files int the build folder into a zip file,
+then navigating to https://stselab.scm.azurewebsites.net/DebugConsole,
+then navigate into site, and then wwwroot, and then drag and drop the zip file onto the screen where the message, unzip appears.
+Viola. 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

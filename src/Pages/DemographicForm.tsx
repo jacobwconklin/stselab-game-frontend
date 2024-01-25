@@ -14,10 +14,13 @@ const DemographicForm = (props: any) => {
     const [num, setNum] = useState<string | number | null>(0);
     const [pet, setPet] = useState('None');
     const [color, setColor] = useState('#FFFFFF');
+    // disable submit button so it cannot be clicked more than once
+    const [submitting, setSubmitting] = useState(false);
 
     const submit = async () => {
         // if successful give a happy message, else let them know after an error from the backend
         try {
+            setSubmitting(true);
             const newUser: UserInformation = {
                 firstName,
                 lastName,
@@ -32,9 +35,11 @@ const DemographicForm = (props: any) => {
             } else {
                 alert("Failed to submit form.");
                 console.log(submitResult)
+                setSubmitting(false);
             }
         } catch (error) {
             alert("Unable to submit form received the following error: " + (error as Error).message);
+            setSubmitting(false);
         }
     }
 
@@ -123,7 +128,7 @@ const DemographicForm = (props: any) => {
                     <br>
                     </br>
                     <div className='ButtonHolder'>
-                        <Button disabled={!firstName || !lastName || !num || !birthDate } onClick={submit}>Submit</Button>
+                        <Button disabled={!firstName || !lastName || !num || !birthDate || submitting } onClick={submit}>Submit</Button>
                     </div>
                 </div>
             }

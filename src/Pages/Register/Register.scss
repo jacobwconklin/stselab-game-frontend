@@ -1,0 +1,62 @@
+.Register {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+
+    .Login {
+
+        background-color: whitesmoke;
+        border-radius: 10px;
+        box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        width: calc(50%);
+        display: flex;
+        justify-content: center;
+
+        .SuccessfulSubmit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .InputForm {
+
+            .ant-input, .ant-btn {
+                box-shadow: none
+            }
+
+
+            .ButtonHolder {
+                display: flex;
+                justify-content: center;
+                margin: 25px 0px 0px 15px;
+            }
+
+            .ant-input-number, .ant-picker {
+                width: 100%;
+                border: 1px solid black;
+            }
+
+            .ant-select {
+                width: 100%;
+            }
+
+            .ant-select-selector {
+                border: 1px solid black;
+            }
+
+            .ant-color-picker-trigger {
+                width: 100%;
+                border: 1px solid black;
+                &:hover {
+                    border: 1px solid rgb(14, 131, 255);
+                }
+            }
+        }
+
+    }
+}
+
+
