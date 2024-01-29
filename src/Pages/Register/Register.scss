@@ -11,9 +11,11 @@
         border-radius: 10px;
         box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
         padding: 20px;
-        width: calc(50%);
+        width: 50%;
+        min-width: 240px;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
 
         .SuccessfulSubmit {
             display: flex;
@@ -22,6 +24,8 @@
         }
 
         .InputForm {
+            width: 50%;
+            min-width: 175px;
 
             .ant-input, .ant-btn {
                 box-shadow: none
@@ -54,9 +58,17 @@
                     border: 1px solid rgb(14, 131, 255);
                 }
             }
-        }
 
+            .GolfBallContainer {
+                display: flex;
+                align-items: center;
+
+                .GolfBall {
+                    width: 24px;
+                    height: 24px;
+                    padding-left: 15px;
+                }
+            }
+        }
     }
 }
-
-
