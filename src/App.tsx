@@ -8,12 +8,13 @@ function App() {
 
   // Context will hold this information to be accessible from anywhere in the App
   const [isHost, setIsHost] = useState(false);
+  const [sessionId, setSessionId] = useState<number | null>(null);
 
   return (
     <div className="App">
       <BrowserRouter>
       <UserContext.Provider
-          value={{isHost, setIsHost}}
+          value={{isHost, setIsHost, sessionId, setSessionId}}
         >
           <Router />
           <NavHeader />
@@ -25,6 +26,11 @@ function App() {
 
 
 
-export const UserContext = createContext<any>({isHost: false, setIsHost: (isHost: boolean) => {}});
+export const UserContext = createContext<any>({
+  isHost: false, 
+  setIsHost: (isHost: boolean) => {},
+  sessionId: null, 
+  setSessionId: (id: number) => {},
+});
 
 export default App;

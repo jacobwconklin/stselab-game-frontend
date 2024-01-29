@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import './Session.scss';
+import './WaitRoom.scss';
 import { postRequest } from '../../Utils/Api';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../../App';
@@ -9,11 +9,11 @@ import { Button } from 'antd';
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
 // can invite players to join their session.
-const Session = (props: any) => {
+const WaitRoom = (props: any) => {
 
-    const [allPlayers, setAllPlayers] = useState<[any] | []>([]);
-    // use to make sure user is in a valid session
-    const [inValidSession, setInValidSession] = useState(true);
+    // all players come from session status from GameController rather than storing in state it should be
+    // available through props
+    // const [allPlayers, setAllPlayers] = useState<[any] | []>([]);
 
     // check host status and session id / join code from context
     const {isHost, sessionId} = useContext(UserContext) as any;
@@ -22,34 +22,8 @@ const Session = (props: any) => {
     // const [showModal, setShowModal] = useState(false);
     // const [modalMessage, setModalMessage] = useState('');
 
-    useEffect(() => {
-        // Pull all Session players from server 
-        const getSession = async () => {
-            try {
-                const response = await postRequest('session/players', JSON.stringify({sessionId}));
-                console.log(response);
-                // if response tells us that session is invalid then redirect to home page
-                if (!sessionId || response.error === "Players not found") {
-                    setInValidSession(false);
-                } else if (response.error) {
-                    // TODO may need to attempt to exit player from session they are in then redirect them home?
-                    alert("Error getting session: " + response.error);
-                } else {
-                    setAllPlayers(response.players);
-                }
-            } catch (error) {
-                console.log("Error pulling all resulsts: ", error);
-            }
-        }
-        getSession();
-    }, [sessionId]);
-
-    // Only allow users to session page if they are registered
-    if (!inValidSession) {
-        return <Navigate to="/" />
-    } else 
-        return (
-        <div className='Session'>
+    return (
+        <div className='WaitRoom'>
             {
                 isHost ?
                 <div className='Instructions'>
@@ -79,16 +53,17 @@ const Session = (props: any) => {
                 <h2> Players in the Tournament </h2>
             </div>
             {
-                allPlayers && allPlayers.length > 0 && 
+                props.players && props.players.length > 0 && 
                 <div className='GridHeader'>
+                    <p>Player Number</p>
                     <p>First Name</p>
                     <p>Golf Ball</p>
                 </div>
             }
             {
                 // TODO rather than use border color just show the player's golf balls. 
-                allPlayers && allPlayers.length > 0 && 
-                allPlayers.map((result: any, index: number) => (
+                props.players && props.players.length > 0 && 
+                props.players.map((result: any, index: number) => (
                     <div className={`UserResult ${isHost ? 'Clickable' : ''}`}
                         onClick={() => {
                             if (isHost) {
@@ -97,6 +72,7 @@ const Session = (props: any) => {
                             }
                         }}
                     >
+                        <p>{index + 1}</p>
                         <p>{result.firstName}</p>
                         <svg className='GolfBall' fill={result.color} stroke={result.color} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14 9a1 1 0 1 0 1 1 1 1 0 0 0 -1-1zm0-3a1 1 0 1 0 1 1 1 1 0 0 0 -1-1zm-2-4a10 10 0 1 0 10 10 10 10 0 0 0 -10-10zm0 18a8 8 0 1 1 8-8 8 8 0 0 1 -8 8zm5-12a1 1 0 1 0 1 1 1 1 0 0 0 -1-1z"/></svg>
                     </div>
@@ -117,4 +93,4 @@ const Session = (props: any) => {
     )
 }
 
-export default Session;
+export default WaitRoom;

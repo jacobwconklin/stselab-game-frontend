@@ -5,8 +5,8 @@ export const getBackendUrl = () => {
         return 'https://stse-backend.azurewebsites.net/';
     } else {
         // when running locally can switch between these two lines to test locally or against deployed backend
-        // return 'http://127.0.0.1:5000/';
-        return 'https://stse-backend.azurewebsites.net/';
+        return 'http://127.0.0.1:5000/';
+        // return 'https://stse-backend.azurewebsites.net/';
     }
 }
 

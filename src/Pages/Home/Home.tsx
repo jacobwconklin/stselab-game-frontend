@@ -15,7 +15,6 @@ const Home = (props: any) => {
     return (
         <div className='Home'>
             <div className='Contents'>
-                <br></br>
                 <div className='WelcomeCard'>
                     <h1 className='CollapsableTitle' onClick={() => {setCollapseWelcome(val => !val)}}>
                         Welcome to STSELab's Golf Tournament
@@ -26,7 +25,7 @@ const Home = (props: any) => {
                             <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m207.029 381.476-194.343-194.344c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04l154.746 154.021 154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941l-194.342 194.344c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>                        
                         }
                     </h1>
-                    <div className='CollapsableSection' style={{height: collapseWelcome? '0px': 'auto'}}>
+                    <div className='CollapsableSection' style={{maxHeight: collapseWelcome? '0px': '1000px'}}>
                         <p>
                             This free multiplayer game is designed to be instructional and fun. You will learn about Industrial 
                             Systems Engineering concepts, support research, play golf, and have a chance to beat your 
@@ -38,13 +37,13 @@ const Home = (props: any) => {
                     <h2 className='CollapsableTitle' onClick={() => {setCollapseWhat(val => !val)}}>
                         What is STSELab Golf
                         {
-                            collapseWelcome ?
+                            collapseWhat ?
                             <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m240.971 130.524 194.343 194.343c9.373 9.373 9.373 24.569 0 33.941l-22.667 22.667c-9.357 9.357-24.522 9.375-33.901.04l-154.746-154.02-154.745 154.021c-9.379 9.335-24.544 9.317-33.901-.04l-22.667-22.667c-9.373-9.373-9.373-24.569 0-33.941l194.343-194.343c9.372-9.373 24.568-9.373 33.941-.001z"/></svg>                            
                             :
                             <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m207.029 381.476-194.343-194.344c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04l154.746 154.021 154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941l-194.342 194.344c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>                        
                         }    
                     </h2>
-                    <div className='CollapsableSection' style={{height: collapseWhat? '0px': 'auto'}}>
+                    <div className='CollapsableSection' style={{maxHeight: collapseWhat? '0px': '1000px'}}>
                         <p>
                             STSELab Golf is a multiplayer game designed to teach and introduce Industrial Systems Engineering topics.
                             In this game players will get to select golfers for various tasks on the golf course in order to acheive the lowest
@@ -73,7 +72,7 @@ const Home = (props: any) => {
                             <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m207.029 381.476-194.343-194.344c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04l154.746 154.021 154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941l-194.342 194.344c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>                        
                         }    
                     </h2>
-                    <div className='CollapsableSection' style={{height: collapseHow ? '0px' : 'auto'}}>
+                    <div className='CollapsableSection' style={{maxHeight: collapseHow ? '0px' : '1000px'}}>
                         <p>
                             The game is played with one user who serves as the host, and an unlimited number of other users who join the game.
                             When the host creates a new game they will receive a code to share with all players who wish to join. Playing 
@@ -91,21 +90,31 @@ const Home = (props: any) => {
                     </div>
                 </div>
                 <div className='DialogCard'>
-                    <h2>Learning goals / objectives</h2>
-                    <p>
-                        Teach ....
+                    <h2 className='CollapsableTitle' onClick={() => {setCollapseLearn(val => !val)}}>
+                        Theories and Research
+                        {
+                            collapseLearn ?
+                            <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m240.971 130.524 194.343 194.343c9.373 9.373 9.373 24.569 0 33.941l-22.667 22.667c-9.357 9.357-24.522 9.375-33.901.04l-154.746-154.02-154.745 154.021c-9.379 9.335-24.544 9.317-33.901-.04l-22.667-22.667c-9.373-9.373-9.373-24.569 0-33.941l194.343-194.343c9.372-9.373 24.568-9.373 33.941-.001z"/></svg>                            
+                            :
+                            <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m207.029 381.476-194.343-194.344c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04l154.746 154.021 154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941l-194.342 194.344c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>                        
+                        }
+                    </h2>
+                    <div className='CollapsableSection' style={{maxHeight: collapseLearn ? '0px' : '1000px'}}>
+                        <p>
+                            Teach ....
 
-                    </p><p>   
-                        Based on research by ...
+                        </p><p>   
+                            Based on research by ...
 
-                    </p><p>   
-                        utilizing ... 
+                        </p><p>   
+                            utilizing ... 
 
-                    </p>
+                        </p>
+                    </div>
                 </div>
-                <div className='DialogCard'>
+                <div className='DialogCard BeginGameCard'>
                     <h1>Ready to Begin?</h1>
-                    <p style={{textAlign: 'center'}}>Choose below to join a running tournament or to host and create a new game</p>
+                    <p>Choose below to join a running tournament or to host and create a new game</p>
                     <div className='BeginButtons'>
                         <Button
                             onClick={() => {

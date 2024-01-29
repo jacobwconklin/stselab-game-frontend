@@ -9,3 +9,11 @@ export interface UserInformation {
     color: string;
     // May also want email or answers to some questions or results from some game like Yahtzee  
 }
+
+export interface SessionStatus {
+    sessionId: number;
+    players: UserInformation[];
+    round: number;
+    startDate: Date;
+    endDate: Date;
+}
