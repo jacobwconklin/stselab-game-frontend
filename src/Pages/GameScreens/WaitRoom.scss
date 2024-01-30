@@ -18,16 +18,17 @@
 
     .TournamentPlayers {
         margin-top: 30px;
-        margin-bottom: 10px;
+        width: calc(50% - 7px);
         min-width: 300px;
         background-color: whitesmoke;
         border-radius: 10px;
         box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
-        padding: 5px 20px 5px 20px;
+        padding: 10px 20px 10px 20px;
         text-align: center;
         h2 {
             margin: 5px;
         }
+        border: 4px outset black;
     }
     
     .GridHeader {
@@ -40,6 +41,7 @@
         column-gap: 10px;
         border: 4px outset black;
         background-color: whitesmoke;
+        text-decoration: underline;
     }
 
     .UserResult {

@@ -1,7 +1,9 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import './WaitRoom.scss';
 import { UserContext } from '../../App';
 import { Button } from 'antd';
+import { postRequest } from '../../Utils/Api';
+import { useNavigate } from 'react-router-dom';
 // import { UserInformation } from '../../Utils/Types';
 
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
@@ -15,10 +17,25 @@ const WaitRoom = (props: any) => {
 
     // check host status and session id / join code from context
     const {isHost, sessionId, playerId} = useContext(UserContext) as any;
+    // Ensure host doesn't click button multiple times
+    const [beginningTournament, setBeginningTournament] = useState(false);
 
     // handle showing modal and message
     // const [showModal, setShowModal] = useState(false);
     // const [modalMessage, setModalMessage] = useState('');
+
+    const navigate = useNavigate();
+
+    const hostBeginTournament = async () => {
+        setBeginningTournament(true);
+        const response = await postRequest("session/advance", JSON.stringify({sessionId}));
+        console.log(response);
+    }
+
+    const exitTournament = async () => {
+        // TODO tell backend to remove this player from session
+        navigate("/");
+    }
 
     return (
         <div className='WaitRoom'>
@@ -27,22 +44,28 @@ const WaitRoom = (props: any) => {
                 <div className='Instructions'>
                     <h1>Join Code: {sessionId}</h1>
                     <p>
-                        As host you controll when the tournament starts and each round ends. After starting the tournament players can no 
+                        As host you control when the tournament starts and each round ends. After starting the tournament players can no 
                         longer join. You must share the join code with other players so that they may enter the tournament. You can also
                         remove players from the tournament by clicking on their row.
                     </p>
-                    <Button>
+                    <Button
+                        disabled={beginningTournament}
+                        onClick={hostBeginTournament}
+                    >
                         Begin Tournament
                     </Button>
                 </div>
                 :
                 <div className='Instructions'>
+                    <h1>Join Code: {sessionId}</h1>
                     <p>
-                        The host controlls when the tournament starts and each round ends. You will automatically move to the next screen 
+                        The host controls when the tournament starts and each round ends. You will automatically move to the next screen 
                         as soon as the game begins. if you wish to exit the session you may click 
                         below. You can also click the title in the header to return to the landing page at any time.
                     </p>
-                    <Button>
+                    <Button
+                        onClick={exitTournament}
+                    >
                         Exit Tournament
                     </Button>
                 </div>
@@ -62,9 +85,9 @@ const WaitRoom = (props: any) => {
                 // TODO rather than use border color just show the player's golf balls. 
                 props.players && props.players.length > 0 && 
                 props.players.reverse().map((result: any, index: number) => (
-                    <div key={index} className={`UserResult ${isHost && result.id.toLowerCase() !== playerId.toLowerCase() ? 'Clickable' : ''}`}
+                    <div key={index} className={`UserResult ${isHost && result.id?.toLowerCase() !== playerId?.toLowerCase() ? 'Clickable' : ''}`}
                         onClick={() => {
-                            if (isHost && result.id.toLowerCase() !== playerId.toLowerCase()) {
+                            if (isHost && result.id?.toLowerCase() !== playerId?.toLowerCase()) {
                                 // TODO tell backend to remove this player
                                 alert("remove not implemented yet")
                                 console.log(playerId, result.id);
@@ -76,6 +99,12 @@ const WaitRoom = (props: any) => {
                         <svg className='GolfBall' fill={result.color} stroke={result.color} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14 9a1 1 0 1 0 1 1 1 1 0 0 0 -1-1zm0-3a1 1 0 1 0 1 1 1 1 0 0 0 -1-1zm-2-4a10 10 0 1 0 10 10 10 10 0 0 0 -10-10zm0 18a8 8 0 1 1 8-8 8 8 0 0 1 -8 8zm5-12a1 1 0 1 0 1 1 1 1 0 0 0 -1-1z"/></svg>
                     </div>
                 ))
+            }
+            {
+                !props.players || props.players.length === 0 &&
+                <div className='Loading'>
+                    <h3>Loading Player Information... </h3>
+                </div>
             }
             {
                 // showModal &&

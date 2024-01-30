@@ -6,6 +6,7 @@ import { UserContext } from '../../App';
 // import { SessionStatus } from '../../Utils/Types';
 import WaitRoom from '../GameScreens/WaitRoom';
 import PlayScreen from '../GameScreens/PlayScreen';
+import RoundResults from '../GameScreens/RoundResults';
 // import { UserInformation } from '../../Utils/Types';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
@@ -37,9 +38,8 @@ const GameController = (props: any) => {
                 // if response tells us that session is invalid then redirect to home page
                 if (!sessionId || response.error === "Session not found") {
                     // TODO prompt user with modal to give them a chance to try again rather than immediately redirecting them
-                    // alert("Session not found, returning to home page")
-                    // setInValidSession(false);
-                    console.log("Session not found");
+                    alert("Session not found, returning to home page")
+                    setInValidSession(false);
                 } else if (response.error) {
                     // TODO may need to attempt to exit player from session they are in then redirect them home?
                     alert("Error getting session: " + response.error);
@@ -69,7 +69,7 @@ const GameController = (props: any) => {
 
 
     // Only allow users to session page if they are registered
-    if (!inValidSession && false) {
+    if (!inValidSession) {
         return <Navigate to="/" />
     } 
     // if session has not started show wait room
@@ -93,7 +93,7 @@ const GameController = (props: any) => {
         } else {
             return (
                 <div className='GameController'>
-                    {/* <RoundScoreboard scores={something} /> */}
+                    <RoundResults round={sessionStatus?.session?.round} players={sessionStatus?.players ? sessionStatus.players : []} />
                 </div>
             )
         }

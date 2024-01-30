@@ -55,7 +55,7 @@ const Session = (props: any) => {
                 <div className='Instructions'>
                     <h1>Join Code: {sessionId}</h1>
                     <p>
-                        As host you controll when the tournament starts and each round ends. After starting the tournament players can no 
+                        As host you control when the tournament starts and each round ends. After starting the tournament players can no 
                         longer join. You must share the join code with other players so that they may enter the tournament. You can also
                         remove players from the tournament by clicking on their row.
                     </p>
@@ -66,7 +66,7 @@ const Session = (props: any) => {
                 :
                 <div className='Instructions'>
                     <p>
-                        The host controlls when the tournament starts and each round ends. You will automatically move to the next screen 
+                        The host controls when the tournament starts and each round ends. You will automatically move to the next screen 
                         as soon as the game begins. if you wish to exit the session you may click 
                         below. You can also click the title in the header to return to the landing page at any time.
                     </p>

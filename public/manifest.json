@@ -1,6 +1,6 @@
 {
-  "short_name": "Jacob's Sample",
-  "name": "Jacob's Sample Webapp for STSELab Game Job",
+  "short_name": "STSELab Golf",
+  "name": "Golf game for Virginia Tech STSELab to teach Industrial Systems Engineering Concepts",
   "icons": [
     {
       "src": "favicon.ico",

@@ -1,13 +1,14 @@
 .Home {
-    
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    min-height: fit-content;
-    min-width: fit-content;
-    background-color: rgb(148, 193, 208); 
+
+    @keyframes slide{
+        0% {
+          transform: translate3d(0, 0, 0);
+        }
+        100% {
+          transform: translate3d(-1024px, 0, 0);
+        }
+      }
+
 
     .Contents {
 
