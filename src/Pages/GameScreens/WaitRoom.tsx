@@ -1,7 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import './WaitRoom.scss';
-import { postRequest } from '../../Utils/Api';
-import { Navigate } from 'react-router-dom';
 import { UserContext } from '../../App';
 import { Button } from 'antd';
 // import { UserInformation } from '../../Utils/Types';
@@ -16,7 +14,7 @@ const WaitRoom = (props: any) => {
     // const [allPlayers, setAllPlayers] = useState<[any] | []>([]);
 
     // check host status and session id / join code from context
-    const {isHost, sessionId} = useContext(UserContext) as any;
+    const {isHost, sessionId, playerId} = useContext(UserContext) as any;
 
     // handle showing modal and message
     // const [showModal, setShowModal] = useState(false);
@@ -63,12 +61,13 @@ const WaitRoom = (props: any) => {
             {
                 // TODO rather than use border color just show the player's golf balls. 
                 props.players && props.players.length > 0 && 
-                props.players.map((result: any, index: number) => (
-                    <div className={`UserResult ${isHost ? 'Clickable' : ''}`}
+                props.players.reverse().map((result: any, index: number) => (
+                    <div key={index} className={`UserResult ${isHost && result.id.toLowerCase() !== playerId.toLowerCase() ? 'Clickable' : ''}`}
                         onClick={() => {
-                            if (isHost) {
+                            if (isHost && result.id.toLowerCase() !== playerId.toLowerCase()) {
                                 // TODO tell backend to remove this player
                                 alert("remove not implemented yet")
+                                console.log(playerId, result.id);
                             }
                         }}
                     >

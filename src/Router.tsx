@@ -3,7 +3,7 @@ import Home from './Pages/Home/Home';
 import Results from './Pages/Results/Results';
 import './Router.scss';
 import Register from './Pages/Register/Register';
-import Session from './Pages/Session/Session';
+import GameController from './Pages/GameController/GameController';
 
 // Router
 const Router = () => {
@@ -14,7 +14,7 @@ const Router = () => {
                 {/* example Route with query params <Route path="play/:type/:code?" element={<PlayScreen />} /> */}
                 <Route path="register/:playerType?" element={<Register />} />
                 <Route path="results" element={<Results />} />
-                <Route path="session" element={<Session />} />
+                <Route path="game" element={<GameController />} />
                 <Route path="*" element={<Home />} />
             </ Routes>
         </div>

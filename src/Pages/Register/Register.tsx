@@ -21,8 +21,8 @@ const Register = (props: any) => {
     // disable submit button so it cannot be clicked more than once
     const [submitting, setSubmitting] = useState(false);
 
-    // setIsHost can be retreived from context
-    const { setIsHost, setSessionId } = useContext(UserContext) as any;
+    // setIsHost, setSessionId, and setPlayerId can be retreived from context
+    const { setIsHost, setSessionId, setPlayerId } = useContext(UserContext) as any;
     // If playerType is 'host' then user is creating a new session, for any other value
     // (which should be 'join') then the user is joining a session.
     const { playerType } = useParams();
@@ -45,12 +45,13 @@ const Register = (props: any) => {
                     pet,
                     color
                 }
-                const submitResult = await postRequest('host', JSON.stringify({...newUser}))
+                const submitResult = await postRequest('player/host', JSON.stringify({...newUser}))
                 if (submitResult.success) {
                     setIsSuccesfullySubmitted(true);
                     setIsHost(true);
                     setSessionId(submitResult.joinCode);
-                    navigate('/session');
+                    setPlayerId(submitResult.playerId);
+                    navigate('/game');
                 } else {
                     alert("Failed to submit form.");
                     console.log(submitResult)
@@ -66,12 +67,13 @@ const Register = (props: any) => {
                     pet,
                     color
                 }
-                const submitResult = await postRequest('join', JSON.stringify({...newUser, joinCode}))
+                const submitResult = await postRequest('player/join', JSON.stringify({...newUser, joinCode}))
                 if (submitResult.success) {
                     setIsSuccesfullySubmitted(true);
                     setIsHost(false);
                     setSessionId(joinCode);
-                    navigate('/session');
+                    setPlayerId(submitResult.playerId);
+                    navigate('/game');
                 } else {
                     alert("Failed to submit form.");
                     console.log(submitResult)
@@ -173,7 +175,7 @@ const Register = (props: any) => {
                         </br>
                         <div className='ButtonHolder'>
                             <Button 
-                                disabled={!firstName || !lastName || !num || !birthDate || submitting || (playerType !== 'host' && !joinCode) } 
+                                disabled={!firstName || submitting || (playerType !== 'host' && !joinCode) } 
                                 onClick={submit}
                             >
                                 Submit
