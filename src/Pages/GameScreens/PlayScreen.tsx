@@ -16,10 +16,14 @@ const PlayScreen = (props: any) => {
     // pull playerId from Context
     const {playerId} = useContext(UserContext) as any;
 
+    // prevent players from clicking play round multiple times
+    const [playingRound, setPlayingRound] = useState(false);
+
     // Plays round with selected solver
     const playRound = async () => {
         console.log("Playing round with solver: ", solverNames[selectedSolver ? selectedSolver - 1 : 0]);
         if (selectedSolver) {
+            setPlayingRound(true);
             const score = await runSimEntireHole(selectedSolver);
             console.log(score);
             // save score to database and record that player has completed the round
@@ -30,7 +34,15 @@ const PlayScreen = (props: any) => {
                 round: props.round
             }));
             if (response.success) {
-                props.setFinishedRound(true);
+                props.setFinishedRound((val: [Boolean, Boolean, Boolean]) => {
+                    const copy = val;
+                    copy[props.round - 1] = true;
+                    return copy;
+                });
+            } else {
+                alert("Error playing round, please try again");
+                console.error(response);
+                setPlayingRound(false);
             }
         }
     }
@@ -48,8 +60,13 @@ const PlayScreen = (props: any) => {
                     {
                         selectedSolver && 
                         <div>
-                            <h2>You Selected: {solverNames[selectedSolver - 1]}</h2>
-                            <Button onClick={playRound}>Play Round</Button>
+                            <h2>You Selected: {solverNames[selectedSolver - 1]}{selectedSolver > 1 ? 's' : ''}</h2>
+                            <Button 
+                                onClick={playRound}
+                                disabled={playingRound}
+                            >
+                                Play Round
+                            </Button>
                         </div>
                     }
                 </div>
@@ -82,7 +99,6 @@ const PlayScreen = (props: any) => {
                         <Button onClick={() => setSelectedSolver(Solver.Amatuer)}>Select</Button>
                     </div>
                 </div>
-                <Button onClick={() => {props.setFinishedRound(true)}}>Finish round</Button> {/* TODO remove this */}
             </div>
         </div>
     )

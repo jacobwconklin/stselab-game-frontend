@@ -34,7 +34,7 @@ const DemographicForm = (props: any) => {
                 setIsSuccesfullySubmitted(true);
             } else {
                 alert("Failed to submit form.");
-                console.log(submitResult)
+                console.error(submitResult)
                 setSubmitting(false);
             }
         } catch (error) {

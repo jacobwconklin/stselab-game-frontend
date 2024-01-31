@@ -21,24 +21,27 @@ const GameController = (props: any) => {
     const [inValidSession, setInValidSession] = useState(true);
 
     // check host status and session id / join code from context
-    const { sessionId } = useContext(UserContext) as any;
+    const { sessionId, playerId } = useContext(UserContext) as any;
     const [sessionStatus, setSessionStatus] = useState<any | null>(null);
 
     // When player finishes the current round allow them to see scores for the round
-    const [finishedRound, setFinishedRound] = useState(false);
+    const [finishedRound, setFinishedRound] = useState([false, false, false]);
 
     useEffect(() => {
         // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
         // Interval will regularly poll back-end for updates 
         const interval = setInterval( async() => {
             try {
-                const response = await postRequest('session/status', JSON.stringify({sessionId}));
-                console.log(response);
+                const response = await postRequest('session/status', JSON.stringify({sessionId, playerId}));
+                // console.log(response); // -> WIll log all statuses received
                 // sessionId must exist to fetch session status. If there is no sessionId or
                 // if response tells us that session is invalid then redirect to home page
                 if (!sessionId || response.error === "Session not found") {
                     // TODO prompt user with modal to give them a chance to try again rather than immediately redirecting them
                     alert("Session not found, returning to home page")
+                    setInValidSession(false);
+                } else if (response.error === "Player not in session") {
+                    alert("Removed from session, returning to home page")
                     setInValidSession(false);
                 } else if (response.error) {
                     // TODO may need to attempt to exit player from session they are in then redirect them home?
@@ -47,7 +50,7 @@ const GameController = (props: any) => {
                     setSessionStatus(response);
                 }
             } catch (error) {
-                console.log("Error fetching session status: ", error);
+                console.error("Error fetching session status: ", error);
             }
         }, 2000); // This is the frequency of the polling in milliseconds.
 
@@ -55,7 +58,7 @@ const GameController = (props: any) => {
         return () => {
             clearInterval(interval);
         }
-    }, [sessionId]);
+    }, [sessionId, playerId]);
 
 
     // useBeforeUnload(
@@ -84,7 +87,7 @@ const GameController = (props: any) => {
     // show the round results
     else if (sessionStatus?.session?.round !== 4) {
         // TODO maybe always show results of round under or over game instead of switching between in future.
-        if (!finishedRound) {
+        if (!finishedRound[sessionStatus?.session?.round - 1]) {
             return (
                 <div className='GameController'>
                     <PlayScreen round={sessionStatus?.session?.round} setFinishedRound={setFinishedRound} />
@@ -102,7 +105,7 @@ const GameController = (props: any) => {
     else 
         return (
         <div className='GameController'>
-            <h1>Shouldn't be here</h1>
+            <h1>Tournament Ended</h1>
         </div>
     )
 }

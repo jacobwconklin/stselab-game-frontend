@@ -4,6 +4,7 @@ import { UserContext } from '../../App';
 import { Button } from 'antd';
 import { postRequest } from '../../Utils/Api';
 import { useNavigate } from 'react-router-dom';
+import VerificationModal from '../../ReusableComponents/VerificationModal';
 // import { UserInformation } from '../../Utils/Types';
 
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
@@ -29,12 +30,35 @@ const WaitRoom = (props: any) => {
     const hostBeginTournament = async () => {
         setBeginningTournament(true);
         const response = await postRequest("session/advance", JSON.stringify({sessionId}));
-        console.log(response);
+        if (!response.success) {
+            setBeginningTournament(false);
+            alert("Error beginning tournament, please try again.");
+            console.error(response);
+        }
     }
 
-    const exitTournament = async () => {
-        // TODO tell backend to remove this player from session
-        navigate("/");
+    // tells backend to remove a player from their session
+    const removePlayer = async (playerId: any) => {
+        const response = await postRequest("player/remove", JSON.stringify({ playerId }));
+        if (!response.success) {
+            alert("Error removing player from session, please try again.");
+            console.error(response);
+        }
+    }
+
+    // functionality for modal
+    const [showModal, setShowModal] = useState(false);
+    const [playerIdToRemove, setPlayerIdToRemove] = useState('');
+    const [modalTitle, setModalTitle] = useState('Are you sure?');
+    const [modalMessage, setModalMessage] = useState('Action cannot be undone');
+    
+    const cancelModal = () => {
+        setShowModal(false);
+    }
+
+    const confirmModal = () => {
+        removePlayer(playerIdToRemove);
+        setShowModal(false);
     }
 
     return (
@@ -43,10 +67,15 @@ const WaitRoom = (props: any) => {
                 isHost ?
                 <div className='Instructions'>
                     <h1>Join Code: {sessionId}</h1>
+                    <h3 style={{color: 'blue'}}>
+                        {process.env.NODE_ENV === 'production' ? 
+                        "https://stselab.azurewebsites.net/register/join/" + sessionId : 
+                        "localhost:3000/register/join/" + sessionId}
+                    </h3>
                     <p>
                         As host you control when the tournament starts and each round ends. After starting the tournament players can no 
-                        longer join. You must share the join code with other players so that they may enter the tournament. You can also
-                        remove players from the tournament by clicking on their row.
+                        longer join. You must share the join code with other players so that they may enter the tournament. You can also share
+                        the link above for players to join your session. You can remove players from the tournament by clicking on their row.
                     </p>
                     <Button
                         disabled={beginningTournament}
@@ -64,14 +93,17 @@ const WaitRoom = (props: any) => {
                         below. You can also click the title in the header to return to the landing page at any time.
                     </p>
                     <Button
-                        onClick={exitTournament}
+                        onClick={() => {
+                            removePlayer(playerId);
+                            navigate("/");  
+                        }}
                     >
                         Exit Tournament
                     </Button>
                 </div>
             }
             <div className='TournamentPlayers'>
-                <h2> Players in the Tournament </h2>
+                <h2> Players in the Tournament: {props.players && props.players.length > 0? props.players.length : "..."} </h2>
             </div>
             {
                 props.players && props.players.length > 0 && 
@@ -85,12 +117,17 @@ const WaitRoom = (props: any) => {
                 // TODO rather than use border color just show the player's golf balls. 
                 props.players && props.players.length > 0 && 
                 props.players.reverse().map((result: any, index: number) => (
-                    <div key={index} className={`UserResult ${isHost && result.id?.toLowerCase() !== playerId?.toLowerCase() ? 'Clickable' : ''}`}
+                    <div key={index} 
+                    className={`UserResult 
+                        ${isHost && result?.id?.toLowerCase() !== playerId?.toLowerCase() ? 'Clickable' : ''}
+                        ${result?.id?.toLowerCase() === playerId?.toLowerCase() ? 'MatchingPlayer' : ''}`}
                         onClick={() => {
                             if (isHost && result.id?.toLowerCase() !== playerId?.toLowerCase()) {
-                                // TODO tell backend to remove this player
-                                alert("remove not implemented yet")
-                                console.log(playerId, result.id);
+                                // tell backend to remove this player from the session
+                                setPlayerIdToRemove(result.id);
+                                setModalTitle('Are you sure you want to remove: ' + result.firstName + '?');
+                                setModalMessage('The player will be removed from the Tournament including all of their information');
+                                setShowModal(true);
                             }
                         }}
                     >
@@ -101,7 +138,7 @@ const WaitRoom = (props: any) => {
                 ))
             }
             {
-                !props.players || props.players.length === 0 &&
+                (!props.players || props.players.length === 0) &&
                 <div className='Loading'>
                     <h3>Loading Player Information... </h3>
                 </div>
@@ -116,6 +153,15 @@ const WaitRoom = (props: any) => {
                 //         <Button>No</Button>
                 //     </div>
                 // </div>
+            }
+            {
+                showModal && 
+                <VerificationModal 
+                    cancel={cancelModal}
+                    confirm={confirmModal}
+                    title={modalTitle}
+                    message={modalMessage}
+                />
             }
         </div>
     )

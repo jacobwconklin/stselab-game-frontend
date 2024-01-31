@@ -9,6 +9,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 // Register
 const Register = (props: any) => {
 
+    
+    // If playerType is 'host' then user is creating a new session, for any other value
+    // (which should be 'join') then the user is joining a session.
+    const { playerType, joinCodeUrl } = useParams();
+
     const [isSuccesfullySubmitted, setIsSuccesfullySubmitted] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -16,16 +21,13 @@ const Register = (props: any) => {
     const [num, setNum] = useState<string | number | null>(0);
     const [pet, setPet] = useState('None');
     const [color, setColor] = useState('#000000');
-    const [joinCode, setJoinCode] = useState('');
+    const [joinCode, setJoinCode] = useState(joinCodeUrl ? joinCodeUrl : '');
 
     // disable submit button so it cannot be clicked more than once
     const [submitting, setSubmitting] = useState(false);
 
     // setIsHost, setSessionId, and setPlayerId can be retreived from context
     const { setIsHost, setSessionId, setPlayerId } = useContext(UserContext) as any;
-    // If playerType is 'host' then user is creating a new session, for any other value
-    // (which should be 'join') then the user is joining a session.
-    const { playerType } = useParams();
     // take users to session screen on successful submit
     const navigate = useNavigate();
 
@@ -54,7 +56,7 @@ const Register = (props: any) => {
                     navigate('/game');
                 } else {
                     alert("Failed to submit form.");
-                    console.log(submitResult)
+                    console.error(submitResult)
                     setSubmitting(false);
                 }
             } else {
@@ -76,7 +78,7 @@ const Register = (props: any) => {
                     navigate('/game');
                 } else {
                     alert("Failed to submit form.");
-                    console.log(submitResult)
+                    console.error(submitResult)
                     setSubmitting(false);
                 }
             }
