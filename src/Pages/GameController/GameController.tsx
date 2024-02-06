@@ -101,7 +101,7 @@ const GameController = (props: any) => {
     else 
         return (
         <div className='GameController'>
-            <SessionResults />
+            <SessionResults players={sessionStatus?.players ? sessionStatus.players : []} round={sessionStatus?.session?.round} />
         </div>
     )
 }

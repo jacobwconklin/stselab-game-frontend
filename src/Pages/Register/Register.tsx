@@ -459,7 +459,7 @@ const Register = (props: any) => {
                             }}
                         />
 
-                        <p className='FormTitle' >Have you ever participated in any sports or serious hobbies? If so, please list them:</p>
+                        <p className='FormTitle' >Have you ever participated in any sports or serious hobbies? If so, please list them, and if not type 'No':</p>
                         <Input
                             value={hobbies}
                             onChange={(event) => {

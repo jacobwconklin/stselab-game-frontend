@@ -18,8 +18,8 @@ const Home = (props: any) => {
                 <div className='Hero'>
                     <div className='PictogramBlue'></div>
                     <div className='PictogramGreen'></div>
-                    <div className='PictogramOrange'></div>
                     <div className='PictogramPink'></div>
+                    <div className='PictogramOrange'></div>
                     <div className='WelcomeCard'>
                         <h1>
                             Welcome to STSELab's Golf Tournament

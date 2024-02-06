@@ -3,6 +3,7 @@
     width: 100%;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 30px;
 
     .HostInstruction {
         display: flex;
@@ -15,6 +16,14 @@
         box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
         padding: 5px 20px 20px 20px;
         margin-bottom: 40px;
+    }
+
+    .ScatterCanvas {
+        max-width: 50%;
+        max-height: 50vh;
+        height: auto;
+        background-color: whitesmoke;
+        margin: 0px 20px 40px 20px;
     }
 
     .ResultTable {
@@ -71,6 +80,10 @@
             &:hover {
                 background-color: rgb(255, 189, 189);
             }
+        }
+
+        .MatchingPlayer {
+            background-color: rgb(222, 252, 222);
         }
     }
 }

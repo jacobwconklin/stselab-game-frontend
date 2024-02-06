@@ -109,7 +109,7 @@ const WaitRoom = (props: any) => {
                 props.players && props.players.length > 0 && 
                 <div className='GridHeader'>
                     <p>Player Number</p>
-                    <p>First Name</p>
+                    <p>Name</p>
                     <p>Golf Ball</p>
                 </div>
             }

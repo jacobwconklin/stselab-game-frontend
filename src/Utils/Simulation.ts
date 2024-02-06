@@ -38,7 +38,8 @@ export const runSimEntireHole = async(solver: Solver) => {
             Holes: 5,
             runs: 1
         }));
-        return {shots: response[0][0], cost: response[4][0]};
+        // TODO if decimal costs are desired update database to accept floats
+        return {shots: Math.floor(response[0][0]), cost: Math.floor(response[4][0])};
     } catch (error) {
         // generate random value to not break deployed
         console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
@@ -59,7 +60,7 @@ export const runLP = async(solverLong: Solver, solverClose: Solver) => {
             Holes: 5,
             runs: 1
         }));
-        return {shots: response[0][0], cost: response[4][0]};
+        return {shots: Math.floor(response[0][0]), cost: Math.floor(response[4][0])};
     } catch (error) {
         // generate random value to not break deployed
         console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
@@ -81,7 +82,7 @@ export const runDAP = async(solverDrive: Solver, solverFairway: Solver, solverPu
             Holes: 5,
             runs: 1
         }));
-        return {shots: response[0][0], cost: response[4][0]};
+        return {shots: Math.floor(response[0][0]), cost: Math.floor(response[4][0])};
     } catch (error) {
         // generate random value to not break deployed
         console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")

@@ -4,42 +4,75 @@ import { UserContext } from '../../App';
 import { Button } from 'antd';
 import { postRequest } from '../../Utils/Api';
 import GolfBall from '../../ReusableComponents/GolfBall';
+import {
+    Chart as ChartJS,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend,
+  } from 'chart.js';
+import { Scatter } from 'react-chartjs-2';
+// import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
 const RoundResults = (props: any) => {
 
-    // Screen was not re-rendering when new player data came in when using this function, may need to just dynamically 
-    // choose between sorted forms of data in the tsx element
-    // const sortPlayers = (category: string) : any[] => {
-    //     if (category === "stroke") {
-    //         return props.players.sort((a: any, b: any) => {
-    //             if (a.scores[props.round - 1] && !b.scores[props.round - 1]) {
-    //                 // player a has finished b hasn't, put a in front of b
-    //                 return -1;
-    //             } else if (!a.scores[props.round - 1] && b.scores[props.round - 1]) {
-    //                 // player b has finished a hasn't, put b in front of a
-    //                 return 1;
-    //             } else if (a.scores[props.round - 1] && b.scores[props.round - 1]) { 
-    //                 // both players have finished, sort by shots
-    //                 return a.scores[props.round - 1].shots - b.scores[props.round - 1].shots;
-    //             }
-    //         });
-    //     } else {
-    //         // sort by cost
-    //         return props.players.sort((a: any, b: any) => {
-    //             if (a.scores[props.round - 1] && !b.scores[props.round - 1]) {
-    //                 // player a has finished b hasn't, put a in front of b
-    //                 return -1;
-    //             } else if (!a.scores[props.round - 1] && b.scores[props.round - 1]) {
-    //                 // player b has finished a hasn't, put b in front of a
-    //                 return 1;
-    //             } else if (a.scores[props.round - 1] && b.scores[props.round - 1]) { 
-    //                 // both players have finished, sort by shots
-    //                 return a.scores[props.round - 1].cost - b.scores[props.round - 1].cost;
-    //             }
-    //         });
-    //     }
-    // }
+    // const golfBallImage = new Image(20, 20); // WORKS and sets image to golf ball, but eliminates player colors 
+    // golfBallImage.src = golfBallSvg;
+
+    // set up chart js
+    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+
+    // chart options and data
+    const options = {
+        plugins: {
+            title: {
+                display: true,
+                text: `Strokes and Costs for Round ${props?.round}`
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                reverse: true,
+                title: {
+                    display: true,
+                    text: 'Strokes'
+                }
+            },
+            x: {
+                beginAtZero: true,
+                reverse: true,
+                title: {
+                    display: true,
+                    text: 'Cost'
+                }
+            },
+        },
+        elements: {
+            point: {
+                radius: 10,
+                // pointStyle: golfBallImage,
+            }
+        },
+        layout: {
+            padding: 20
+        },
+    };
+
+    const data = {
+        datasets: props?.players?.filter((result: any) => result.scores[props.round - 1]).map((result: any) => {
+            return {
+                label: result.name,
+                data: [{
+                    x: result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].cost,
+                    y: result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].shots
+                }],
+                backgroundColor: result.color,
+            }
+        })
+    };
 
     const {isHost, playerId, sessionId} = useContext(UserContext) as any;
     const [hostClickedButton, setHostClickedButton] = useState(false);
@@ -65,9 +98,15 @@ const RoundResults = (props: any) => {
                 isHost && props?.round >= 4 &&
                 <div className='HostInstruction'>
                     <h3>
-                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length} Players Finished, 
-                        {props?.players?.filter((player: any) => !player.scores[props.round - 1]).length} Still Playing
+                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length} Player
+                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length > 1 ? 's' : ''} Finished 
                     </h3>
+                    {
+                        !!props?.players?.filter((player: any) => !player.scores[props.round - 1]).length &&
+                        <h3>
+                            {props?.players?.filter((player: any) => !player.scores[props.round - 1]).length} Still Playing
+                        </h3>
+                    }
                     <p>
                         As Host you may end the tournament. This will take all players to a screen to view the final results across all 
                         three rounds of the tournament whether players
@@ -85,9 +124,15 @@ const RoundResults = (props: any) => {
                 isHost && props?.round < 4 &&
                 <div className='HostInstruction'>
                     <h3>
-                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length} Players Finished, 
-                        {props?.players?.filter((player: any) => !player.scores[props.round - 1]).length} Still Playing
+                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length} Player
+                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length > 1 ? 's' : ''} Finished 
                     </h3>
+                    {
+                        !!props?.players?.filter((player: any) => !player.scores[props.round - 1]).length &&
+                        <h3>
+                            {props?.players?.filter((player: any) => !player.scores[props.round - 1]).length} Still Playing
+                        </h3>
+                    }
                     <p>
                         As Host you may advance to the next round. This will take all players to the game screen for the next round regardless of 
                         whether they have finished this round or not.
@@ -105,9 +150,15 @@ const RoundResults = (props: any) => {
                 !isHost &&
                 <div className='HostInstruction'>
                     <h3>
-                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length} Players Finished, 
-                        {' ' + props?.players?.filter((player: any) => !player.scores[props.round - 1]).length} Still Playing
+                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length} Player
+                        {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length > 1 ? 's' : ''} Finished 
                     </h3>
+                    {
+                        !!props?.players?.filter((player: any) => !player.scores[props.round - 1]).length &&
+                        <h3>
+                            {props?.players?.filter((player: any) => !player.scores[props.round - 1]).length} Still Playing
+                        </h3>
+                    }
                     <p>
                         {props?.round < 3 ? "Host must begin the next round" : "Host must end the tournament"}
                     </p>
@@ -118,6 +169,10 @@ const RoundResults = (props: any) => {
                     </Button>
                 </div>
             }
+
+            {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
+            <Scatter className='ScatterCanvas' options={options} data={data} />
+
             <div className='ResultTable'>
                 {
                     // TODO allow sort by stroke and cost
@@ -128,7 +183,7 @@ const RoundResults = (props: any) => {
                     props.players && props.players.length > 0 && 
                     <div className='GridHeader'>
                         <p>Rank</p>
-                        <p>First Name</p>
+                        <p>Name</p>
                         <p>Golf Ball</p>
                         <p>
                             Strokes
@@ -158,7 +213,9 @@ const RoundResults = (props: any) => {
                                 b.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].shots;
                         } else return 0;
                     }).map((result: any, index: number) => (
-                        <div key={result.id} className={`UserResult ${isHost && result.id?.toLowerCase() !== playerId?.toLowerCase() ? 'Clickable' : ''}`}
+                        <div key={result.id} className={`UserResult 
+                        ${isHost && result.id?.toLowerCase() !== playerId?.toLowerCase() ? 'Clickable' : ''}
+                        ${result?.id?.toLowerCase() === playerId?.toLowerCase() ? 'MatchingPlayer' : ''}`}
                             onClick={() => {
                                 if (isHost && result.id?.toLowerCase() !== playerId?.toLowerCase()) {
                                     // TODO tell backend to remove this player
