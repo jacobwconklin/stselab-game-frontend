@@ -3,11 +3,9 @@ import './GameController.scss';
 import { postRequest } from '../../Utils/Api';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../../App';
-// import { SessionStatus } from '../../Utils/Types';
 import WaitRoom from '../GameScreens/WaitRoom';
 import PlayScreen from '../GameScreens/PlayScreen';
 import RoundResults from '../GameScreens/RoundResults';
-// import { UserInformation } from '../../Utils/Types';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
 // displays the session screen showing all of the players in a the tournament. Once started, it will 
@@ -25,7 +23,7 @@ const GameController = (props: any) => {
     const [sessionStatus, setSessionStatus] = useState<any | null>(null);
 
     // When player finishes the current round allow them to see scores for the round
-    const [finishedRound, setFinishedRound] = useState([false, false, false]);
+    const [finishedRound, setFinishedRound] = useState([false, false, false, false]);
 
     useEffect(() => {
         // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
@@ -37,7 +35,7 @@ const GameController = (props: any) => {
                 // sessionId must exist to fetch session status. If there is no sessionId or
                 // if response tells us that session is invalid then redirect to home page
                 if (!sessionId || response.error === "Session not found") {
-                    // TODO prompt user with modal to give them a chance to try again rather than immediately redirecting them
+                    // TODO could prompt user with modal to give them a chance to try again rather than immediately redirecting them
                     alert("Session not found, returning to home page")
                     setInValidSession(false);
                 } else if (response.error === "Player not in session") {
@@ -68,9 +66,6 @@ const GameController = (props: any) => {
     // );
 
 
-
-
-
     // Only allow users to session page if they are registered
     if (!inValidSession) {
         return <Navigate to="/" />
@@ -85,7 +80,7 @@ const GameController = (props: any) => {
     } 
     // session has not ended show the game screen until player finishes playing, then 
     // show the round results
-    else if (sessionStatus?.session?.round !== 4) {
+    else if (sessionStatus?.session?.round < 5) {
         // TODO maybe always show results of round under or over game instead of switching between in future.
         if (!finishedRound[sessionStatus?.session?.round - 1]) {
             return (

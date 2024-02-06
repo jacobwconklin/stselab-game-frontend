@@ -11,11 +11,12 @@
         border-radius: 10px;
         box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
         padding: 20px;
-        width: 50%;
-        min-width: 240px;
+        width: 60%;
+        min-width: 400px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-bottom: 30px;
 
         .SuccessfulSubmit {
             display: flex;
@@ -24,13 +25,49 @@
         }
 
         .InputForm {
-            width: 50%;
-            min-width: 175px;
+            width: 80%;
+            min-width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .FormTitle {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .IsCollegeStudent {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .ExpertiseGrid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+                gap: 5px;
+                align-items: end;
+                justify-items: center;
+                border: 1px solid black;
+                background-color: white;
+                padding: 15px;
+
+                .ant-radio-wrapper {
+                    margin: 0px;
+                }
+            }
 
             .ant-input, .ant-btn {
                 box-shadow: none
             }
 
+            .PageBreak {
+                width: 100%;
+                height: 1px;
+                background-color: black;
+                margin: 20px 0px 20px 0px;
+            }
 
             .ButtonHolder {
                 display: flex;
@@ -38,7 +75,23 @@
                 margin: 25px 0px 0px 15px;
             }
 
-            .ant-input-number, .ant-picker {
+            .ant-table-wrapper {
+                width: 100%;
+                border: 1px solid black;
+                border-radius: 2px;
+            }
+
+            .ant-input-number-group-wrapper, .ant-select, .ant-input, .ant-picker, .ant-color-picker-trigger {
+                max-width: 400px;
+            }
+
+            .ant-input-number-group-wrapper {
+                width: 100%;
+                border: 1px solid black;
+                border-radius: 8px;
+            }
+
+            .ant-picker {
                 width: 100%;
                 border: 1px solid black;
             }
@@ -60,15 +113,25 @@
             }
 
             .GolfBallContainer {
+                width: 100%;
+                max-width: 400px;
                 display: flex;
+                gap: 10px;
                 align-items: center;
-
-                .GolfBall {
-                    width: 24px;
-                    height: 24px;
-                    padding-left: 15px;
+                justify-content: flex-start;
+                padding-top: 5px;
+                p{
+                    width: auto;
                 }
             }
+
+            // Handle error designs
+            .ErrorForm {
+                border: 1px solid red;
+                
+            }
+
+
         }
     }
 }

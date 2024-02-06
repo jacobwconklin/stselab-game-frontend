@@ -1,0 +1,22 @@
+.GolfBall {
+
+    position: relative;
+
+    .BackColor {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        background-color: green;
+        border-radius: 50%;
+    }
+
+    .Shell {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+    }
+}

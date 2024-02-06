@@ -5,7 +5,7 @@ import { Button } from 'antd';
 import { postRequest } from '../../Utils/Api';
 import { useNavigate } from 'react-router-dom';
 import VerificationModal from '../../ReusableComponents/VerificationModal';
-// import { UserInformation } from '../../Utils/Types';
+import GolfBall from '../../ReusableComponents/GolfBall';
 
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
@@ -125,15 +125,15 @@ const WaitRoom = (props: any) => {
                             if (isHost && result.id?.toLowerCase() !== playerId?.toLowerCase()) {
                                 // tell backend to remove this player from the session
                                 setPlayerIdToRemove(result.id);
-                                setModalTitle('Are you sure you want to remove: ' + result.firstName + '?');
+                                setModalTitle('Are you sure you want to remove: ' + result.name + '?');
                                 setModalMessage('The player will be removed from the Tournament including all of their information');
                                 setShowModal(true);
                             }
                         }}
                     >
                         <p>{index + 1}</p>
-                        <p>{result.firstName}</p>
-                        <svg className='GolfBall' fill={result.color} stroke={result.color} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14 9a1 1 0 1 0 1 1 1 1 0 0 0 -1-1zm0-3a1 1 0 1 0 1 1 1 1 0 0 0 -1-1zm-2-4a10 10 0 1 0 10 10 10 10 0 0 0 -10-10zm0 18a8 8 0 1 1 8-8 8 8 0 0 1 -8 8zm5-12a1 1 0 1 0 1 1 1 1 0 0 0 -1-1z"/></svg>
+                        <p>{result.name}</p>
+                        <GolfBall color={result.color} />
                     </div>
                 ))
             }

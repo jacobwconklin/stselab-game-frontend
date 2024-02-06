@@ -3,6 +3,7 @@ import './RoundResults.scss';
 import { UserContext } from '../../App';
 import { Button } from 'antd';
 import { postRequest } from '../../Utils/Api';
+import GolfBall from '../../ReusableComponents/GolfBall';
 
 // RoundResults
 const RoundResults = (props: any) => {
@@ -120,6 +121,10 @@ const RoundResults = (props: any) => {
             <div className='ResultTable'>
                 {
                     // TODO allow sort by stroke and cost
+                    // TODO show solver type selected as well, 
+                    // if on round 1 or 2, there is 1 solver,
+                    // if on round 3 there are 2 solvers, 
+                    // if on round 4 there are 3 solvers
                     props.players && props.players.length > 0 && 
                     <div className='GridHeader'>
                         <p>Rank</p>
@@ -131,6 +136,9 @@ const RoundResults = (props: any) => {
                         <p>
                             Cost
                         </p>
+                        {
+                            // check round ...
+                        }
                     </div>
                 }
                 {
@@ -160,8 +168,8 @@ const RoundResults = (props: any) => {
                             }}
                         >
                             <p>{index + 1}</p>
-                            <p>{result.firstName}</p>
-                            <svg className='GolfBall' fill={result.color} stroke={result.color} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14 9a1 1 0 1 0 1 1 1 1 0 0 0 -1-1zm0-3a1 1 0 1 0 1 1 1 1 0 0 0 -1-1zm-2-4a10 10 0 1 0 10 10 10 10 0 0 0 -10-10zm0 18a8 8 0 1 1 8-8 8 8 0 0 1 -8 8zm5-12a1 1 0 1 0 1 1 1 1 0 0 0 -1-1z"/></svg>
+                            <p>{result.name}</p>
+                            <GolfBall color={result.color} />
                             <p>{result.scores[props.round - 1] ? result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].shots : 'Waiting'}</p>
                             <p>{result.scores[props.round - 1] ? result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].cost : 'Waiting'}</p>
                         </div>

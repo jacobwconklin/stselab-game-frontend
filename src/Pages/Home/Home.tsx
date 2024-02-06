@@ -2,13 +2,11 @@ import { Button } from 'antd';
 import './Home.scss';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Solver, runSimEntireHole } from '../../Utils/Simulation';
 
 // Home
 const Home = (props: any) => {
 
     const navigate = useNavigate();
-    const [collapseWelcome, setCollapseWelcome] = useState(false);
     const [collapseWhat, setCollapseWhat] = useState(false);
     const [collapseHow, setCollapseHow] = useState(false);
     const [collapseLearn, setCollapseLearn] = useState(false); 
@@ -16,16 +14,23 @@ const Home = (props: any) => {
     return (
         <div className='Home'>
             <div className='Contents'>
-                <div className='WelcomeCard'>
-                    <h1>
-                        Welcome to STSELab's Golf Tournament
-                    </h1>
-                    <div>
-                        <p>
-                            This free multiplayer game is designed to be instructional and fun. You will learn about Industrial 
-                            Systems Engineering concepts, support research, play golf, and have a chance to beat your 
-                            competitors all at the same time!
-                        </p>
+                {/* TODO add hero image for welcoming players to home page */}
+                <div className='Hero'>
+                    <div className='PictogramBlue'></div>
+                    <div className='PictogramGreen'></div>
+                    <div className='PictogramOrange'></div>
+                    <div className='PictogramPink'></div>
+                    <div className='WelcomeCard'>
+                        <h1>
+                            Welcome to STSELab's Golf Tournament
+                        </h1>
+                        {/* <div>
+                            <p>
+                                This free multiplayer game is designed to be instructional and fun. You will learn about Industrial 
+                                Systems Engineering concepts, support research, play golf, and have a chance to beat your 
+                                competitors all at the same time!
+                            </p>
+                        </div> */}
                     </div>
                 </div>
                 <div className='DialogCard'>
@@ -44,6 +49,8 @@ const Home = (props: any) => {
                             In this game players will get to select golfers for various tasks on the golf course in order to acheive the lowest
                             score possible, without going over an alloted cost. The different types of golfers that the player can choose from are 
                             known as the solvers. 
+
+                            edit this - usually you pick your golf club but with this game you pick your golfer.
                         </p><p>   
                             The three options for solvers are: 1 Professional golfer, 3 long drive specialists, 
                             and 50 amatuers. When choosing the specialists and amatuers the results of all 3 or 50 golfers will be simulated and

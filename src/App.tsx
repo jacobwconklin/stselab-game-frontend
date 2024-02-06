@@ -10,12 +10,13 @@ function App() {
   const [isHost, setIsHost] = useState(false);
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [playerId, setPlayerId] = useState<number | null>(null);
+  const [playerColor, setPlayerColor] = useState<string | null>(null);
 
   return (
     <div className="App">
       <BrowserRouter>
       <UserContext.Provider
-          value={{isHost, setIsHost, sessionId, setSessionId, playerId, setPlayerId}}
+          value={{isHost, setIsHost, sessionId, setSessionId, playerId, setPlayerId, playerColor, setPlayerColor}}
         >
           <Router />
           <NavHeader />
@@ -34,6 +35,8 @@ export const UserContext = createContext<any>({
   setSessionId: (id: number) => {},
   playerId: null, 
   setPlayerId: (id: number) => {},
+  playerColor: null, 
+  setPlayerColor: (id: string) => {},
 });
 
 export default App;
