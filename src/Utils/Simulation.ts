@@ -72,7 +72,7 @@ export const runLP = async(solverLong: Solver, solverClose: Solver) => {
 export const runDAP = async(solverDrive: Solver, solverFairway: Solver, solverPutt: Solver) => {
     try {
         console.log("Solvers: ", solverDrive, solverFairway, solverPutt);
-        const response = await simulationPostRequest('lp_arch', JSON.stringify({
+        const response = await simulationPostRequest('dap_arch', JSON.stringify({
             HoleLength: 700,
             Expertise_D: solverDrive,
             Expertise_F: solverFairway,
