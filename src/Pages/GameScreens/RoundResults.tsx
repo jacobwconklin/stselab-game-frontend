@@ -161,13 +161,13 @@ const RoundResults = (props: any) => {
                         </h3>
                     }
                     <p>
-                        {props?.round < 3 ? "Host must begin the next round" : "Host must end the tournament"}
+                        {props?.round < 4 ? "Host must begin the next round" : "Host must end the tournament"}
                     </p>
-                    <Button
+                    {/* <Button
                         onClick={() => {alert("Dynamic sorting not implemented yet values automatically sorted by stroke")}}
                     >
                         Sort by Strokes
-                    </Button>
+                    </Button> */}
                 </div>
             }
 

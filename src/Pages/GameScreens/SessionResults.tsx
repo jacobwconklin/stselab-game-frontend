@@ -64,7 +64,7 @@ const SessionResults = (props: any) => {
             datasets: props?.players?.map((result: any) => {
                 console.log("mapped result: ", result);
                 return {
-                    label: result.name + ' Round ' + result.round,
+                    label: result.name,
                     data: result.scores.map((round: any) => { return {
                         x: round.cost,
                         y: round.shots
@@ -120,7 +120,7 @@ const SessionResults = (props: any) => {
                             Total Strokes
                         </p>
                         <p>
-                            Totoal Cost
+                            Total Cost
                         </p>
                     </div>
                 }
