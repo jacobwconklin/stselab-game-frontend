@@ -71,6 +71,7 @@ export const runLP = async(solverLong: Solver, solverClose: Solver) => {
 // run dap_arch simulation where one solver handles far away and one solver handles up close
 export const runDAP = async(solverDrive: Solver, solverFairway: Solver, solverPutt: Solver) => {
     try {
+        console.log("Solvers: ", solverDrive, solverFairway, solverPutt);
         const response = await simulationPostRequest('lp_arch', JSON.stringify({
             HoleLength: 700,
             Expertise_D: solverDrive,

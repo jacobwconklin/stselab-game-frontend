@@ -282,7 +282,26 @@ const Register = (props: any) => {
             document.getElementById('Name')?.scrollIntoView({behavior: 'smooth', block: 'center'});
             return false;
         } else if (!participationReason) {
-
+            document.getElementById('ParticipationReason')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+            return false;
+        } else if (!gender) {
+            document.getElementById('Gender')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+            return false;
+        } else if (!age) {
+            document.getElementById('Age')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+            return false;
+        } else if (!country) {
+            document.getElementById('Country')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+            return false;
+        } else if (isCollegeStudent && (!university || !degreeProgram || !yearsInProgram)) {
+            document.getElementById('IsCollegeStudent')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+            return false;
+        } else if ( systemsEngineeringExpertise === null) {
+            document.getElementById('SystemsExpertise')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+            return false;
+        } else if (statementOfWorkExpertise === null) {
+            document.getElementById('StatementOfWorkExpertise')?.scrollIntoView({behavior: 'smooth', block: 'center'});
+            return false;
         } else {
             return true;
         }
@@ -396,8 +415,11 @@ const Register = (props: any) => {
                     </div>
                     :
                     <div className='InputForm'>
-                        <h3>All forms are required</h3>
-                        <p className="FormTitle" id='Name' >Name</p>
+                        <h3>All Asterisks are required</h3>
+                        <p className="FormTitle" id='Name' >
+                            <span style={{color: 'red', fontSize: 'large'}}>* </span> 
+                            Name 
+                        </p>
                         <Input 
                             className={attemptedSubmit && !name ? "ErrorForm" : "" }
                             placeholder='Jane Doe'
@@ -407,8 +429,12 @@ const Register = (props: any) => {
                                 setName(event.target.value && event.target.value.length > 20 ? event.target.value.substring(0, 20) : event.target.value);
                             }}
                         />
-                        <p className='FormTitle' >Why are you interested in playing?</p>
+                        <p className='FormTitle' id='ParticipationReason' >
+                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            Why are you interested in playing?
+                        </p>
                         <Select 
+                            className={attemptedSubmit && !participationReason ? "ErrorForm" : "" }
                             defaultValue=""
                             options={[
                                 {value: '', label: ''},
@@ -422,8 +448,12 @@ const Register = (props: any) => {
                                 setParticipationReason(newValue);
                             }}
                         />
-                        <p className='FormTitle' >How do you Identify?</p>
+                        <p className='FormTitle' id='Gender' >
+                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            How do you Identify?
+                        </p>
                         <Select 
+                            className={attemptedSubmit && !gender ? "ErrorForm" : "" }
                             defaultValue=""
                             options={[
                                 {value: '', label: ''},
@@ -437,16 +467,24 @@ const Register = (props: any) => {
                                 setGender(newValue);
                             }}
                         />
-                        <p className='FormTitle' >How old are you?</p>
+                        <p className='FormTitle' id='Age' >
+                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            How old are you?
+                        </p>
                         <InputNumber 
+                            className={attemptedSubmit && !age ? "ErrorForm" : "" }
                             min={1}
                             max={99}
                             value={age}
                             onChange={(e) => setAge(e)}
                             addonAfter="Years Old"
                         />
-                        <p className='FormTitle' >Country</p>
+                        <p className='FormTitle' id='Country' >
+                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            Country
+                        </p>
                         <Select 
+                            className={attemptedSubmit && !country ? "ErrorForm" : "" }
                             showSearch
                             filterOption = {(input: string, option?: { label: string; value: string }) =>
                             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
@@ -459,7 +497,7 @@ const Register = (props: any) => {
                             }}
                         />
 
-                        <p className='FormTitle' >Have you ever participated in any sports or serious hobbies? If so, please list them, and if not type 'No':</p>
+                        <p className='FormTitle' id='Hobbies' >Have you ever participated in any sports or serious hobbies? If so, please list them:</p>
                         <Input
                             value={hobbies}
                             onChange={(event) => {
@@ -473,7 +511,10 @@ const Register = (props: any) => {
 
                         
 
-                        <p className='FormTitle' >Are you currenlty a student in an undergraduate or graduate program?</p>
+                        <p className='FormTitle' id='IsCollegeStudent' >
+                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            Are you currenlty a student in an undergraduate or graduate program?
+                        </p>
                         <Radio.Group
                             value={isCollegeStudent}
                         >
@@ -483,8 +524,12 @@ const Register = (props: any) => {
                         {
                             !!isCollegeStudent &&
                             <div className='IsCollegeStudent'>
-                                <p className='FormTitle' >University</p>
+                                <p className='FormTitle' >
+                                    <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                                    University
+                                </p>
                                 <Input 
+                                    className={attemptedSubmit && isCollegeStudent && !university ? "ErrorForm" : "" }
                                     placeholder='Virginia Tech'
                                     maxLength={64}
                                     value={university}
@@ -492,8 +537,12 @@ const Register = (props: any) => {
                                         setUniversity(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 64) : event.target.value);
                                     }}
                                 />
-                                <p className='FormTitle' >Degree Program</p>
+                                <p className='FormTitle' >
+                                    <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                                    Degree Program
+                                </p>
                                 <Input 
+                                    className={attemptedSubmit && isCollegeStudent && !degreeProgram ? "ErrorForm" : "" }
                                     placeholder='Industrial Systems Engineering'
                                     maxLength={64}
                                     value={degreeProgram}
@@ -501,8 +550,12 @@ const Register = (props: any) => {
                                         setDegreeProgram(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 64) : event.target.value);
                                     }}
                                 />
-                                <p className='FormTitle' >Years in Program</p>
+                                <p className='FormTitle' >
+                                    <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                                    Years in Program
+                                </p>
                                 <InputNumber 
+                                    className={attemptedSubmit && isCollegeStudent && !yearsInProgram ? "ErrorForm" : "" }
                                     min={1}
                                     max={99}
                                     value={yearsInProgram}
@@ -535,8 +588,11 @@ const Register = (props: any) => {
 
                         <div className='PageBreak'></div>
 
-                        <p>A systems engineering problem is:</p>
-                        <div className='ExpertiseGrid'>
+                        <p id='SystemsExpertise'>
+                            <span style={{color: 'red', fontSize: 'large'}}>* </span> 
+                            A systems engineering problem is:
+                        </p>
+                        <div className={`ExpertiseGrid ${systemsEngineeringExpertise === null && attemptedSubmit ? "ErrorForm" : ""}`}>
                             <p>Outside my field of expertise</p>
                             <p>.....</p>
                             <p>.....</p>
@@ -545,17 +601,20 @@ const Register = (props: any) => {
                             <p>.....</p>
                             <p>Inside my field of expertise</p>
 
-                            <Radio value={0} onClick={() => {setSystemsEngineeringExpertise(0)}}></Radio>
-                            <Radio value={1} onClick={() => {setSystemsEngineeringExpertise(1)}}></Radio>
-                            <Radio value={2} onClick={() => {setSystemsEngineeringExpertise(2)}}></Radio>
-                            <Radio value={3} onClick={() => {setSystemsEngineeringExpertise(3)}}></Radio>
-                            <Radio value={4} onClick={() => {setSystemsEngineeringExpertise(4)}}></Radio>
-                            <Radio value={5} onClick={() => {setSystemsEngineeringExpertise(5)}}></Radio>
-                            <Radio value={6} onClick={() => {setSystemsEngineeringExpertise(6)}}></Radio>
+                            <Radio checked={systemsEngineeringExpertise === 0} onClick={() => {setSystemsEngineeringExpertise(0)}}></Radio>
+                            <Radio checked={systemsEngineeringExpertise === 1} onClick={() => {setSystemsEngineeringExpertise(1)}}></Radio>
+                            <Radio checked={systemsEngineeringExpertise === 2} onClick={() => {setSystemsEngineeringExpertise(2)}}></Radio>
+                            <Radio checked={systemsEngineeringExpertise === 3} onClick={() => {setSystemsEngineeringExpertise(3)}}></Radio>
+                            <Radio checked={systemsEngineeringExpertise === 4} onClick={() => {setSystemsEngineeringExpertise(4)}}></Radio>
+                            <Radio checked={systemsEngineeringExpertise === 5} onClick={() => {setSystemsEngineeringExpertise(5)}}></Radio>
+                            <Radio checked={systemsEngineeringExpertise === 6} onClick={() => {setSystemsEngineeringExpertise(6)}}></Radio>
                         </div>
 
-                        <p>Defining statement of work documents and / or work contracts is:</p>
-                        <div className='ExpertiseGrid'>
+                        <p id='StatementOfWorkExpertise'>
+                            <span style={{color: 'red', fontSize: 'large'}}>* </span> 
+                            Defining statement of work documents and / or work contracts is:
+                        </p>
+                        <div className={`ExpertiseGrid ${!statementOfWorkExpertise && attemptedSubmit ? "ErrorForm" : ""}`}>
                             <p>Outside my field of expertise</p>
                             <p>.....</p>
                             <p>.....</p>
@@ -564,13 +623,13 @@ const Register = (props: any) => {
                             <p>.....</p>
                             <p>Inside my field of expertise</p>
 
-                            <Radio value={0} onClick={() => {setStatementOfWorkExpertise(0)}}></Radio>
-                            <Radio value={1} onClick={() => {setStatementOfWorkExpertise(1)}}></Radio>
-                            <Radio value={2} onClick={() => {setStatementOfWorkExpertise(2)}}></Radio>
-                            <Radio value={3} onClick={() => {setStatementOfWorkExpertise(3)}}></Radio>
-                            <Radio value={4} onClick={() => {setStatementOfWorkExpertise(4)}}></Radio>
-                            <Radio value={5} onClick={() => {setStatementOfWorkExpertise(5)}}></Radio>
-                            <Radio value={6} onClick={() => {setStatementOfWorkExpertise(6)}}></Radio>
+                            <Radio checked={statementOfWorkExpertise === 0} onClick={() => {setStatementOfWorkExpertise(0)}}></Radio>
+                            <Radio checked={statementOfWorkExpertise === 1} onClick={() => {setStatementOfWorkExpertise(1)}}></Radio>
+                            <Radio checked={statementOfWorkExpertise === 2} onClick={() => {setStatementOfWorkExpertise(2)}}></Radio>
+                            <Radio checked={statementOfWorkExpertise === 3} onClick={() => {setStatementOfWorkExpertise(3)}}></Radio>
+                            <Radio checked={statementOfWorkExpertise === 4} onClick={() => {setStatementOfWorkExpertise(4)}}></Radio>
+                            <Radio checked={statementOfWorkExpertise === 5} onClick={() => {setStatementOfWorkExpertise(5)}}></Radio>
+                            <Radio checked={statementOfWorkExpertise === 6} onClick={() => {setStatementOfWorkExpertise(6)}}></Radio>
                         </div>
 
                         <div className='PageBreak'></div>

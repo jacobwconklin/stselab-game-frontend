@@ -13,6 +13,7 @@ import {
     Legend,
   } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
+import { solverNames } from '../../Utils/Simulation';
 // import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
@@ -191,6 +192,9 @@ const RoundResults = (props: any) => {
                         <p>
                             Cost
                         </p>
+                        <p>
+                            Solvers
+                        </p>
                         {
                             // check round ...
                         }
@@ -229,6 +233,20 @@ const RoundResults = (props: any) => {
                             <GolfBall color={result.color} />
                             <p>{result.scores[props.round - 1] ? result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].shots : 'Waiting'}</p>
                             <p>{result.scores[props.round - 1] ? result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].cost : 'Waiting'}</p>
+                            <div className='SolversInResultTable'>
+                            <p>
+                                {result.scores[props.round - 1] ? 
+                                solverNames[result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].solverOne - 1] : 'Waiting'}
+                            </p>
+                            <p>
+                                {result.scores[props.round - 1] && props.round > 2 ? 
+                                solverNames[result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].solverTwo - 1] : ''}
+                            </p>
+                            <p>
+                                {result.scores[props.round - 1] && props.round > 3 ? 
+                                solverNames[result.scores.sort((a: any, b: any) => a.round - b.round)[props.round - 1].solverThree - 1] : ''}
+                            </p>
+                            </div>
                         </div>
                     ))
                 }

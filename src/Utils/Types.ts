@@ -16,7 +16,7 @@ export interface PlayerInformation {
     gender: string;
     age: null | number;
     country: string;
-    hobbies: string;
+    hobbies?: string;
 
     isCollegeStudent: number;
     university?: string;
