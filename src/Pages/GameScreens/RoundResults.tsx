@@ -62,7 +62,7 @@ const RoundResults = (props: any) => {
         <div className='RoundResults'>
             <h1>Results for Round {props?.round}</h1>
             {
-                isHost && props?.round >= 3 &&
+                isHost && props?.round >= 4 &&
                 <div className='HostInstruction'>
                     <h3>
                         {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length} Players Finished, 
@@ -82,7 +82,7 @@ const RoundResults = (props: any) => {
                 </div>
             }
             {
-                isHost && props?.round < 3 &&
+                isHost && props?.round < 4 &&
                 <div className='HostInstruction'>
                     <h3>
                         {props?.players?.filter((player: any) => !!player.scores[props.round - 1]).length} Players Finished, 

@@ -6,6 +6,7 @@ import { UserContext } from '../../App';
 import WaitRoom from '../GameScreens/WaitRoom';
 import PlayScreen from '../GameScreens/PlayScreen';
 import RoundResults from '../GameScreens/RoundResults';
+import SessionResults from '../GameScreens/SessionResults';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
 // displays the session screen showing all of the players in a the tournament. Once started, it will 
@@ -100,7 +101,7 @@ const GameController = (props: any) => {
     else 
         return (
         <div className='GameController'>
-            <h1>Tournament Ended</h1>
+            <SessionResults />
         </div>
     )
 }

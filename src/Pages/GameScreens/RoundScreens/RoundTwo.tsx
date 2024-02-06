@@ -12,17 +12,15 @@ const RoundTwo = (props: {playingRound: Boolean, round: Number,
         playRound: (solver1: Solver, solver2?: Solver, solver3?: Solver ) => void}) => {
 
     
-    // display screen changes based on round number
-    // componetize each of the three options, for now 
-    // just working to display h_arch
+    // Only need one solver for h_arch
     const [selectedSolver, setSelectedSolver] = useState<Solver | null>(null);
 
     return (
         <div className='RoundTwo'>
             <div className='Controls'>
                 <div className='Instructions'>
-                    <h1>Time for Round {'' + props.round}</h1>
-                    <p>Select one type of Golfer to play 5 holes</p>
+                    <h1> Round {'' + props.round}</h1>
+                    <p style={{textAlign:'center'}}>Select one type of Golfer to play 5 holes</p>
                     {
                         selectedSolver ? 
                         <div>

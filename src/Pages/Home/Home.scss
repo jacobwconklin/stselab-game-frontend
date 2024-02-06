@@ -13,11 +13,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 20px 0px 20px 0px;
-            width: 60%;
+            margin: 0px 0px 0px 0px;
+            width: calc(100% - 40px);
             background-image: url("../../Assets/Hero/colorful-course.jpg");
             background-size: cover;
-            height: calc(100vh - 110px);
+            height: calc(100vh - 170px);
             padding: 5px 20px 5px 20px;
         }
 
@@ -62,11 +62,10 @@
         }
 
         .WelcomeCard {
-            width: 80%;
             min-width: 300px;
             background-color: whitesmoke;
             border-radius: 10px;
-            padding: 5px 5px 5px 5px;
+            padding: 5px 15px 5px 15px;
             z-index: 1;
             text-align: center;
         }

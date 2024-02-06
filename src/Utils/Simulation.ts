@@ -1,5 +1,5 @@
 // Handles calling simulation written in R
-const SimulationUrl = "http://127.0.0.1:9453/";
+const SimulationUrl = "http://127.0.0.1:8140/";
 
 // use for post requests to simulation
 const simulationPostRequest = async (endpoint: string, payload: string) => {

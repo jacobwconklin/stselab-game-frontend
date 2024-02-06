@@ -6,6 +6,8 @@ import { UserContext } from '../../App';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import RoundOne from './RoundScreens/RoundOne';
 import RoundTwo from './RoundScreens/RoundTwo';
+import RoundFour from './RoundScreens/RoundFour';
+import RoundThree from './RoundScreens/RoundThree';
 
 // PlayScreen
 const PlayScreen = (props: any) => {
@@ -39,6 +41,9 @@ const PlayScreen = (props: any) => {
                 playerId,
                 shots: score.shots,
                 cost: score.cost,
+                solverOne: solver1,
+                solverTwo: solver2,
+                solverThree: solver3,
                 round: props.round
             }));
             if (response.success) {
@@ -97,14 +102,22 @@ const PlayScreen = (props: any) => {
                 <path d="m340.76 162.31c1.8294 2.755-2.4167 7.5368-8.0778 11.296s-11.235 5.4581-13.065 2.7031c-1.8294-2.755 0.39639-9.6834 6.0575-13.443 5.6611-3.7592 13.256-3.3115 15.085-0.55653z" fill="url(#j)"/>
                 </g>
             </svg>
-                <RoundTwo round={props.round} playingRound={playingRound} playRound={playRound} />
-            {/* {
+            {
                 props.round === 1 &&
-                <RoundOne />
+                <RoundOne round={props.round} playingRound={playingRound} playRound={playRound} />
             }
             {
                 props.round === 2 &&
-            } */}
+                <RoundTwo round={props.round} playingRound={playingRound} playRound={playRound} />
+            }
+            {
+                props.round === 3 &&
+                <RoundThree round={props.round} playingRound={playingRound} playRound={playRound} />
+            }
+            {
+                props.round === 4 &&
+                <RoundFour round={props.round} playingRound={playingRound} playRound={playRound} />
+            }
         </div>
     )
 }

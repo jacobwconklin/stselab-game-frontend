@@ -8,12 +8,15 @@
         .Instructions {
             text-align: center;
             margin: 20px;
-            min-width: 300px;
+            width: 600px;
             background-color: whitesmoke;
             border-radius: 10px;
             box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
             padding: 5px 20px 15px 20px;
 
+            p {
+                text-align: left;
+            }
         }
         
         .Solvers {
