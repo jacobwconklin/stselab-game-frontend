@@ -3,6 +3,7 @@ import Home from './Pages/Home/Home';
 import './Router.scss';
 import Register from './Pages/Register/Register';
 import GameController from './Pages/GameController/GameController';
+import FreeRoam from './Pages/GameScreens/FreeRoam';
 
 // Router
 const Router = () => {
@@ -13,6 +14,7 @@ const Router = () => {
                 {/* example Route with query params <Route path="play/:type/:code?" element={<PlayScreen />} /> */}
                 <Route path="register/:playerType?/:joinCodeUrl?" element={<Register />} />
                 <Route path="game" element={<GameController />} />
+                <Route path="playground" element={<FreeRoam />} />
                 <Route path="*" element={<Home />} />
             </ Routes>
         </div>

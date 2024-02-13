@@ -82,7 +82,7 @@ const GameController = (props: any) => {
     // session has not ended show the game screen until player finishes playing, then 
     // show the round results
     else if (sessionStatus?.session?.round < 5) {
-        // TODO maybe always show results of round under or over game instead of switching between in future.
+        // TODO maybe always also show results of round under or over game.
         if (!finishedRound[sessionStatus?.session?.round - 1]) {
             return (
                 <div className='GameController'>

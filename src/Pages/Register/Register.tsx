@@ -8,7 +8,7 @@ import {
     Table,
   } from 'antd';
 import './Register.scss';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { postRequest } from '../../Utils/Api';
 import { PlayerInformation, PlayerBrief } from '../../Utils/Types';
 import { UserContext } from '../../App';
@@ -19,6 +19,10 @@ import { allCountriesArray } from '../../Utils/Countries';
 // Register
 const Register = (props: any) => {
 
+    // Scroll to top on entering page
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [])
     
     // If playerType is 'host' then user is creating a new session, for any other value
     // (which should be 'join') then the user is joining a session.

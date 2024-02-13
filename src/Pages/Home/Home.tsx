@@ -45,22 +45,29 @@ const Home = (props: any) => {
                     </h2>
                     <div className='CollapsableSection' style={{maxHeight: collapseWhat? '0px': '1000px'}}>
                         <p>
-                            STSELab Golf is a multiplayer game designed to teach and introduce Industrial Systems Engineering topics.
-                            In this game players will get to select golfers for various tasks on the golf course in order to acheive the lowest
-                            score possible, without going over an alloted cost. The different types of golfers that the player can choose from are 
-                            known as the solvers. 
-
-                            edit this - usually you pick your golf club but with this game you pick your golfer.
+                            STSELab Golf is a multiplayer game designed to introduce and teach Industrial Systems Engineering topics.
+                            In this game rounds of golf represent Industrial Systems Engineering problems. The traditional method to solve
+                            these problems is often to utilize a single large corporation for the entrie project. However, this game will 
+                            demonstrate that breaking a problem down into smaller components and finding solutions that better fit each 
+                            component can lead to better solutions. 
+                        </p><p>   
+                            Throughout 4 rounds of golf, users will have increased freedom to choose different types of golfers to play 
+                            specific portions of the course. 
+                            These types of golfers are known as solvers and represent different potential avenues to solve a problem. 
+                            They come with different trade offs in terms of costs and skill levels.
+                            The goal is to acheive the least number of shots needed as well as maintaining the 
+                            lowest overall cost. The number of shots needed to complete a round of golf is analogous to the time required to 
+                            complete a real world project, and the cost is representative of the total cost spent on a solution. 
+                            {/* TODO Talk about rankings based on shots but cost is still important */}
                         </p><p>   
                             The three options for solvers are: 1 Professional golfer, 3 long drive specialists, 
                             and 50 amatuers. When choosing the specialists and amatuers the results of all 3 or 50 golfers will be simulated and
                             the best result will be used. The three solvers represent ways that Industrial Systems Engineers can solve major 
-                            manufacturing problems. Through major companies, represented by the professional, through teams of specialists, 
+                            manufacturing problems. Through experts, represented by the professional, through teams of specialists, 
                             represented by the long drive specialists, and through amateur crowd sourcing solutions, represented by the amatuers. 
-                        </p><p>   
-                            Each solver comes with their own costs and drawbacks, and the player hopes to optimize the number of shots needed as 
-                            well as this overall cost. The shots needed represent time required to complete real world challenges, and the cost will
-                            be the cost of a solution.
+                            The goal of this game is to show that while the traditional approach works very well for handling large problems,
+                            breaking problems down into smaller components and finding solutions that better fit each component can lead to
+                            improved results.
                         </p>
                     </div>
                 </div>
@@ -77,17 +84,34 @@ const Home = (props: any) => {
                     <div className='CollapsableSection' style={{maxHeight: collapseHow ? '0px' : '1000px'}}>
                         <p>
                             The game is played with one user who serves as the host, and an unlimited number of other users who join the game.
-                            When the host creates a new game they will receive a code to share with all players who wish to join. Playing 
-                            involves 3 rounds of golf. 
+                            When the host creates a new game they will receive a code and link to share with all players who wish to join. Playing 
+                            involves 4 rounds of golf, with 5 holes in each round. 
+                            The host will control when the game progresses to the next round. 
+                            In each round players will run the simulation and then see the results of all other players in the tournament for 
+                            that round. At the end of the tournament the results of the entire game will be displayed. Finally users can view 
+                            the aggregate results of all games played on the site. 
                         </p><p>   
-                            In the first round the players will choose one type of golfer, or solver, to play for them for the 
-                            entire course. The player chooses between 1 Professional golfer, 3 long drive specialists, and 50 amatuers. These 
-                            solvers will play for 5 holes and then the total scores of all players in the game will be displayed. 
+                            The first round simulates the standard practice today, by having one professional golfer play the entire course.
+                            This shows how well the professional is suited for handling each portion of the course. Players will simply run 
+                            the simulation and see their results, which will be fairly close together.
                         </p><p>    
-                            Next in the second round the players will choose one solver for each of the 5 holes on the course. 
-                        </p><p>   
-                            Finally in the third round the player can choose a solver type for driving, mid-range, and putting. This means 
-                            that for each hole, the 
+                            In the second round the players will each choose one type of golfer, or solver, to again play for them for the 
+                            entire course. The player chooses between 1 Professional golfer, 3 long drive specialists, and 50 amatuers. These 
+                            solvers will play for 5 holes and then the total scores of all players in the game will again be displayed. This time
+                            there will be increased variation in the number of shots and costs based on the solvers chosen.
+                        </p>
+                        <p>   
+                            In the third round players have increased freedom and are able to choose one solver to play the half of the golf 
+                            course closer to the hole, and another solver to play the half of the golf course further from the hole. This allows
+                            players to begin picking solvers based on their strengths. Players may select the same solver for both halves, in which
+                            case the results will be the same as selecting one solver for the entire course. 
+                        </p>
+                        <p>   
+                            Finally, In the fourth round players can choose ione solver type for driving from long range, another solver for 
+                            playing mid-range, which is referred to as the fairway, and another solver for putting close to the hole. The player will 
+                            choose their solver for each section of the course, and all 5 holes will be simulated with the chosen selection. The results
+                            for the round will be shown again, and then the host can take all players in the session to a screen showing the combined 
+                            results of the entire tournament. Good shooting!
                         </p>
                     </div>
                 </div>
@@ -103,14 +127,31 @@ const Home = (props: any) => {
                     </h2>
                     <div className='CollapsableSection' style={{maxHeight: collapseLearn ? '0px' : '1000px'}}>
                         <p>
-                            Teach ....
-
+                            The research on this subject, including use of the golf simulation, is found in the paper: "Towards a solver-aware systems 
+                            architecting framework: leveraging experts, specialists and the crowd to design innovative complex systems" by 
+                            Zoe Szajnfarber, Taylan G. Topcu, and Hila Lifshitz-Assaf. The paper is available &nbsp;
+                            <a href='https://www.cambridge.org/core/journals/design-science/article/towards-a-solveraware-systems-architecting-framework-leveraging-experts-specialists-and-the-crowd-to-design-innovative-complex-systems/A2BE1A0A4384E2859915F209383228D5'>
+                                 here
+                            </a>
                         </p><p>   
-                            Based on research by ...
-
+                            The abstract: 
+                            This article proposes the solver-aware system architecting framework for leveraging the combined strengths of 
+                            experts, crowds and specialists to design innovative complex systems. Although system architecting theory has 
+                            extensively explored the relationship between alternative architecture forms and performance under operational 
+                            uncertainty, limited attention has been paid to differences due to who generates the solutions. The recent rise 
+                            in alternative solving methods, from gig workers to crowdsourcing to novel contracting structures emphasises the 
+                            need for deeper consideration of the link between architecting and solver-capability in the context of complex 
+                            system innovation. We investigate these interactions through an abstract problem-solving simulation, representing 
+                            alternative decompositions and solver archetypes of varying expertise, engaged through contractual structures that 
+                            match their solving type. We find that the preferred architecture changes depending on which combinations of solvers 
+                            are assigned. In addition, the best hybrid decomposition-solver combinations simultaneously improve performance and 
+                            cost, while reducing expert reliance. To operationalise this new solver-aware framework, we induce two heuristics for 
+                            decomposition-assignment pairs and demonstrate the scale of their value in the simulation. We also apply these two 
+                            heuristics to reason about an example of a robotic manipulator design problem to demonstrate their relevance in 
+                            realistic complex system settings.
                         </p><p>   
-                            utilizing ... 
-
+                            This web application utilizes the golf simulation written in R from the research paper. The web application 
+                            was created by Jacob Conklin.
                         </p>
                     </div>
                 </div>
@@ -135,6 +176,7 @@ const Home = (props: any) => {
                     </div>
                 </div>
                 {/* <Button onClick={() => navigate('/Results')}>View Past Results</Button> */}
+                <Button onClick={() => navigate('/playground')}>Experiment in Free Roam</Button>
                 <br></br>
             </div>
         </div>

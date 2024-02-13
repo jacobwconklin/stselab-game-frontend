@@ -1,1 +1,24 @@
-This will outline the major TODOs so they can be ordered 
+This can outline the major TODOs so they can be ordered 
+
+1. Make solver sim functions hittable APIs so players can try them out individually. Pick numbers for ball now:
+    Drive HoleDist = 700 (Entire hole length) only one hit
+    Long BallNow = 700 (Also starts from Tee) ends when green reached
+    Fairway Ballnow = 450 (total - avg professional drives)
+    Short Ballnow = 450 (same as fairway)
+    Putt Ballnow = 15 (Equal to green size)
+    DON'T show costs, just show scores. DO save them into db. Let them learn what the best assignments are. 
+
+2. Create playground after round 2 so that players can experiment with all options:
+    T = tee = drive, F, L, S, G = green = putt.
+
+3. Ask players a question to guage their perceptions like "Which solvers do you think are better for each modules?",
+    (For each of the 5, ask who is the best solver. Allow multiple answers if they can't decide. )
+    Then move on to LG, DS, DFG.
+
+4. AFTER practice let them choose between architectures and solvers. 
+
+- ASK Professor: 
+1. What is 'size' in playShort and playPutt, is it the distance to accept making a whole ie should it always be 0.5?
+2. What is 'strategy' parameter (sometimes called with 0 and sometimes 1)
+3. Play fairway should I use rule 1 (minimize distance to hole) or rule 2 (minimize strokes)
+

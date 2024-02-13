@@ -14,6 +14,7 @@ import {
   } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import { solverNames } from '../../Utils/Simulation';
+import VerificationModal from '../../ReusableComponents/VerificationModal';
 // import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
@@ -58,7 +59,7 @@ const RoundResults = (props: any) => {
             }
         },
         layout: {
-            padding: 20
+            padding: 10
         },
     };
 
@@ -80,6 +81,7 @@ const RoundResults = (props: any) => {
 
     const hostBeginNextRound = async () => {
         setHostClickedButton(true);
+        // Force host to go through modal if some players haven't finished
         const response = await postRequest("session/advance", JSON.stringify({sessionId}));
         if (response.success) {
 
@@ -89,8 +91,22 @@ const RoundResults = (props: any) => {
             console.error(response);
         }
     }
-    // TODO set modal to make sure host knows some players might not finished and only show
-    // if some player hasn't finished.
+    // set modal to make sure host knows some players might not finished and only show
+    // if some player hasn't finished. Also use modal for allowing host to remove players
+    // from the tournament
+    const [showModal, setShowModal] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+
+    const cancelModal = () => {
+        setShowModal(false);
+    }
+
+    // confirm Modal may have different actions depending on what modalTitle is set to
+    const confirmModal = () => {
+        setShowModal(false);
+    }
+
 
     return (
         <div className='RoundResults'>
@@ -251,6 +267,15 @@ const RoundResults = (props: any) => {
                     ))
                 }
             </div>
+            {
+                showModal && 
+                <VerificationModal 
+                    cancel={cancelModal}
+                    confirm={confirmModal}
+                    title={modalTitle}
+                    message={modalMessage}
+                />
+            }
         </div>
     )
 }

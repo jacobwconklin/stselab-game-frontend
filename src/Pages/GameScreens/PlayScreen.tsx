@@ -37,10 +37,11 @@ const PlayScreen = (props: any) => {
 
             console.log(score);
             // save score to database and record that player has completed the round
-            const response = await postRequest('player/result', JSON.stringify({
+            const response = await postRequest('player/roundResult', JSON.stringify({
                 playerId,
                 shots: score.shots,
                 cost: score.cost,
+                architecture: "TODO",
                 solverOne: solver1,
                 solverTwo: solver2,
                 solverThree: solver3,
