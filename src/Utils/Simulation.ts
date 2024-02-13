@@ -20,11 +20,11 @@ const simulationPostRequest = async (endpoint: string, payload: string) => {
 
 export enum Solver {
     Professional = 1,
-    Amatuer = 2,
+    Amateur = 2,
     Specialist = 3
 }
 
-export const solverNames = ['Professional', 'Amatuer', 'Specialist'];
+export const solverNames = ['Professional', 'Amateur', 'Specialist'];
 
 const groupSizePerSolver = [1, 50, 3];
 

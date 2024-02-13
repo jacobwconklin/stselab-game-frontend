@@ -61,10 +61,10 @@ const Home = (props: any) => {
                             {/* TODO Talk about rankings based on shots but cost is still important */}
                         </p><p>   
                             The three options for solvers are: 1 Professional golfer, 3 long drive specialists, 
-                            and 50 amatuers. When choosing the specialists and amatuers the results of all 3 or 50 golfers will be simulated and
+                            and 50 amateurs. When choosing the specialists and amateurs the results of all 3 or 50 golfers will be simulated and
                             the best result will be used. The three solvers represent ways that Industrial Systems Engineers can solve major 
                             manufacturing problems. Through experts, represented by the professional, through teams of specialists, 
-                            represented by the long drive specialists, and through amateur crowd sourcing solutions, represented by the amatuers. 
+                            represented by the long drive specialists, and through amateur crowd sourcing solutions, represented by the amateurs. 
                             The goal of this game is to show that while the traditional approach works very well for handling large problems,
                             breaking problems down into smaller components and finding solutions that better fit each component can lead to
                             improved results.
@@ -96,7 +96,7 @@ const Home = (props: any) => {
                             the simulation and see their results, which will be fairly close together.
                         </p><p>    
                             In the second round the players will each choose one type of golfer, or solver, to again play for them for the 
-                            entire course. The player chooses between 1 Professional golfer, 3 long drive specialists, and 50 amatuers. These 
+                            entire course. The player chooses between 1 Professional golfer, 3 long drive specialists, and 50 amateurs. These 
                             solvers will play for 5 holes and then the total scores of all players in the game will again be displayed. This time
                             there will be increased variation in the number of shots and costs based on the solvers chosen.
                         </p>
@@ -176,7 +176,7 @@ const Home = (props: any) => {
                     </div>
                 </div>
                 {/* <Button onClick={() => navigate('/Results')}>View Past Results</Button> */}
-                <Button onClick={() => navigate('/playground')}>Experiment in Free Roam</Button>
+                <Button onClick={() => navigate('/experiment')}>Experiment in Free Roam</Button>
                 <br></br>
             </div>
         </div>

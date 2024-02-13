@@ -10,45 +10,76 @@
         position: absolute;
         bottom: 0px;
         width: 34%;
-        height: 74px;
+        height: 22px;
         background-color: rgba(255, 217, 0, 0);
         z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         &:hover {
             background-color: rgba(255, 217, 0, 0.5);
-            border: 1px solid orange;
+            border: 2px solid rgb(255, 238, 0);
         }
     }
 
     .Long {
+        bottom: 52px;
         left: 0px;
-        width: 67%;
+        width: calc(72% - 4px);
+        border: 2px solid black;
     }
 
     .Drive {
         left: 0px;
+        bottom: 0px;
+        height: 48px;
         width: calc(10% + 8px);
         z-index: 5;
+        border: 2px solid black;
     }
 
     .Fairway {
-        left: 34%;
-        width: 34%;
+        bottom: 26px;
+        left: calc(10% + 12px);;
+        width: calc( 62% - 16px ) ;
+        border: 2px solid black;
     }
 
     .Short {
         right: 0px;
-        width: 67%;
+        width: calc(90% - 16px);
+        border: 2px solid black;
     }
 
     .Putt {
+        justify-content: flex-start;
+        height: 48px;
+        bottom: 26px;
         right: 0px;
-        width: calc(32% - 4px);
+        width: calc(28% - 4px);
+        border: 2px solid black;
     }
 
     .Active {
-        border: 1px solid gold;
+        border: 2px solid white;
+        background-color: rgba(5, 98, 0, 0.99);
+        color: white;
     }
+
+    // .PositionDrive {
+    //     left: 50px;
+    // }
+
+    // .SolverIcon {
+    //     position: absolute;
+    //     bottom: 10px;
+
+    //     .SolverIconImage {
+    //         width: 100px;
+    //         height: 100px;
+    //     }
+    // }
     
     .Controls {
         display: flex;
@@ -79,37 +110,87 @@
             p {
                 text-align: left;
             }
-
-            .PlayAndShowResults {
-                width: 50%;
-                display: flex;
-                justify-content: space-between;
-            }
         }
 
         .Modules {
             width: 100%;
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
 
             .ModuleButton {
                 width: 80px;
             }
         }
 
-        .Selections {
+        .InformationHorizontalSplit {
             width: 100%;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 15px 0px 15px 0px;
+            justify-content: space-between;
 
-            h2 {
-                width: 350px;
-                text-align: left;
-                margin-top: 0px;
-                margin-bottom: 5px;
+            .SelectionsAndActions {
+                height: 150px;
+
+                .Selections {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 15px 0px 15px 0px;
+        
+                    h2 {
+                        width: 350px;
+                        text-align: left;
+                        margin-top: 0px;
+                        margin-bottom: 5px;
+                    }
+                }
+
+                .PlayAndShowResults {
+                    width: 325px;
+                    display: flex;
+                    justify-content: space-between;
+                }
             }
+        }
+
+
+
+        .SolverIcons {
+            width: 100%;
+            height: 130px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+
+            .ProfessionalIconImage {
+                width: 100px;
+                height: 100px;
+                margin: 10px;
+            }
+
+            .SpecialistIcons {
+                display: flex;
+                flex-wrap: wrap;
+
+                .SpecialistIconImage {
+                    width: 70px;
+                    height: 70px;
+                    margin: 5px;
+                }
+            }
+
+            .AmateurIcons {
+
+
+                .AmateurIconImage {
+                    width: 15px;
+                    height: 15px;
+                    margin: 3px;
+                    margin-right: 5px;
+                }
+            }
+
         }
         
         .Solvers {
@@ -140,6 +221,7 @@
             border: 3px solid black;
             border-radius: 10px;
             padding: 40px;
+            z-index: 12;
 
             h2 {
                 text-align: center;

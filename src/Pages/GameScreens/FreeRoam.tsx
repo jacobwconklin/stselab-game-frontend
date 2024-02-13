@@ -2,10 +2,12 @@ import { useContext, useState } from 'react';
 import './FreeRoam.scss';
 import { Solver, runPlayDrive, runPlayFairway, runPlayLong, runPlayPutt, runPlayShort, solverNames  } from '../../Utils/Simulation';
 import { Button, Tooltip } from 'antd';
-import GolfBall from '../../ReusableComponents/GolfBall';
+import professionalIcon from '../../Assets/man-golfing-dark-skin-tone.svg';
+import specialistIcon from '../../Assets/woman-golfing-light-skin-tone.svg';
+import amateurIcon from '../../Assets/person-golfing-medium-light-skin-tone.svg';
 import { UserContext } from '../../App';
 import { postRequest } from '../../Utils/Api';
-import { ProfessionalSolverCard, SpecialistSolverCard, AmatuerSolverCard } from '../../ReusableComponents/SolverCards';
+import { ProfessionalSolverCard, SpecialistSolverCard, AmateurSolverCard } from '../../ReusableComponents/SolverCards';
 import PlayGolfBackground from '../../ReusableComponents/PlayGolfBackground';
 
 // Free Roam
@@ -21,6 +23,8 @@ import PlayGolfBackground from '../../ReusableComponents/PlayGolfBackground';
 const FreeRoam = () => {
 
     const { playerColor, playerId } = useContext(UserContext) as any;
+
+    const solverIcons = [professionalIcon, specialistIcon, amateurIcon];
 
     const modules = ['Drive', 'Long', 'Fairway', 'Short', 'Putt'];
     const moduleDescriptions = [
@@ -58,12 +62,12 @@ const FreeRoam = () => {
         setLatestShot(result.shots);
         setLatestDistance(result.distance);
         setAllResults([...allResults, {shots: result.shots, distance: result.distance, solver: selectedSolver, module: selectedModule}]);
-        // For now save free roam results to database only for all, could set this 
-        // to only save it for those in tournaments
-        // if (playerId) {
-        //     saveFreeRoamResult(result.shots, result.distance);
-        // }
-        saveFreeRoamResult(result.shots, result.distance);
+        // For now do not save free roam results to database only for all 
+        // only save it for those in tournaments
+        if (playerId) {
+            saveFreeRoamResult(result.shots, result.distance);
+        }
+        // saveFreeRoamResult(result.shots, result.distance);
     }
 
     const saveFreeRoamResult = async (shots: number, distance: number) => {
@@ -86,19 +90,22 @@ const FreeRoam = () => {
             <PlayGolfBackground playerColor={playerColor} />
             <div className={`Highlight Long ${selectedModule === 'Long' ? "Active" : " "}`}
                 onClick={() => setSelectedModule('Long')}
-            ></div>
+            >Long</div>
             <div className={`Highlight Drive ${selectedModule === 'Drive' ? "Active" : " "}`}
                 onClick={() => setSelectedModule('Drive')}
-            ></div>
+            >Drive</div>
             <div className={`Highlight Fairway ${selectedModule === 'Fairway' ? "Active" : " "}`}
                 onClick={() => setSelectedModule('Fairway')}
-            ></div>
+            >Fairway</div>
             <div className={`Highlight Short ${selectedModule === 'Short' ? "Active" : " "}`}
                 onClick={() => setSelectedModule('Short')}
-            ></div>
+            >Short</div>
             <div className={`Highlight Putt ${selectedModule === 'Putt' ? "Active" : " "}`}
                 onClick={() => setSelectedModule('Putt')}
-            ></div>
+            >&nbsp;&nbsp;&nbsp;&nbsp;Putt</div>
+            {/* <div className={`Position${selectedModule} SolverIcon`}>
+                <img className='SolverIconImage' src={solverIcons[selectedSolver - 1]} alt="Solver Icon" />
+            </div> */}
             <div className='Controls'>
                 <div className='Instructions'>
                     <h1> 
@@ -128,26 +135,54 @@ const FreeRoam = () => {
                             ))
                         }
                     </div>
-                    <div className='Selections'>
-                            <h2>
-                                Selected Module: {selectedModule}
-                            </h2>
-                            <h2>
-                                Selected Solver: {solverNames[selectedSolver - 1]}
-                            </h2>
-                    </div>
-                    <div className='PlayAndShowResults'>
-                        <Button 
-                            onClick={() => playRound()}
-                        >
-                            Play Module
-                        </Button>
-                        <Button
-                            onClick={() => {}}
-                            disabled={allResults.length === 0}
-                        >
-                            View Results
-                        </Button>
+                    <div className='InformationHorizontalSplit'>
+                        <div className='SelectionsAndActions'>
+                            <div className='Selections'>
+                                    <h2>
+                                        Selected Module: {selectedModule}
+                                    </h2>
+                                    <h2>
+                                        Selected Solver: {solverNames[selectedSolver - 1]}
+                                    </h2>
+                            </div>
+                            <div className='PlayAndShowResults'>
+                                <Button 
+                                    onClick={() => playRound()}
+                                >
+                                    Play Module
+                                </Button>
+                                <Button
+                                    onClick={() => {console.log(allResults)}}
+                                    disabled={allResults.length === 0}
+                                >
+                                    View Results
+                                </Button>
+                            </div>
+                        </div>
+                        <div className='SolverIcons'>
+                            {
+                                selectedSolver === Solver.Professional &&
+                                <img className='ProfessionalIconImage' src={professionalIcon} alt="Professional Solver Icon" />
+                            }
+                            {
+                                selectedSolver === Solver.Specialist &&
+                                <div className='SpecialistIcons'>
+                                    <img className='SpecialistIconImage' src={specialistIcon} alt="Specialist Solver Icon" />
+                                    <img className='SpecialistIconImage' src={specialistIcon} alt="Specialist Solver Icon" />
+                                    <img className='SpecialistIconImage' src={specialistIcon} alt="Specialist Solver Icon" />
+                                </div>
+                            }
+                            {
+                                selectedSolver === Solver.Amateur &&
+                                <div className='AmateurIcons'>
+                                    {
+                                        Array.apply(null, Array(50)).map(() => (
+                                            <img className='AmateurIconImage' src={amateurIcon} alt="Amateur Solver Icon" />
+                                        ))
+                                    }
+                                </div>
+                            }
+                        </div>
                     </div>
                     {
                         latestShot !== null && latestDistance !== null &&
@@ -163,7 +198,7 @@ const FreeRoam = () => {
                 <div className='Solvers'>
                     <ProfessionalSolverCard select={setSelectedSolver} />
                     <SpecialistSolverCard select={setSelectedSolver} />
-                    <AmatuerSolverCard select={setSelectedSolver} />
+                    <AmateurSolverCard select={setSelectedSolver} />
                 </div>
             </div>
             {
@@ -172,7 +207,7 @@ const FreeRoam = () => {
                     onClick={() => setShowExplanationModal(false)}
                 >
                     <div className='ExplanationModalBody'>
-                        <h2>What is the Expiremental Round?</h2>
+                        <h2>What is the Experimental Round?</h2>
                         <p>
                             In this round scores do not count towards the Tournament rankings. Instead this is an opportunity for players to test different solvers on different modules. Play as much as you would like with as many different combinations as you would like. This will go on until the host moves the game forward. Try selecting different modules by clicking their name at the top of the screen or by clicking on the corresponding part of the golf course at the bottom of the screen. Then choose your solver and click play game. All of you scores can be seen by clicking view results. This experiment should allow you to familiarize yourself with how golf can be broken down into modules to be solved in more novel ways.
                         </p>
