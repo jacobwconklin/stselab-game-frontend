@@ -3,7 +3,7 @@ import Home from './Pages/Home/Home';
 import './Router.scss';
 import Register from './Pages/Register/Register';
 import GameController from './Pages/GameController/GameController';
-import FreeRoam from './Pages/GameScreens/FreeRoam';
+import FreeRoam from './Pages/GameScreens/FreeRoam/FreeRoam';
 
 // Router
 const Router = () => {

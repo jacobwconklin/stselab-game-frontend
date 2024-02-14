@@ -1,5 +1,5 @@
 // Handle communications to outside applications here such as the backend and potentially R script.
-const getBackendUrl = () => {
+export const getBackendUrl = () => {
     // this will handle automatically switching to the deployed backend in a production environment.
     if (process.env.NODE_ENV === 'production') {
         return 'https://stse-backend.azurewebsites.net/';

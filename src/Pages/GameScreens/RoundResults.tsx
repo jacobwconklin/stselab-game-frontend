@@ -31,7 +31,7 @@ const RoundResults = (props: any) => {
         plugins: {
             title: {
                 display: true,
-                text: `Strokes and Costs for Round ${props?.round}`
+                text: `Shots and Costs for Round ${props?.round}`
             }
         },
         scales: {
@@ -40,7 +40,7 @@ const RoundResults = (props: any) => {
                 reverse: true,
                 title: {
                     display: true,
-                    text: 'Strokes'
+                    text: 'Shots'
                 }
             },
             x: {
@@ -182,7 +182,7 @@ const RoundResults = (props: any) => {
                     {/* <Button
                         onClick={() => {alert("Dynamic sorting not implemented yet values automatically sorted by stroke")}}
                     >
-                        Sort by Strokes
+                        Sort by Shots
                     </Button> */}
                 </div>
             }
@@ -203,7 +203,7 @@ const RoundResults = (props: any) => {
                         <p>Name</p>
                         <p>Golf Ball</p>
                         <p>
-                            Strokes
+                            Shots
                         </p>
                         <p>
                             Cost
@@ -240,7 +240,6 @@ const RoundResults = (props: any) => {
                                 if (isHost && result.id?.toLowerCase() !== playerId?.toLowerCase()) {
                                     // TODO tell backend to remove this player
                                     alert("remove not implemented yet")
-                                    console.log(playerId, result.id);
                                 }
                             }}
                         >

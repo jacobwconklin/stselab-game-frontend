@@ -35,7 +35,6 @@ const PlayScreen = (props: any) => {
                 return;
             }
 
-            console.log(score);
             // save score to database and record that player has completed the round
             const response = await postRequest('player/roundResult', JSON.stringify({
                 playerId,

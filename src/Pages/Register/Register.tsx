@@ -226,7 +226,6 @@ const Register = (props: any) => {
                         min={0}
                         max={99}
                         onChange={(e) => {
-                            console.log(e);
                             const newSpecializationYears = [...specializationYears];
                             newSpecializationYears[specializations.length] = e;;
                             setSpecializationYears(newSpecializationYears);

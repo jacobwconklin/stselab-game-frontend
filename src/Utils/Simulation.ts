@@ -1,12 +1,20 @@
+import { getBackendUrl } from "./Api";
+
 // Handles calling simulation written in R
-const SimulationUrl = "http://64.23.136.232/date/";
+// const SimulationUrl = "http://64.23.136.232/date/";
 
 // Update to change holes played on each architecture:
 const holesPerArchitecture = 5;
 
 // use for post requests to simulation
 const simulationPostRequest = async (endpoint: string, payload: string) => {
-    const response = await fetch(SimulationUrl + endpoint, {
+    // for now must hit back-end for access to simulation, 
+    // cannot hit simulation directly
+    // # Deployed Simulation is only avialable via http, so the front-end cannot make requests to it 
+    // # as it would be mixed content. Without a registered domain name and SSL certificate the droplet
+    // # it is hosted on cannot be made into an https API. Therefore calls must come from the backend, so 
+    // # the front end will make requests here just to pass them on to the simulation.
+    const response = await fetch(getBackendUrl() + endpoint, {
         method: 'POST',
         headers: {
             'Accept': '*/*',
@@ -45,7 +53,7 @@ export const runSimEntireHole = async(solver: Solver) => {
         return {shots: Math.floor(response[0][0]), cost: Math.floor(response[4][0])};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: Math.floor(Math.random() * 40), cost: Math.floor(Math.random() * 50)};
     }
 }
@@ -66,7 +74,7 @@ export const runLP = async(solverLong: Solver, solverClose: Solver) => {
         return {shots: Math.floor(response[0][0]), cost: Math.floor(response[4][0])};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: Math.floor(Math.random() * 40), cost: Math.floor(Math.random() * 50)};
     }
 }
@@ -75,7 +83,6 @@ export const runLP = async(solverLong: Solver, solverClose: Solver) => {
 // one solver putts on the green.
 export const runDAP = async(solverDrive: Solver, solverFairway: Solver, solverPutt: Solver) => {
     try {
-        console.log("Solvers: ", solverDrive, solverFairway, solverPutt);
         const response = await simulationPostRequest('dap_arch', JSON.stringify({
             HoleLength: 700,
             Expertise_D: solverDrive,
@@ -90,7 +97,7 @@ export const runDAP = async(solverDrive: Solver, solverFairway: Solver, solverPu
         return {shots: Math.floor(response[0][0]), cost: Math.floor(response[4][0])};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: Math.floor(Math.random() * 40), cost: Math.floor(Math.random() * 50)};
     }
 }
@@ -110,7 +117,7 @@ export const runDS = async(solverDrive: Solver, solverShort: Solver) => {
         return {shots: Math.floor(response[0][0]), cost: Math.floor(response[4][0])};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: Math.floor(Math.random() * 40), cost: Math.floor(Math.random() * 50)};
     }
 }
@@ -132,7 +139,7 @@ export const runPlayDrive = async(solver: Solver) => {
         return {shots: Math.floor(response[response.length - 2]), distance: Math.floor(response[response.length - 1] * 100)};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: 1, distance: Math.floor(Math.random() * 700)};
     }
 }
@@ -146,11 +153,10 @@ export const runPlayLong = async(solver: Solver) => {
             N: groupSizePerSolver[solver - 1],
             rule: 2, // TODO Decide between optimize distance to hole or shots
         }));
-        console.log(response);
         return {shots: Math.floor(response[response.length - 2]), distance: Math.floor(response[response.length - 1] * 100)};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: Math.floor(Math.random() * 10), distance: Math.floor(Math.random() * 700)};
     }
 }
@@ -165,11 +171,10 @@ export const runPlayFairway = async(solver: Solver) => {
             rule: 2,
             strategy: 0
         }));
-        console.log(response);
         return {shots: Math.floor(response[response.length - 2]), distance: Math.floor(response[response.length - 1] * 100)};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: Math.floor(Math.random() * 7), distance: Math.floor(Math.random() * 700)};
     }
 }
@@ -186,7 +191,7 @@ export const runPlayShort = async(solver: Solver) => {
         return {shots: Math.floor(response[response.length - 2]), distance: 0};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: Math.floor(Math.random() * 10), distance: 0};
     }
 }
@@ -203,7 +208,7 @@ export const runPlayPutt = async(solver: Solver) => {
         return {shots: Math.floor(response[response.length - 2]), distance: 0};
     } catch (error) {
         // generate random value to not break deployed
-        console.log("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
+        console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
         return {shots: Math.floor(Math.random() * 5), distance: 0};
     }
 }

@@ -24,7 +24,7 @@ const SessionResults = (props: any) => {
         plugins: {
             title: {
                 display: true,
-                text: `Strokes and Costs for Round ${props?.round}`
+                text: `Shots and Costs for Round ${props?.round}`
             }
         },
         scales: {
@@ -33,7 +33,7 @@ const SessionResults = (props: any) => {
                 reverse: true,
                 title: {
                     display: true,
-                    text: 'Strokes'
+                    text: 'Shots'
                 }
             },
             x: {
@@ -62,7 +62,6 @@ const SessionResults = (props: any) => {
     
         const data = {
             datasets: props?.players?.map((result: any) => {
-                console.log("mapped result: ", result);
                 return {
                     label: result.name,
                     data: result.scores.map((round: any) => { return {
@@ -117,7 +116,7 @@ const SessionResults = (props: any) => {
                         <p>Name</p>
                         <p>Golf Ball</p>
                         <p>
-                            Total Strokes
+                            Total Shots
                         </p>
                         <p>
                             Total Cost
