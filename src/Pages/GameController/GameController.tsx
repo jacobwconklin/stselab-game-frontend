@@ -7,6 +7,8 @@ import WaitRoom from '../GameScreens/WaitRoom';
 import PlayScreen from '../GameScreens/PlayScreen';
 import RoundResults from '../GameScreens/RoundResults';
 import SessionResults from '../GameScreens/SessionResults';
+import FreeRoam from '../GameScreens/FreeRoam/FreeRoam';
+import FreeRoamSurvey from '../GameScreens/FreeRoam/FreeRoamSurvey';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
 // displays the session screen showing all of the players in a the tournament. Once started, it will 
@@ -24,7 +26,7 @@ const GameController = (props: any) => {
     const [sessionStatus, setSessionStatus] = useState<any | null>(null);
 
     // When player finishes the current round allow them to see scores for the round
-    const [finishedRound, setFinishedRound] = useState([false, false, false, false]);
+    const [finishedRound, setFinishedRound] = useState([false, false, false, false, false, false, false]);
 
     useEffect(() => {
         // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
@@ -66,6 +68,15 @@ const GameController = (props: any) => {
     //     }, [])
     // );
 
+    // Rounds will work like this: 
+    // First: round 0 -> wait room
+    // Second: round 1 -> play h arch only professional
+    // Third: round 2 -> play h arch all solvers
+    // Fourth: round -2 -> jump to experimental round
+    // Fifth: round -1 -> experimental round survey
+    // Sixth: round 3 -> play lp arch
+    // Seventh: round 4 -> play dap arch
+    // Eigth: round 5 -> completed tournament
 
     // Only allow users to session page if they are registered
     if (!inValidSession) {
@@ -79,8 +90,17 @@ const GameController = (props: any) => {
             </div>
         )
     } 
-    // session has not ended show the game screen until player finishes playing, then 
-    // show the round results
+    // if on experimental round show experimental round
+    else if (sessionStatus?.session?.round < 0) {
+        return (
+            <div className='GameController'>
+                <FreeRoam round={sessionStatus?.session?.round} />
+            </div>
+        )
+    }
+    // Rounds 1 and two the player plays on h_arch
+    // Round 5 is currently the lp arch
+    // Round 6 is currently the dap arch
     else if (sessionStatus?.session?.round < 5) {
         // TODO maybe always also show results of round under or over game.
         if (!finishedRound[sessionStatus?.session?.round - 1]) {

@@ -8,7 +8,7 @@ import { Button } from 'antd';
 // entire holes. It will also start to introduce that their are more options available than 
 // traditional solutions.
 const RoundOne = (props: {playingRound: Boolean, round: Number, 
-        playRound: (solver1: Solver, solver2?: Solver, solver3?: Solver ) => void}) => {
+        playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver ) => void}) => {
 
     return (
         <div className='RoundOne'>
@@ -21,7 +21,7 @@ const RoundOne = (props: {playingRound: Boolean, round: Number,
                         <div>
                             <h2>Professional Golfer Selected</h2>
                             <Button 
-                                onClick={() => props.playRound(Solver.Professional)}
+                                onClick={() => props.playRound("h", Solver.Professional)}
                                 disabled={!!props.playingRound}
                             >
                                 Play Round

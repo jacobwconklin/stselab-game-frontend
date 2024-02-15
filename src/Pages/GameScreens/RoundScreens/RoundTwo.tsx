@@ -9,7 +9,7 @@ import { Button } from 'antd';
 // entire holes. It will also start to introduce that their are more options available than 
 // traditional solutions.
 const RoundTwo = (props: {playingRound: Boolean, round: Number, 
-        playRound: (solver1: Solver, solver2?: Solver, solver3?: Solver ) => void}) => {
+        playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver ) => void}) => {
 
     
     // Only need one solver for h_arch
@@ -26,7 +26,7 @@ const RoundTwo = (props: {playingRound: Boolean, round: Number,
                         <div>
                             <h2>You Selected: {solverNames[selectedSolver - 1]}{selectedSolver > 1 ? 's' : ''}</h2>
                             <Button 
-                                onClick={() => props.playRound(selectedSolver)}
+                                onClick={() => props.playRound("h", selectedSolver)}
                                 disabled={!!props.playingRound}
                             >
                                 Play Round

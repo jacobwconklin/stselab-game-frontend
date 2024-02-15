@@ -19,15 +19,15 @@ const PlayScreen = (props: any) => {
     const {playerId, playerColor} = useContext(UserContext) as any;
 
     // Plays round with selected solver
-    const playRound = async (solver1: Solver, solver2?: Solver, solver3?: Solver) => {
+    const playRound = async ( architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => {
 
             setPlayingRound(true);
             let score = {shots: 0, cost: 0};
-            if (props.round < 3) {
+            if (architecture === 'h') {
                 score = await runSimEntireHole(solver1);
-            } else if (props.round === 3 && solver2) {
+            } else if (architecture === 'lp' && solver2) {
                 score = await runLP(solver1, solver2);
-            } else if (props.round === 4 && solver2 && solver3) {
+            } else if (architecture === 'dap' && solver2 && solver3) {
                 score = await runDAP(solver1, solver2, solver3);
             } else {
                 alert("Error playing round, please try again");
@@ -40,7 +40,7 @@ const PlayScreen = (props: any) => {
                 playerId,
                 shots: score.shots,
                 cost: score.cost,
-                architecture: "TODO",
+                architecture,
                 solverOne: solver1,
                 solverTwo: solver2,
                 solverThree: solver3,

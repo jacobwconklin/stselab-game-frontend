@@ -9,7 +9,7 @@ import { Button } from 'antd';
 // entire holes. It will also start to introduce that their are more options available than 
 // traditional solutions.
 const RoundThree = (props: {playingRound: Boolean, round: Number, 
-        playRound: (solver1: Solver, solver2?: Solver, solver3?: Solver ) => void}) => {
+        playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver ) => void}) => {
 
     // use value to switch between selecting long and close golfers
     const [selectingDistance, setSelectingDistance] = useState<'Far' | 'Close'>('Far');
@@ -55,7 +55,7 @@ const RoundThree = (props: {playingRound: Boolean, round: Number,
                     {
                         selectedLongSolver && selectedCloseSolver &&
                         <Button 
-                            onClick={() => props.playRound(selectedLongSolver, selectedCloseSolver)}
+                            onClick={() => props.playRound("lp", selectedLongSolver, selectedCloseSolver)}
                             disabled={!!props.playingRound}
                         >
                             Play Round

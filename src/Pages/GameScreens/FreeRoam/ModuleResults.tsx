@@ -28,8 +28,6 @@ const ModuleResults = (props: any) => {
             numberOfValues++;
             return null;
         });
-        console.log(value);
-        console.log(numberOfValues);
         if (numberOfValues === 0) {
             return "---";
         } else {
@@ -397,7 +395,7 @@ const ModuleResults = (props: any) => {
                 </p>
                 <div className='ResultActions'>
                     <Button onClick={() => props.return()}>
-                        Back to Experimenting
+                        Back to {props.origin}
                     </Button>
                     <Button onClick={() => setShowAverageGraphs(val => !val)}>
                         {showAverageGraphs ? "Hide " : "Show "} Averages Graphs

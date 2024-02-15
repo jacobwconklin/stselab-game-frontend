@@ -14,7 +14,7 @@ const Router = () => {
                 {/* example Route with query params <Route path="play/:type/:code?" element={<PlayScreen />} /> */}
                 <Route path="register/:playerType?/:joinCodeUrl?" element={<Register />} />
                 <Route path="game" element={<GameController />} />
-                <Route path="experiment" element={<FreeRoam />} />
+                <Route path="experiment" element={<FreeRoam round={-1} />} />
                 <Route path="*" element={<Home />} />
             </ Routes>
         </div>
