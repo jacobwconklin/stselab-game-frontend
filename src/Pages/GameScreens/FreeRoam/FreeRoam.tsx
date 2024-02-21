@@ -1,14 +1,6 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import './FreeRoam.scss';
-import { Solver, runPlayDrive, runPlayFairway, runPlayLong, runPlayPutt, runPlayShort, solverNames  } from '../../../Utils/Simulation';
-import { Button, Tooltip } from 'antd';
-import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
-import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
-import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
-import { UserContext } from '../../../App';
-import { postRequest } from '../../../Utils/Api';
-import { ProfessionalSolverCard, SpecialistSolverCard, AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
-import PlayGolfBackground from '../../../ReusableComponents/PlayGolfBackground';
+import { Solver } from '../../../Utils/Simulation';
 import ModuleResults from './ModuleResults';
 import FreeRoamGame from './FreeRoamGame';
 import FreeRoamSurvey from './FreeRoamSurvey';

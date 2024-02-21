@@ -8,7 +8,6 @@ import PlayScreen from '../GameScreens/PlayScreen';
 import RoundResults from '../GameScreens/RoundResults';
 import SessionResults from '../GameScreens/SessionResults';
 import FreeRoam from '../GameScreens/FreeRoam/FreeRoam';
-import FreeRoamSurvey from '../GameScreens/FreeRoam/FreeRoamSurvey';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
 // displays the session screen showing all of the players in a the tournament. Once started, it will 
