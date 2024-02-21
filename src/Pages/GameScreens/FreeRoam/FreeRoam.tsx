@@ -31,7 +31,7 @@ const FreeRoam = (props: {round?: number}) => {
     return (
         <div className='FreeRoam'>
             {
-                props?.round === -1 ?
+                props?.round === 5 ?
                 (
                     showModuleResultsSurvey ?
                     <ModuleResults results={allResults} origin={"Survey"} return={() => setShowModuleResultsSurvey(false)} />

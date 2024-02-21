@@ -3,7 +3,7 @@ import Home from './Pages/Home/Home';
 import './Router.scss';
 import Register from './Pages/Register/Register';
 import GameController from './Pages/GameController/GameController';
-import TournamentStage from './Pages/GameScreens/TournamentStage';
+import TournamentStage from './Pages/GameScreens/RoundScreens/TournamentStage';
 
 // Router
 const Router = () => {

@@ -15,6 +15,7 @@ import {
 import { Scatter } from 'react-chartjs-2';
 
 // SessionResults
+// TODO only show for tournament stage results (not professional only or h_arch)
 const SessionResults = (props: any) => {
 
         // chart options and data

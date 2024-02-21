@@ -22,3 +22,6 @@ This can outline the major TODOs so they can be ordered
 2. What is 'strategy' parameter (sometimes called with 0 and sometimes 1)
 3. Play fairway should I use rule 1 (minimize distance to hole) or rule 2 (minimize strokes)
 
+ADD TYPES for all "any" placeholders
+
+ADD "Points" category so that values can be given in tournament stages and rankings made

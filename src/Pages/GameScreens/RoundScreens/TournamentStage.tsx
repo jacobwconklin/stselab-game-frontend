@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './TournamentStage.scss';
-import { Solver, solverNames } from '../../Utils/Simulation';
+import { Solver, solverNames } from '../../../Utils/Simulation';
 import { Button, Radio, Slider, Tooltip } from 'antd';
-import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from '../../ReusableComponents/SolverCards';
+import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from '../../../ReusableComponents/SolverCards';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
@@ -120,7 +120,7 @@ const TournamentStage = (props: {
             props.playRound("ds", selectedDriveSolver, selectedShortSolver);
         } else if (selectedDriveSolver && selectedFairwaySolver && selectedPuttSolver) {
             // dap
-            props.playRound("h", selectedDriveSolver, selectedFairwaySolver, selectedPuttSolver);
+            props.playRound("dap", selectedDriveSolver, selectedFairwaySolver, selectedPuttSolver);
         }
     }
 
@@ -144,7 +144,7 @@ const TournamentStage = (props: {
     // Returns a string with the selected solvers
     const getSelectionsString = () => {
         if (architecture === 'h') {
-            return selectedDriveSolver ? `You Selected: ${solverNames[selectedDriveSolver - 1]}${selectedDriveSolver > 1 ? 's' : ''} to Drive` : "Select a Solver to Play the hole";
+            return selectedDriveSolver ? `You Selected: ${solverNames[selectedDriveSolver - 1]}${selectedDriveSolver > 1 ? 's' : ''} to Play the Entire Hole` : "Select a Solver to Play the hole";
         } else if (architecture === 'lp') {
             if (selectedLongSolver || selectedPuttSolver) {
                 // partial or complete selection made
@@ -205,10 +205,10 @@ const TournamentStage = (props: {
                     <h1> Round {'' + props.round}</h1>
                     <div className='InfoContainer'>
                         <p>
-                            Round Objective: {roundObjectives[props.round - 1]}
+                            Round Objective: {roundObjectives[props.round - 6]}
                         </p>
                         {
-                            props.round === 4 &&
+                            props.round === 9 &&
                             <div className='DetermineObjective'>
                                 <Slider
                                     tooltip={{

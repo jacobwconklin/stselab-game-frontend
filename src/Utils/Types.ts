@@ -2,7 +2,7 @@
 
 // Smaller structure to hold just information necessary to poll during the game
 export interface PlayerBrief {
-    id?: number;
+    id?: string;
     name: string;
     color: string;
     sessionId?: number;
@@ -10,7 +10,7 @@ export interface PlayerBrief {
 
 // All information for players obtained from the registration form
 export interface PlayerInformation {
-    id?: number;
+    id?: string;
     name: string;
     participationReason: string;
     gender: string;
@@ -60,4 +60,16 @@ export interface SessionStatus {
     round: number;
     startDate: Date;
     endDate: Date;
+}
+
+export interface RoundResult {
+    id: string;
+    name: string;
+    color: string;
+    shots: number;
+    cost: number;
+    solverOne: number;
+    solverTwo: number;
+    solverThree: number;
+    architecture: string;
 }

@@ -30,3 +30,8 @@ export const postRequest = async (endpoint: string, payload: string) => {
     const data = await response.json();
     return data;
 }
+
+// TODO move hostAdvanceSession here For host to advance a session along
+// export const advanceSession = async (sessionId: string) => {
+
+// }

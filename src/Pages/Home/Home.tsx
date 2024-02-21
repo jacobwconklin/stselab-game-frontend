@@ -2,6 +2,7 @@ import { Button } from 'antd';
 import './Home.scss';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import ResultTable from '../GameScreens/Results/ResultTable';
 
 // Home
 const Home = (props: any) => {

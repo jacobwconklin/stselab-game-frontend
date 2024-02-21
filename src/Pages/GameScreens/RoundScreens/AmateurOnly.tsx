@@ -1,0 +1,116 @@
+import './AmateurOnly.scss';
+import { Solver, runSimEntireHole } from '../../../Utils/Simulation';
+import { Button } from 'antd';
+import { AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
+import { useContext, useState } from 'react';
+import { UserContext } from '../../../App';
+import { postRequest } from '../../../Utils/Api';
+
+// AmateurOnly
+// Have players play on h_arch with only one amateur as many time as they would like to learn
+// how bad one amateur is
+const AmateurOnly = (props: { round: Number }) => {
+
+
+    const [allResults, setAllResults] = useState<{ shots: number, cost: number }[]>([]);
+    const [showAmateurResults, setShowAmateurResults] = useState(false);
+    // Allows immediately showing user their shot and distance results of the last round played
+    const [latestShot, setLatestShot] = useState<number | null>(null);
+    const [latestCost, setLatestCost] = useState<number | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    const { isHost, sessionId } = useContext(UserContext) as any;
+    const [hostClickedButton, setHostClickedButton] = useState(false);
+
+    const hostBeginNextRound = async () => {
+        setHostClickedButton(true);
+        // Force host to go through modal if some players haven't finished
+        const response = await postRequest("session/advance", JSON.stringify({ sessionId }));
+        if (response.success) {
+
+        } else {
+            alert("Error advancing round, please try again.")
+            setHostClickedButton(false);
+            console.error(response);
+        }
+    }
+
+    const playAmateurRound = async () => {
+        try {
+            setLoading(true);
+            const score = await runSimEntireHole(Solver.Amateur);
+            setLatestShot(score.shots);
+            setLatestCost(score.cost);
+            setAllResults([...allResults, score]);
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            console.error("Error playing amateur only round: ", error);
+        }
+    }
+
+    return (
+        <div className='AmateurOnly'>
+            {
+                showAmateurResults ?
+                    <div className='AmateurResults'>
+                        <div className='AmateurResultInfo'>
+                            <p>Leave if you wish...</p>
+                            <Button onClick={() => setShowAmateurResults(false)}>Return to simulation</Button>
+                            {
+                                isHost &&
+                                <Button
+                                    disabled={hostClickedButton}
+                                    onClick={() => hostBeginNextRound()}
+                                >Begin Next Round</Button>
+                            }
+                        </div>
+                        {/* Table */}
+                        {/* Graph */}
+                    </div>
+                    :
+                    <div className='Controls'>
+                        <div className='Instructions'>
+                            <h1> Practice Round 2</h1>
+                            <div className='InfoContainer'>
+                                <p>
+                                    In this round all players must use only one Amateur golfer to play all 5 holes. This is the only time a single Amateur will be an options, everywhere else 25 Amateurs will be used and the best result out of all of them will be taken. Here you will learn the "skills" of an individual Amateur.
+                                </p>
+                                <p>You may run this simulation as many times as you would like. You can see all of the outcomes by clicking view results.</p>
+                                <h2>Amateur Golfer Selected</h2>
+                                {
+                                    loading &&
+                                    <p>Amateur is playing ... </p>
+                                }
+                                {
+                                    latestShot !== null && latestCost !== null && !loading &&
+                                    <p>
+                                        The Amateur took {latestShot} shots and cost {latestCost} units to complete 5 holes.
+                                    </p>
+                                }
+                            </div>
+                            <div className='InfoButtonContainer'>
+                                <Button
+                                    onClick={() => playAmateurRound()}
+                                    disabled={loading}
+                                >
+                                    Play Round
+                                </Button>
+                                <Button
+                                    onClick={() => setShowAmateurResults(true)}
+                                    disabled={allResults.length === 0}
+                                >
+                                    View Results
+                                </Button>
+                            </div>
+                        </div>
+                        <div className='Solvers'>
+                            <AmateurSolverCard select={undefined} onlyOne={true} />
+                        </div>
+                    </div>
+            }
+        </div>
+    )
+}
+
+export default AmateurOnly;
