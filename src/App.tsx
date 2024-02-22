@@ -11,12 +11,19 @@ function App() {
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [playerId, setPlayerId] = useState<number | null>(null);
   const [playerColor, setPlayerColor] = useState<string | null>(null);
+  const [customPerformanceWeight, setCustomPerformanceWeight] = useState<number | null>(null);
 
   return (
     <div className="App">
       <BrowserRouter>
-      <UserContext.Provider
-          value={{isHost, setIsHost, sessionId, setSessionId, playerId, setPlayerId, playerColor, setPlayerColor}}
+        <UserContext.Provider
+          value={{
+            isHost, setIsHost,
+            sessionId, setSessionId,
+            playerId, setPlayerId,
+            playerColor, setPlayerColor,
+            customPerformanceWeight, setCustomPerformanceWeight
+          }}
         >
           <Router />
           <NavHeader />
@@ -29,14 +36,16 @@ function App() {
 
 
 export const UserContext = createContext<any>({
-  isHost: false, 
-  setIsHost: (isHost: boolean) => {},
-  sessionId: null, 
-  setSessionId: (id: number) => {},
-  playerId: null, 
-  setPlayerId: (id: number) => {},
-  playerColor: null, 
-  setPlayerColor: (id: string) => {},
+  isHost: false,
+  setIsHost: (isHost: boolean) => { },
+  sessionId: null,
+  setSessionId: (id: number) => { },
+  playerId: null,
+  setPlayerId: (id: number) => { },
+  playerColor: null,
+  setPlayerColor: (id: string) => { },
+  customPerformanceWeight: null,
+  setCustomPerformanceWeight: (id: number) => { },
 });
 
 export default App;

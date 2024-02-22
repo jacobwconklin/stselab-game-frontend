@@ -5,6 +5,16 @@ import { AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../../App';
 import { postRequest } from '../../../Utils/Api';
+import {
+    Chart as ChartJS,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { Scatter } from 'react-chartjs-2';
+import golfBallSvg from '../../../Assets/golfBall.svg';
 
 // AmateurOnly
 // Have players play on h_arch with only one amateur as many time as they would like to learn
@@ -38,7 +48,7 @@ const AmateurOnly = (props: { round: Number }) => {
     const playAmateurRound = async () => {
         try {
             setLoading(true);
-            const score = await runSimEntireHole(Solver.Amateur);
+            const score = await runSimEntireHole(Solver.Amateur, 1);
             setLatestShot(score.shots);
             setLatestCost(score.cost);
             setAllResults([...allResults, score]);
@@ -49,24 +59,101 @@ const AmateurOnly = (props: { round: Number }) => {
         }
     }
 
+    // graph information
+    // set up chart js
+    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+
+
+    const golfBallImage = new Image(20, 20); // WORKS and sets image to golf ball, but eliminates player colors 
+    golfBallImage.src = golfBallSvg;
+    // chart options and data
+    const options = {
+        plugins: {
+            title: {
+                display: true,
+                text: `Shots and Costs for Amateurs`
+            }
+        },
+        scales: {
+            y: {
+                reverse: true,
+                title: {
+                    display: true,
+                    text: 'Shots'
+                }
+            },
+            x: {
+                beginAtZero: true,
+                max: 6,
+                reverse: true,
+                title: {
+                    display: true,
+                    text: 'Cost'
+                }
+            },
+        },
+        elements: {
+            point: {
+                radius: 10,
+                pointStyle: golfBallImage,
+            }
+        },
+        layout: {
+            padding: 10
+        },
+    };
+
+    const data = {
+        datasets: allResults.map((result: any, index: number) => {
+            return {
+                label: "Amateur #" + (index + 1),
+                data: [{
+                    x: result.cost,
+                    y: result.shots
+                }],
+                backgroundColor: "#000000",
+            }
+        })
+    };
+
+    const avgShots = () => {
+        let total = 0;
+        allResults.forEach(result => {
+            total += result.shots;
+        });
+        return (total / allResults.length).toFixed(2);
+    }
+
+
     return (
         <div className='AmateurOnly'>
             {
                 showAmateurResults ?
                     <div className='AmateurResults'>
                         <div className='AmateurResultInfo'>
-                            <p>Leave if you wish...</p>
+                            <h2>Results of Individual Amateurs</h2>
+                            {
+                                isHost ?
+                                    <p>As host you must begin the next round for everyone when ready.</p>
+                                    :
+                                    <p>Host must begin the next round.</p>
+                            }
+                            <p>Average number of shots: {avgShots()} </p>
                             <Button onClick={() => setShowAmateurResults(false)}>Return to simulation</Button>
                             {
                                 isHost &&
                                 <Button
+                                    className='BeginNextRoundButton'
                                     disabled={hostClickedButton}
                                     onClick={() => hostBeginNextRound()}
                                 >Begin Next Round</Button>
                             }
                         </div>
                         {/* Table */}
-                        {/* Graph */}
+                        <div className='AmateurResultGraph'>
+                            {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
+                            <Scatter className='ScatterCanvas' options={options} data={data} />
+                        </div>
                     </div>
                     :
                     <div className='Controls'>
@@ -76,7 +163,7 @@ const AmateurOnly = (props: { round: Number }) => {
                                 <p>
                                     In this round all players must use only one Amateur golfer to play all 5 holes. This is the only time a single Amateur will be an options, everywhere else 25 Amateurs will be used and the best result out of all of them will be taken. Here you will learn the "skills" of an individual Amateur.
                                 </p>
-                                <p>You may run this simulation as many times as you would like. You can see all of the outcomes by clicking view results.</p>
+                                <p>You may run this simulation as many times as you would like. You can see all of the outcomes by clicking view results.{isHost ? " As host you must begin the next round from the view results page." : ""} </p>
                                 <h2>Amateur Golfer Selected</h2>
                                 {
                                     loading &&

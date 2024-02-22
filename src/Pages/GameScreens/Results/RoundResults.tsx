@@ -6,10 +6,11 @@ import { postRequest } from '../../../Utils/Api';
 import VerificationModal from '../../../ReusableComponents/VerificationModal';
 import ResultTable from './ResultTable';
 import ResultGraphs from './ResultGraphs';
+import { RoundResult } from '../../../Utils/Types';
 // import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
-const RoundResults = (props: any) => {
+const RoundResults = (props: {round: number, players: Array<RoundResult>}) => {
     const {isHost, playerId, sessionId} = useContext(UserContext) as any;
     const [hostClickedButton, setHostClickedButton] = useState(false);
 
@@ -135,7 +136,7 @@ const RoundResults = (props: any) => {
                 </div>
             }
 
-            <ResultTable players={props.players} playerId={playerId} />
+            <ResultTable players={props.players} round={props.round} />
             <ResultGraphs players={props.players} round={props.round} />
 
             {

@@ -35,7 +35,7 @@
         bottom: 52px;
         left: 0px;
         width: calc(72% - 4px);
-        border: 2px solid black;
+        border: 3px solid black;
     }
 
     .Drive {
@@ -44,20 +44,20 @@
         height: 48px;
         width: calc(10% + 8px);
         z-index: 5;
-        border: 2px solid black;
+        border: 3px solid black;
     }
 
     .Fairway {
         bottom: 26px;
         left: calc(10% + 12px);;
         width: calc( 62% - 16px ) ;
-        border: 2px solid black;
+        border: 3px solid black;
     }
 
     .Short {
         right: 0px;
         width: calc(90% - 16px);
-        border: 2px solid black;
+        border: 3px solid black;
     }
 
     .Putt {
@@ -66,11 +66,11 @@
         bottom: 26px;
         right: 0px;
         width: calc(28% - 4px);
-        border: 2px solid black;
+        border: 3px solid black;
     }
 
     .Active {
-        border: 2px solid white;
+        border: 3px solid white;
         background-color: rgba(5, 98, 0, 0.99);
         color: white;
     }
@@ -198,8 +198,8 @@
 
 
                 .AmateurIconImage {
-                    width: 15px;
-                    height: 15px;
+                    width: 21px;
+                    height: 21px;
                     margin: 3px;
                     margin-right: 5px;
                 }

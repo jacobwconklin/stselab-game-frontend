@@ -65,9 +65,9 @@ export const AmateurSolverCard = (props: {select?: (solver: Solver) => void, onl
                 <p>Just looking to have some fun and do their best. Their mothers are so proud. Quantity: 1</p>
                 :
                 <p className='Description'>
-                    Just looking to have some fun and do their best. Their mothers are so proud. Quantity: 50
+                    Just looking to have some fun and do their best. Their mothers are so proud. Quantity: 25
                     <Tooltip
-                        title="50 Amateur players will be simulated, and the best result will be kept"
+                        title="25 Amateur players will be simulated, and the best result will be kept"
                     >
                         <Button className="InfoTooltipHolder">
                             <svg width="18" height="18" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

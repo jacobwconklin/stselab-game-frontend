@@ -240,7 +240,7 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                                     selectedSolver === Solver.Amateur &&
                                     <div className='AmateurIcons'>
                                         {
-                                            Array.apply(null, Array(50)).map(() => (
+                                            Array.apply(null, Array(25)).map(() => (
                                                 <img className='AmateurIconImage' src={amateurIcon} alt="Amateur Solver Icon" />
                                             ))
                                         }

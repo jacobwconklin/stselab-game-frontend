@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './TournamentStage.scss';
 import { Solver, solverNames } from '../../../Utils/Simulation';
 import { Button, Radio, Slider, Tooltip } from 'antd';
 import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from '../../../ReusableComponents/SolverCards';
+import { UserContext } from '../../../App';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
@@ -11,6 +12,9 @@ const TournamentStage = (props: {
     playingRound: Boolean, round: number,
     playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void
 }) => {
+
+    // Context to save user's slider choice for custom performance weight
+    const { setCustomPerformanceWeight } = useContext(UserContext) as any;
 
     // value of architecture chosen (on changing architecture remove all chosen solvers)
     const [architecture, setArchitecture] = useState<string>('h'); // 'h' | 'lp' | 'ds' | 'dap'
@@ -27,6 +31,22 @@ const TournamentStage = (props: {
     const [selectedFairwaySolver, setSelectedFairwaySolver] = useState<Solver | null>(null);
     const [selectedShortSolver, setSelectedShortSolver] = useState<Solver | null>(null);
     const [selectedPuttSolver, setSelectedPuttSolver] = useState<Solver | null>(null);
+    const [customPerformance, setCustomPerformance] = useState<number>(0.5);
+
+    // Use effect to populate context with custom performance weight if user never touches slider
+    useEffect(() => {
+        setCustomPerformanceWeight(customPerformance);
+    }, [setCustomPerformanceWeight, customPerformance])
+
+    const updateCustomPerformance = (value: number) => {
+        // convert value to percentage
+        setCustomPerformance((100 - value) / 100);
+        setCustomPerformanceWeight((100 - value) / 100);
+    }
+    
+    const tooltipFormatter = (value: any) => {
+        return isNaN(value) ? 'Error' : (100 - value) + '% Performance, ' + value + '% Cost';
+    }
 
     const roundObjectives = [
         "Best performance no matter the cost",
@@ -185,10 +205,6 @@ const TournamentStage = (props: {
         }
     }
 
-    const tooltipFormatter = (value: any) => {
-        return isNaN(value) ? 'Error' : (100 - value) + '% Performance, ' + value + '% Cost';
-    }
-
     return (
         <div className='TournamentStage'>
             <div className={`Highlight Drive ${selectingDistance === 'Drive' ? "Active" : " "}`}
@@ -219,6 +235,10 @@ const TournamentStage = (props: {
                                     max={80}
                                     step={5}
                                     marks={{20: 'Performance', 80: {label: <div>Cost</div>}}}
+                                    onChange={e => {
+                                        console.log("Slider value: ", e);
+                                        updateCustomPerformance(e);
+                                    }}
                                 />
                             </div>
                         }

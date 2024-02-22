@@ -3,7 +3,6 @@ import Home from './Pages/Home/Home';
 import './Router.scss';
 import Register from './Pages/Register/Register';
 import GameController from './Pages/GameController/GameController';
-import TournamentStage from './Pages/GameScreens/RoundScreens/TournamentStage';
 
 // Router
 const Router = () => {
@@ -14,7 +13,6 @@ const Router = () => {
                 {/* example Route with query params <Route path="play/:type/:code?" element={<PlayScreen />} /> */}
                 <Route path="register/:playerType?/:joinCodeUrl?" element={<Register />} />
                 <Route path="game" element={<GameController />} />
-                <Route path="experiment" element={<TournamentStage playingRound={false} round={4} playRound={() => {}} />} />
                 <Route path="*" element={<Home />} />
             </ Routes>
         </div>

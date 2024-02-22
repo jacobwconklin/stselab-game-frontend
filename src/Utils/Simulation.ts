@@ -34,18 +34,18 @@ export enum Solver {
 
 export const solverNames = ['Professional', 'Amateur', 'Specialist'];
 
-const groupSizePerSolver = [1, 50, 3];
+const groupSizePerSolver = [1, 25, 3];
 
 // methods for each specific simulation run
 // TODO can set up hole length, holes, and runs to be dynamic if desired and changable by host on a settings page
 
 // run h_arch simulation where one solver handles entire course
-export const runSimEntireHole = async(solver: Solver) => {
+export const runSimEntireHole = async(solver: Solver, overwriteSolverSize?: number) => {
     try {
         const response = await simulationPostRequest('h_arch', JSON.stringify({
             HoleLength: 700,
             Expertise: solver, 
-            TournamentSize: groupSizePerSolver[solver - 1],
+            TournamentSize: overwriteSolverSize ? overwriteSolverSize : groupSizePerSolver[solver - 1],
             Holes: holesPerArchitecture,
             runs: 1
         }));

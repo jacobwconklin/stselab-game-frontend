@@ -68,11 +68,13 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
         })
     };
 
-    return (<div>
-        {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
-        <Scatter className='ScatterCanvas' options={options} data={data} />
+    return (
+        <div className='ResultGraphs'>
+            {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
+            <Scatter className='ScatterCanvas' options={options} data={data} />
 
-    </div>)
+        </div>
+    )
 
 
 }

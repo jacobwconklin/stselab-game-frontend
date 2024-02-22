@@ -67,15 +67,17 @@ const WaitRoom = (props: any) => {
                 isHost ?
                 <div className='Instructions'>
                     <h1>Join Code: {sessionId}</h1>
-                    <h3 style={{color: 'blue'}}>
-                        {process.env.NODE_ENV === 'production' ? 
-                        "https://stselab.azurewebsites.net/register/join/" + sessionId : 
-                        "localhost:3000/register/join/" + sessionId}
+                    <h3>
+                        <span>Join Link: </span>
+                        <span style={{color: 'blue'}}>
+                            {process.env.NODE_ENV === 'production' ? 
+                            "https://stselab.azurewebsites.net/register/join/" + sessionId : 
+                            "localhost:3000/register/join/" + sessionId}
+                        </span>
                     </h3>
                     <p>
                         As host you control when the tournament starts and each round ends. After starting the tournament players can no 
-                        longer join. You must share the join code with other players so that they may enter the tournament. You can also share
-                        the link above for players to join your session. You can remove players from the tournament by clicking on their row.
+                        longer join. You must share the join code or join link with other players so that they may enter the tournament. You can remove players from the tournament by clicking on their row.
                     </p>
                     <Button
                         disabled={beginningTournament}
@@ -87,10 +89,19 @@ const WaitRoom = (props: any) => {
                 :
                 <div className='Instructions'>
                     <h1>Join Code: {sessionId}</h1>
+                    <h3>
+                        <span>Join Link: </span>
+                        <span style={{color: 'blue'}}>
+                            {process.env.NODE_ENV === 'production' ? 
+                            "https://stselab.azurewebsites.net/register/join/" + sessionId : 
+                            "localhost:3000/register/join/" + sessionId}
+                        </span>
+                    </h3>
                     <p>
                         The host controls when the tournament starts and each round ends. You will automatically move to the next screen 
                         as soon as the game begins. if you wish to exit the session you may click 
                         below. You can also click the title in the header to return to the landing page at any time.
+                        Share the join code or join link to help other players join the tournament.
                     </p>
                     <Button
                         onClick={() => {
