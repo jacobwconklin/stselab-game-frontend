@@ -2,6 +2,7 @@ import './ProfessionalOnly.scss';
 import { Solver } from '../../../Utils/Simulation';
 import { Button } from 'antd';
 import { ProfessionalSolverCard } from '../../../ReusableComponents/SolverCards';
+import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 
 // ProfessionalOnly
 // Have players play on h_arch with one professional to showcase the standard way problems are solved
@@ -15,10 +16,14 @@ const ProfessionalOnly = (props: {
             <div className='Controls'>
                 <div className='Instructions'>
                     <h1> Practice Round 1</h1>
-                    <div className='InfoContainer'>
-                        <p>In this first warm up round all players must use only the Professional golfer to play all 5 holes.</p>
-                        <p>Click Play Round to run the simulation and view the results of the round.</p>
-                        <h2>Professional Golfer Selected</h2>
+                    <div className='InformationHorizontalSplit'>
+                        <div className='InfoContainer'>
+                            <p>In this first warm up round all players must use only the Professional golfer to play all 5 holes.</p>
+                            <p>Click Play Round to run the simulation and view the results of the round.</p>
+                            <h2>Professional Golfer Selected</h2>
+                        </div>
+                        <img className='SingleIcon' src={professionalIcon} alt="Professional Solver Icon" />
+                        <br></br>
                     </div>
                     <Button
                         onClick={() => props.playRound("h", Solver.Professional)}

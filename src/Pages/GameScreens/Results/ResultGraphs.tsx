@@ -60,7 +60,7 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
             return {
                 label: result.name,
                 data: [{
-                    x: result.cost,
+                    x: result.cost / 100,
                     y: result.shots
                 }],
                 backgroundColor: result.color,

@@ -118,7 +118,7 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
             await postRequest('player/freeRoamResult', JSON.stringify({
                 playerId,
                 shots,
-                distance,
+                distance: Math.floor(distance * 100),
                 solver: selectedSolver,
                 module: modules.indexOf(selectedModule) + 1,
             }));
@@ -265,8 +265,8 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                             <div className='LatestResults'>
                                 <p>
                                     You took {latestShot} shot{latestShot === 1 ? '' : 's'} and 
-                                    {latestDistance <= 50 ? " made it in the hole!" 
-                                        : " are " + (latestDistance / 100) + " units from the hole!"}
+                                    {latestDistance <= 0.5 ? " made it in the hole!" 
+                                        : " hit the ball " + (latestDistance) + " units towards the hole!"}
                                 </p>
                             </div>
                         }

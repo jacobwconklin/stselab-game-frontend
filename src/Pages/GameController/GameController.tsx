@@ -70,23 +70,22 @@ const GameController = (props: any) => {
                     const resultsResponse = await postRequest('/session/roundresults', JSON.stringify({
                         sessionId, round: currentRound
                     }));
-                    console.log(resultsResponse);
                     if (resultsResponse.success) {
                         setCurrentResults(resultsResponse.results);
                     }
                     else {
-                        console.log(`Error fetching results for round${currentRound} received: `, resultsResponse);
+                        console.error(`Error fetching results for round${currentRound} received: `, resultsResponse);
                     }
                 } else if (currentRound === 10) {
                     const resultsResponse = await postRequest('/session/finalresults', JSON.stringify({
                         sessionId
                     }));
-                    console.log(resultsResponse);
+                    console.error(resultsResponse);
                     if (resultsResponse.success) {
                         setFinalResults(resultsResponse.results);
                     }
                     else {
-                        console.log(`Error fetching results for final round received: `, resultsResponse);
+                        console.error(`Error fetching results for final round received: `, resultsResponse);
                     }
                 }
             } catch (error) {

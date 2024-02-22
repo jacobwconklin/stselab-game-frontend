@@ -15,6 +15,7 @@ import {
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import golfBallSvg from '../../../Assets/golfBall.svg';
+import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
 
 // AmateurOnly
 // Have players play on h_arch with only one amateur as many time as they would like to learn
@@ -84,7 +85,7 @@ const AmateurOnly = (props: { round: Number }) => {
             },
             x: {
                 beginAtZero: true,
-                max: 6,
+                max: 2,
                 reverse: true,
                 title: {
                     display: true,
@@ -159,22 +160,27 @@ const AmateurOnly = (props: { round: Number }) => {
                     <div className='Controls'>
                         <div className='Instructions'>
                             <h1> Practice Round 2</h1>
-                            <div className='InfoContainer'>
-                                <p>
-                                    In this round all players must use only one Amateur golfer to play all 5 holes. This is the only time a single Amateur will be an options, everywhere else 25 Amateurs will be used and the best result out of all of them will be taken. Here you will learn the "skills" of an individual Amateur.
-                                </p>
-                                <p>You may run this simulation as many times as you would like. You can see all of the outcomes by clicking view results.{isHost ? " As host you must begin the next round from the view results page." : ""} </p>
-                                <h2>Amateur Golfer Selected</h2>
-                                {
-                                    loading &&
-                                    <p>Amateur is playing ... </p>
-                                }
-                                {
-                                    latestShot !== null && latestCost !== null && !loading &&
+                            <div className='InformationHorizontalSplit'>
+
+                                <div className='InfoContainer'>
                                     <p>
-                                        The Amateur took {latestShot} shots and cost {latestCost} units to complete 5 holes.
+                                        In this round all players must use only one Amateur golfer to play all 5 holes. This is the only time a single Amateur will be an options, everywhere else 25 Amateurs will be used and the best result out of all of them will be taken. Here you will learn the "skills" of an individual Amateur.
                                     </p>
-                                }
+                                    <p>You may run this simulation as many times as you would like. You can see all of the outcomes by clicking view results.{isHost ? " As host you must begin the next round from the view results page." : ""} </p>
+                                    <h2>Amateur Golfer Selected</h2>
+                                    {
+                                        loading &&
+                                        <p>Amateur is playing ... </p>
+                                    }
+                                    {
+                                        latestShot !== null && latestCost !== null && !loading &&
+                                        <p>
+                                            The Amateur took {latestShot} shots and cost {latestCost} units to complete 5 holes.
+                                        </p>
+                                    }
+                                </div>
+                                <img className='SingleIcon' src={amateurIcon} alt="Amateur Solver Icon" />
+                                <div></div>
                             </div>
                             <div className='InfoButtonContainer'>
                                 <Button

@@ -4,6 +4,9 @@ import { Solver, solverNames } from '../../../Utils/Simulation';
 import { Button, Radio, Slider, Tooltip } from 'antd';
 import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from '../../../ReusableComponents/SolverCards';
 import { UserContext } from '../../../App';
+import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
+import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
+import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
@@ -25,6 +28,9 @@ const TournamentStage = (props: {
     // const [selectingDistanceDap, setSelectingDistanceDap] = useState<'Drive' | 'Fairway' | 'Putt'>('Drive');
     const [selectingDistance, setSelectingDistance] = useState<'Drive' | 'Long' | 'Fairway' | 'Short' | 'Putt'>('Drive');
 
+    // Icons to display on the top
+    const solverIcons = [professionalIcon, amateurIcon, specialistIcon];
+
     // Need two solvers for running lp_arch
     const [selectedDriveSolver, setSelectedDriveSolver] = useState<Solver | null>(null);
     const [selectedLongSolver, setSelectedLongSolver] = useState<Solver | null>(null);
@@ -43,7 +49,7 @@ const TournamentStage = (props: {
         setCustomPerformance((100 - value) / 100);
         setCustomPerformanceWeight((100 - value) / 100);
     }
-    
+
     const tooltipFormatter = (value: any) => {
         return isNaN(value) ? 'Error' : (100 - value) + '% Performance, ' + value + '% Cost';
     }
@@ -218,7 +224,29 @@ const TournamentStage = (props: {
             ></div>
             <div className='Controls'>
                 <div className='Instructions'>
-                    <h1> Round {'' + props.round}</h1>
+                    <h1> 
+                        Round {'' + props.round}
+                        {
+                            selectedDriveSolver &&
+                            <img className='HeaderIconImage' src={solverIcons[selectedDriveSolver - 1]} alt="Solver Icon" />
+                        }
+                        {
+                            selectedLongSolver &&
+                            <img className='HeaderIconImage' src={solverIcons[selectedLongSolver - 1]} alt="Solver Icon" />
+                        }
+                        {
+                            selectedFairwaySolver &&
+                            <img className='HeaderIconImage' src={solverIcons[selectedFairwaySolver - 1]} alt="Solver Icon" />
+                        }
+                        {
+                            selectedShortSolver &&
+                            <img className='HeaderIconImage' src={solverIcons[selectedShortSolver - 1]} alt="Solver Icon" />
+                        }
+                        {
+                            selectedPuttSolver &&
+                            <img className='HeaderIconImage' src={solverIcons[selectedPuttSolver - 1]} alt="Solver Icon" />
+                        }
+                    </h1>
                     <div className='InfoContainer'>
                         <p>
                             Round Objective: {roundObjectives[props.round - 6]}
@@ -234,9 +262,8 @@ const TournamentStage = (props: {
                                     min={20}
                                     max={80}
                                     step={5}
-                                    marks={{20: 'Performance', 80: {label: <div>Cost</div>}}}
+                                    marks={{ 20: 'Performance', 80: { label: <div>Cost</div> } }}
                                     onChange={e => {
-                                        console.log("Slider value: ", e);
                                         updateCustomPerformance(e);
                                     }}
                                 />

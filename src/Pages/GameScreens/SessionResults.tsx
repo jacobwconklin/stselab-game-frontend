@@ -66,7 +66,7 @@ const SessionResults = (props: any) => {
                 return {
                     label: result.name,
                     data: result.scores.map((round: any) => { return {
-                        x: round.cost,
+                        x: round.cost / 100,
                         y: round.shots
                     }}),
                     backgroundColor: result.color,
@@ -93,7 +93,7 @@ const SessionResults = (props: any) => {
         scores.forEach((score: any) => {
             total += score.cost;
         });
-        return total;
+        return total / 100;
     }
 
     return (

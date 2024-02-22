@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Table } from 'antd';
 import './ModuleResults.scss';
 import {
     Chart as ChartJS,
@@ -10,7 +10,7 @@ import {
     Title,
     CategoryScale,
     BarElement,
-  } from 'chart.js';
+} from 'chart.js';
 import { Bar, Scatter } from 'react-chartjs-2';
 import { Solver, solverNames } from '../../../Utils/Simulation';
 import { useState } from 'react';
@@ -23,23 +23,22 @@ const ModuleResults = (props: any) => {
         let value = 0;
         let numberOfValues = 0;
         props?.results?.filter((result: any) => result.module === module && result.solver === solver)
-        .map((result: any) => {
-            value += result[type];
-            numberOfValues++;
-            return null;
-        });
+            .map((result: any) => {
+                value += result[type];
+                numberOfValues++;
+                return null;
+            });
         if (numberOfValues === 0) {
             return "---";
         } else {
             // Round to two decimal places
-            return type === 'distance' ? (Math.floor(value / numberOfValues) / 100)
-            : (Math.floor((value / numberOfValues) * 100) / 100)
+            return (Math.floor((value / numberOfValues) * 100) / 100)
         }
     }
 
     // save all module names to iterate through
-    const modules = ['Drive',  'Long', 'Fairway', 'Short', 'Putt'];
-    const remainingDistanceModules = ['Drive',  'Long', 'Fairway'];
+    const modules = ['Drive', 'Long', 'Fairway', 'Short', 'Putt'];
+    const remainingDistanceModules = ['Drive', 'Long', 'Fairway'];
     // const moduleColors = ['red', 'blue', 'green', 'yellow', 'purple'];
     const solvers = [Solver.Professional, Solver.Amateur, Solver.Specialist];
     const solverColors = ['red', 'blue', 'green'];
@@ -56,7 +55,7 @@ const ModuleResults = (props: any) => {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Remaining for Drive Module"
+                text: "Shots and Distance Traveled for Drive Module"
             }
         },
         scales: {
@@ -64,7 +63,7 @@ const ModuleResults = (props: any) => {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Distance remaining to hole'
+                    text: 'Distance traveled towards hole'
                 }
             },
             x: {
@@ -76,7 +75,8 @@ const ModuleResults = (props: any) => {
                 }
             },
         },
-        elements: { point: { radius: 10, }
+        elements: {
+            point: { radius: 10, }
         },
         layout: { padding: 20 },
     };
@@ -86,10 +86,12 @@ const ModuleResults = (props: any) => {
             return {
                 label: solverNames[solver - 1],
                 data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Drive')
-                .map((result: any) => { return {
-                    x: result.shots,
-                    y: (result.distance / 100)
-                }}),
+                    .map((result: any) => {
+                        return {
+                            x: result.shots,
+                            y: result.distance
+                        }
+                    }),
                 backgroundColor: solverColors[index],
             }
         })
@@ -100,26 +102,27 @@ const ModuleResults = (props: any) => {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Remaining for Long Module"
+                text: "Shots and Distance Traveled for Long Module"
             }
         },
         scales: {
             y: {
-                beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Distance remaining to hole'
-                }
+                    text: 'Distance traveled towards hole'
+                },
+                max: 710,
+                min: 680
             },
             x: {
-                beginAtZero: true,
                 title: {
                     display: true,
                     text: 'Shots'
                 }
             },
         },
-        elements: { point: { radius: 10, }
+        elements: {
+            point: { radius: 10, }
         },
         layout: { padding: 20 },
     };
@@ -129,10 +132,12 @@ const ModuleResults = (props: any) => {
             return {
                 label: solverNames[solver - 1],
                 data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Long')
-                .map((result: any) => { return {
-                    x: result.shots,
-                    y: (result.distance / 100)
-                }}),
+                    .map((result: any) => {
+                        return {
+                            x: result.shots,
+                            y: (result.distance)
+                        }
+                    }),
                 backgroundColor: solverColors[index],
             }
         })
@@ -143,15 +148,16 @@ const ModuleResults = (props: any) => {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Remaining for Fairway Module"
+                text: "Shots and Distance Traveled for Fairway Module"
             }
         },
         scales: {
             y: {
-                beginAtZero: true,
+                max: 455,
+                min: 430,
                 title: {
                     display: true,
-                    text: 'Distance remaining to hole'
+                    text: 'Distance traveled towards hole'
                 }
             },
             x: {
@@ -162,7 +168,8 @@ const ModuleResults = (props: any) => {
                 }
             },
         },
-        elements: { point: { radius: 10, }
+        elements: {
+            point: { radius: 10, }
         },
         layout: { padding: 20 },
     };
@@ -172,10 +179,12 @@ const ModuleResults = (props: any) => {
             return {
                 label: solverNames[solver - 1],
                 data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Fairway')
-                .map((result: any) => { return {
-                    x: result.shots,
-                    y: (result.distance / 100)
-                }}),
+                    .map((result: any) => {
+                        return {
+                            x: result.shots,
+                            y: (result.distance)
+                        }
+                    }),
                 backgroundColor: solverColors[index],
             }
         })
@@ -186,15 +195,16 @@ const ModuleResults = (props: any) => {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Remaining for Short Module"
+                text: "Shots and Distance Traveled for Short Module"
             }
         },
         scales: {
             y: {
-                beginAtZero: true,
+                min: 440,
+                max: 460,
                 title: {
                     display: true,
-                    text: 'Distance remaining to hole'
+                    text: 'Distance traveled towards hole'
                 }
             },
             x: {
@@ -205,7 +215,8 @@ const ModuleResults = (props: any) => {
                 }
             },
         },
-        elements: { point: { radius: 10, }
+        elements: {
+            point: { radius: 10, }
         },
         layout: { padding: 20 },
     };
@@ -215,30 +226,33 @@ const ModuleResults = (props: any) => {
             return {
                 label: solverNames[solver - 1],
                 data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Short')
-                .map((result: any) => { return {
-                    x: result.shots,
-                    y: (result.distance / 100)
-                }}),
+                    .map((result: any) => {
+                        return {
+                            x: result.shots,
+                            y: (result.distance)
+                        }
+                    }),
                 backgroundColor: solverColors[index],
             }
         })
     };
 
     // For JUST Putt module show all shot and distance results per solver
-    
+
     const puttOptions = {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Remaining for Putt Module"
+                text: "Shots and Distance Traveled for Putt Module"
             }
         },
         scales: {
             y: {
-                beginAtZero: true,
+                min: 10,
+                max: 20,
                 title: {
                     display: true,
-                    text: 'Distance remaining to hole'
+                    text: 'Distance traveled towards hole'
                 }
             },
             x: {
@@ -249,7 +263,8 @@ const ModuleResults = (props: any) => {
                 }
             },
         },
-        elements: { point: { radius: 10, }
+        elements: {
+            point: { radius: 10, }
         },
         layout: { padding: 20 },
     };
@@ -259,10 +274,12 @@ const ModuleResults = (props: any) => {
             return {
                 label: solverNames[solver - 1],
                 data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Putt')
-                .map((result: any) => { return {
-                    x: result.shots,
-                    y: (result.distance / 100)
-                }}),
+                    .map((result: any) => {
+                        return {
+                            x: result.shots,
+                            y: (result.distance)
+                        }
+                    }),
                 backgroundColor: solverColors[index],
             }
         })
@@ -275,10 +292,10 @@ const ModuleResults = (props: any) => {
     const avgShotsPerSolverOptions = {
         responsive: true,
         plugins: {
-                legend: {
+            legend: {
                 position: 'top' as const,
             },
-                title: {
+            title: {
                 display: true,
                 text: 'Average Shots per Solver for all Modules',
             },
@@ -289,7 +306,7 @@ const ModuleResults = (props: any) => {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Distance remaining to hole'
+                    text: 'Shots taken to finish module'
                 }
             },
         },
@@ -330,12 +347,12 @@ const ModuleResults = (props: any) => {
     const avgDistancePerSolverOptions = {
         responsive: true,
         plugins: {
-                legend: {
+            legend: {
                 position: 'top' as const,
             },
-                title: {
+            title: {
                 display: true,
-                text: 'Average Distance Remaining per Solver for all Drive, Long, and Fairway',
+                text: 'Average Distance Traveled per Solver for all Drive, Long, and Fairway',
             },
         },
         scales: {
@@ -344,7 +361,7 @@ const ModuleResults = (props: any) => {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Distance remaining to hole'
+                    text: 'Distance traveled towards hole'
                 }
             },
         },
@@ -381,16 +398,66 @@ const ModuleResults = (props: any) => {
         ],
     };
 
-    
     // set up chart js
     ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Tooltip, Legend, Title);
+
+    const columns = [
+        {
+            title: 'Module',
+            dataIndex: 'module',
+            key: 'module',
+        },
+        {
+            title: 'Professional Shot Avgerage',
+            dataIndex: 'ProShotAvg',
+            key: 'ProShotAvg',
+        },
+        {
+            title: 'Professional Distance Avgerage',
+            dataIndex: 'ProDistanceAvg',
+            key: 'ProDistanceAvg',
+        },
+        {
+            title: 'Specialist Shot Avgerage',
+            dataIndex: 'SpecShotAvg',
+            key: 'SpecShotAvg',
+        },
+        {
+            title: 'Specialist Distance Avgerage',
+            dataIndex: 'SpecDistanceAvg',
+            key: 'SpecDistanceAvg',
+        },
+        {
+            title: 'Amateur Shot Avgerage',
+            dataIndex: 'AmShotAvg',
+            key: 'AmShotAvg',
+        },
+        {
+            title: 'Amateur Distance Avgerage',
+            dataIndex: 'AmDistanceAvg',
+            key: 'AmDistanceAvg',
+        },
+    ];
+
+    const data = modules.map((module, index) => (
+        {
+            key: index,
+            module: module,
+            ProShotAvg: getModuleAverage(module, Solver.Professional, 'shots'),
+            ProDistanceAvg: getModuleAverage(module, Solver.Professional, 'distance'),
+            SpecShotAvg: getModuleAverage(module, Solver.Specialist, 'shots'),
+            SpecDistanceAvg: getModuleAverage(module, Solver.Specialist, 'distance'),
+            AmShotAvg: getModuleAverage(module, Solver.Amateur, 'shots'),
+            AmDistanceAvg: getModuleAverage(module, Solver.Amateur, 'distance'),
+        }
+    ))
 
     return (
         <div className='ModuleResults'>
             <div className='ResultInformation'>
                 <h1>Your experimental results</h1>
                 <p>
-                    Shots refers to the number of shots taken to finish the module. Drives are always exactly one shot. Distanct refers to the remaining distance to the hole after the module is finished. The lower remaining distance the better. Short and Putt modules always finish with a distance of 0 as the ball is put in the hole. Other modules may have instances with a distance of 0 meaning a lucky 
+                    Shots refers to the number of shots taken to finish the module. Drives are always exactly one shot. Distance refers to the distance traveled towards the hole after the module is finished from where the module begins. Short Putt modules always finish with a distance of 450 and Putt modules always finish with a distance of 15 as the ball is put in the hole. Other modules may have instances with a distance of 0 meaning a lucky
                     shot put the ball in the hole.
                 </p>
                 <div className='ResultActions'>
@@ -406,46 +473,17 @@ const ModuleResults = (props: any) => {
                 </div>
             </div>
 
-            <div className='ResultByModuleTable'>
-                <div className='GridHeader'>
-                    <p>Module</p>
-                    <p>Professional Shot Average</p>
-                    <p>Professional Distance Average</p>
-                    <p>Specialist Shot Average</p>
-                    <p>Specialist Distance Average</p>
-                    <p>Amateur Shot Average</p>
-                    <p>Amateur Distance Average</p>
-                </div>
-                {
-                    modules.map((module: string) => (
-                        <div key={module} className='GridRow'>
-                            <p>{module}</p>
-                            <p>
-                                {getModuleAverage(module, Solver.Professional, 'shots')}
-                            </p>
-                            <p>
-                                {getModuleAverage(module, Solver.Professional, 'distance')}
-                            </p>
-                            <p>
-                                {getModuleAverage(module, Solver.Specialist, 'shots')}
-                            </p>
-                            <p>
-                                {getModuleAverage(module, Solver.Specialist, 'distance')}
-                            </p>
-                            <p>
-                                {getModuleAverage(module, Solver.Amateur, 'shots')}
-                            </p>
-                            <p>
-                                {getModuleAverage(module, Solver.Amateur, 'distance')}
-                            </p>
-                        </div>
-                    ))
-                }
+            <div className='ResultTable'>
+                <Table
+                    pagination={{ position: ['none', "none"] }}
+                    columns={columns}
+                    dataSource={data}
+                />
             </div>
 
             <br></br>
             <br></br>
-            
+
             {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
             {
                 showAverageGraphs &&

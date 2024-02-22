@@ -10,8 +10,188 @@
 }
 
 .Clickable {
-
   &:hover {
     cursor: pointer;
   }
+}
+
+// Handle antd table styling (wrap <Table> in <ResultTable> to apply)
+.ResultTable {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+
+  .ant-table-wrapper {
+    width: 100%;
+    max-width: 60%;
+    min-width: 600px;
+    background-color: whitesmoke;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
+    margin-bottom: 40px;
+  }
+
+  .ant-table-column-sort {
+    background-color: rgb(0, 0, 0, 0.1);
+  }
+
+  .Clickable {
+    &:hover {
+      .ant-table-cell-row-hover {
+        background: rgb(255, 189, 189);
+      }
+    }
+  }
+
+  .MatchingPlayer {
+    background: rgb(222, 252, 222);
+    &:hover {
+      .ant-table-cell-row-hover {
+        background: rgb(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  .HighlightRow {
+    &:hover {
+      .ant-table-cell-row-hover {
+        background: rgb(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+// controls of play screen pages
+.Controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// Instructions bubbles on play screen pages
+.Instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(60% - 40px);
+  min-width: 560px;
+  background-color: whitesmoke;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
+  padding: 10px 20px 20px 20px;
+  margin: 20px;
+  
+  align-items: center;
+  text-align: center;
+
+  p {
+      text-align: left;
+  }
+}
+
+// Handle horizontal splits in information sections to show selected solver icons
+.InformationHorizontalSplit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .InfoContainer {
+    text-align: left;
+    width: 60%;
+    min-width: 60%;
+  }
+
+  .SelectionsAndActions {
+    height: 150px;
+    min-width: 400px;
+
+    .Selections {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 0px 15px 0px;
+
+      h2 {
+        width: 350px;
+        text-align: left;
+        margin-top: 0px;
+        margin-bottom: 5px;
+      }
+    }
+
+    .PlayAndShowResults {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .SolverIcons {
+    padding-left: 20px;
+    height: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    .ProfessionalIconImage {
+      width: 100px;
+      height: 100px;
+      margin: 10px;
+    }
+
+    .SpecialistIcons {
+      display: flex;
+      flex-wrap: wrap;
+
+      .SpecialistIconImage {
+        width: 60px;
+        height: 60px;
+        margin: 5px;
+      }
+    }
+
+    .AmateurIcons {
+      display: flex;
+      flex-wrap: wrap;
+
+      .AmateurIconImage {
+        width: 21px;
+        height: 21px;
+        margin: 3px;
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .SingleIcon {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+  }
+}
+
+// Handles solvers cards on play screen
+.Solvers {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 100px;
+}
+
+// default graph styling
+.ScatterCanvas {
+  max-width: 60%;
+  min-width: 600px;
+  max-height: 50vh;
+  height: auto;
+  background-color: whitesmoke;
+  margin: 0px 20px 40px 20px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
 }

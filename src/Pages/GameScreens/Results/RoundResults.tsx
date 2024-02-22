@@ -3,21 +3,20 @@ import './RoundResults.scss';
 import { UserContext } from '../../../App';
 import { Button } from 'antd';
 import { postRequest } from '../../../Utils/Api';
-import VerificationModal from '../../../ReusableComponents/VerificationModal';
 import ResultTable from './ResultTable';
 import ResultGraphs from './ResultGraphs';
 import { RoundResult } from '../../../Utils/Types';
 // import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
-const RoundResults = (props: {round: number, players: Array<RoundResult>}) => {
-    const {isHost, playerId, sessionId} = useContext(UserContext) as any;
+const RoundResults = (props: { round: number, players: Array<RoundResult> }) => {
+    const { isHost, sessionId } = useContext(UserContext) as any;
     const [hostClickedButton, setHostClickedButton] = useState(false);
 
     const hostBeginNextRound = async () => {
         setHostClickedButton(true);
         // Force host to go through modal if some players haven't finished
-        const response = await postRequest("session/advance", JSON.stringify({sessionId}));
+        const response = await postRequest("session/advance", JSON.stringify({ sessionId }));
         if (response.success) {
 
         } else {
@@ -25,22 +24,6 @@ const RoundResults = (props: {round: number, players: Array<RoundResult>}) => {
             setHostClickedButton(false);
             console.error(response);
         }
-    }
-
-    // set modal to make sure host knows some players might not finished and only show
-    // if some player hasn't finished. Also use modal for allowing host to remove players
-    // from the tournament
-    const [showModal, setShowModal] = useState(false);
-    const [modalTitle, setModalTitle] = useState('');
-    const [modalMessage, setModalMessage] = useState('');
-
-    const cancelModal = () => {
-        setShowModal(false);
-    }
-
-    // confirm Modal may have different actions depending on what modalTitle is set to
-    const confirmModal = () => {
-        setShowModal(false);
     }
 
     return (
@@ -51,14 +34,14 @@ const RoundResults = (props: {round: number, players: Array<RoundResult>}) => {
                 <div className='HostInstruction'>
                     {
                         props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
-                        <h3>
-                            All Players are Finished 
-                        </h3>
-                        :
-                        <h3>
-                            {props?.players?.filter((player: any) => !!player.shots).length} Player
-                            {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished 
-                        </h3>
+                            <h3>
+                                All Players are Finished
+                            </h3>
+                            :
+                            <h3>
+                                {props?.players?.filter((player: any) => !!player.shots).length} Player
+                                {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished
+                            </h3>
                     }
                     {
                         !!props?.players?.filter((player: any) => !player.shots).length &&
@@ -83,14 +66,14 @@ const RoundResults = (props: {round: number, players: Array<RoundResult>}) => {
                 <div className='HostInstruction'>
                     {
                         props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
-                        <h3>
-                            All Players are Finished 
-                        </h3>
-                        :
-                        <h3>
-                            {props?.players?.filter((player: any) => !!player.shots).length} Player
-                            {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished 
-                        </h3>
+                            <h3>
+                                All Players are Finished
+                            </h3>
+                            :
+                            <h3>
+                                {props?.players?.filter((player: any) => !!player.shots).length} Player
+                                {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished
+                            </h3>
                     }
                     {
                         !!props?.players?.filter((player: any) => !player.shots).length &&
@@ -115,14 +98,14 @@ const RoundResults = (props: {round: number, players: Array<RoundResult>}) => {
                 <div className='HostInstruction'>
                     {
                         props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
-                        <h3>
-                            All Players are Finished 
-                        </h3>
-                        :
-                        <h3>
-                            {props?.players?.filter((player: any) => !!player.shots).length} Player
-                            {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished 
-                        </h3>
+                            <h3>
+                                All Players are Finished
+                            </h3>
+                            :
+                            <h3>
+                                {props?.players?.filter((player: any) => !!player.shots).length} Player
+                                {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished
+                            </h3>
                     }
                     {
                         !!props?.players?.filter((player: any) => !player.shots).length &&
@@ -139,15 +122,6 @@ const RoundResults = (props: {round: number, players: Array<RoundResult>}) => {
             <ResultTable players={props.players} round={props.round} />
             <ResultGraphs players={props.players} round={props.round} />
 
-            {
-                showModal && 
-                <VerificationModal 
-                    cancel={cancelModal}
-                    confirm={confirmModal}
-                    title={modalTitle}
-                    message={modalMessage}
-                />
-            }
         </div>
     )
 }

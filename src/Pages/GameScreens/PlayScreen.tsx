@@ -41,7 +41,7 @@ const PlayScreen = (props: any) => {
             const response = await postRequest('player/roundResult', JSON.stringify({
                 playerId,
                 shots: score.shots,
-                cost: score.cost,
+                cost: Math.floor(score.cost * 100),
                 architecture,
                 solverOne: solver1,
                 solverTwo: solver2,

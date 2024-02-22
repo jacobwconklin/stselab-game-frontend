@@ -4,7 +4,9 @@ import { Solver, solverNames } from "../../../Utils/Simulation";
 import { RoundResult } from "../../../Utils/Types";
 import { getArchitectureCommonName, scoreRound } from "../../../Utils/Utils";
 import { UserContext } from "../../../App";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { postRequest } from "../../../Utils/Api";
+import VerificationModal from "../../../ReusableComponents/VerificationModal";
 
 
 // Creates a table to display results for a round or session
@@ -13,7 +15,31 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
     // get player's custom performance weight from context (only needed for round 9)
     const { customPerformanceWeight } = useContext(UserContext) as any;
 
-    const {isHost, playerId} = useContext(UserContext) as any;
+    const { isHost, playerId } = useContext(UserContext) as any;
+
+    // tells backend to remove a player from their session
+    const removePlayer = async (playerId: any) => {
+        const response = await postRequest("player/remove", JSON.stringify({ playerId }));
+        if (!response.success) {
+            alert("Error removing player from session, please try again.");
+            console.error(response);
+        }
+    }
+
+    // functionality for modal
+    const [showModal, setShowModal] = useState(false);
+    const [playerIdToRemove, setPlayerIdToRemove] = useState('');
+    const [modalTitle, setModalTitle] = useState('Are you sure?');
+    const [modalMessage, setModalMessage] = useState('Action cannot be undone');
+
+    const cancelModal = () => {
+        setShowModal(false);
+    }
+
+    const confirmModal = () => {
+        removePlayer(playerIdToRemove);
+        setShowModal(false);
+    }
 
     // Want name, golf ball, shots, cost, solvers, architecture
     const baseColumns = [
@@ -35,10 +61,8 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             defaultSortOrder: props.round < 6 ? 'ascend' as any : null,
             sorter: (a: any, b: any) => {
                 if (a.shots === '...' && !(b.shots === '...')) {
-                    console.log("seen")
                     return 1;
                 } else if (!(a.shots === '...') && b.shots === '...') {
-                    console.log("seen 2")
                     return -1;
                 } else if (a.shots === '...' && b.shots === '...') {
                     return 0;
@@ -53,10 +77,8 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             dataIndex: 'cost',
             sorter: (a: any, b: any) => {
                 if (a.cost === '...' && !(b.cost === '...')) {
-                    console.log("seen")
                     return 1;
                 } else if (!(a.cost === '...') && b.cost === '...') {
-                    console.log("seen 2")
                     return -1;
                 } else if (a.cost === '...' && b.cost === '...') {
                     return 0;
@@ -71,19 +93,19 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             dataIndex: 'solvers',
             render: (solvers: [Solver]) => (
                 solvers.length > 0 ?
-                <div className="SolversHolder">
-                    {
-                        solvers.map((solver) => (
-                            <p
-                                style={{ margin: '0px 0px 4px 0px' }}
-                            >{solverNames[solver - 1]}</p>
-                        ))
-                    }
-                </div>
-                :
-                <div>
-                    waiting ...
-                </div>
+                    <div className="SolversHolder">
+                        {
+                            solvers.map((solver) => (
+                                <p
+                                    style={{ margin: '0px 0px 4px 0px' }}
+                                >{solverNames[solver - 1]}</p>
+                            ))
+                        }
+                    </div>
+                    :
+                    <div>
+                        waiting ...
+                    </div>
             ),
         },
     ];
@@ -102,10 +124,8 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 defaultSortOrder: 'descend' as any,
                 sorter: (a: any, b: any) => {
                     if (a.score === '...' && !(b.score === '...')) {
-                        console.log("seen")
                         return -1;
                     } else if (!(a.score === '...') && b.score === '...') {
-                        console.log("seen 2")
                         return 1;
                     } else if (a.score === '...' && b.score === '...') {
                         return 0;
@@ -131,36 +151,41 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
       },
     ];
     */
-    const baseData = props?.players?.map((player, index) => (
-        {
-            key: player.id,
-            name: player.name,
-            color: player.color,
-            shots: player.shots ? player.shots : '...',
-            cost: player.cost ? player.cost : '...',
-            solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver)
-        }
-    ))
+    const getBaseData = () => {
+        return props?.players?.map((player, index) => (
+            {
+                key: player.id,
+                name: player.name,
+                color: player.color,
+                shots: player.shots ? player.shots : '...',
+                cost: player.cost ? player.cost / 100 : '...',
+                solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver)
+            }
+        ))
+    }
 
-    const extendedData = props?.players?.map((player, index) => (
-        {
-            key: player.id,
-            name: player.name,
-            color: player.color,
-            shots: player.shots ? player.shots : '...',
-            cost: player.cost ? player.cost : '...',
-            solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver),
-            architecture: player.architecture ? getArchitectureCommonName(player.architecture) : 'waiting...',
-            score: player.shots ? scoreRound(props.round, player.shots, player.cost, customPerformanceWeight).toFixed(1) : '...'
-        }
-    ))
+    const getExtendedData = () => {
+        return props?.players?.map((player, index) => (
+            {
+                key: player.id,
+                name: player.name,
+                color: player.color,
+                shots: player.shots ? player.shots : '...',
+                cost: player.cost ? player.cost / 100 : '...',
+                solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver),
+                architecture: player.architecture ? getArchitectureCommonName(player.architecture) : 'waiting...',
+                score: player.shots ? scoreRound(props.round, player.shots, player.cost, customPerformanceWeight).toFixed(1)
+                    : '...'
+            }
+        ))
+    }
 
     return (
         <div className="ResultTable">
-            <Table 
+            <Table
                 pagination={{ pageSize: 10, position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"] }}
-                columns={props.round < 6 ? baseColumns : getExtendedColumns()} 
-                dataSource={props.round < 6 ? baseData : extendedData} 
+                columns={props.round < 6 ? baseColumns : getExtendedColumns()}
+                dataSource={props.round < 6 ? getBaseData() : getExtendedData()}
                 rowClassName={(record, index) => {
                     if (isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
                         return 'Clickable';
@@ -174,17 +199,25 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                     return {
                         onClick: event => {
                             if (isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
-                                // tell backend to remove this player from the session
-                                // setPlayerIdToRemove(record.key);
-                                // setModalTitle('Are you sure you want to remove: ' + record.name + '?');
-                                // setModalMessage('The player will be removed from the Tournament including all of their information');
-                                // setShowModal(true);
-                                alert("Remove not implemented on this page yet");
+                                setPlayerIdToRemove(record.key);
+                                setModalTitle('Are you sure you want to remove: ' + record.name + '?');
+                                setModalMessage('The player will be removed from the Tournament including all of their information');
+                                setShowModal(true);
                             }
                         },
                     }
-                }}    
+                }}
             />
+            {
+                showModal &&
+                <VerificationModal
+                    cancel={cancelModal}
+                    confirm={confirmModal}
+                    title={modalTitle}
+                    message={modalMessage}
+                />
+            }
+
         </div>
     )
 }

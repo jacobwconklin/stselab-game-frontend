@@ -7,8 +7,8 @@
 
     .ResultInformation {
         margin: 20px;
-        width: 60%;
-        min-width: 750px;
+        width: calc(60% - 35px);
+        min-width: 660px;
         background-color: whitesmoke;
         border-radius: 10px;
         box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
@@ -27,67 +27,17 @@
 
     .ChartJSCanvas {
         max-width: 60%;
-        min-width: 750px;
+        min-width: 700px;
         max-height: 50vh;
         height: auto;
         background-color: whitesmoke;
         margin: 0px 20px 40px 20px;
     }
     
-    .ResultByModuleTable {
-    
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-
-        .GridHeader {
-            min-width: 750px;
-            width: 60%;
-            border-radius: 10px;
-            padding: 5px 15px 5px 15px;
-            display: grid;
-            grid-template-columns: 14% 14% 14% 14% 14% 14% 14%;
-            column-gap: 10px;
-            border: 4px outset black;
-            background-color: whitesmoke;
-
-            p {
-                width: 14%;
-            }
-
-            .ClickableColumn {
-
-                svg {
-                    padding: 0px 0px 0px 5px;
-                    width: 15px;   
-                    height: 15px;
-                }
-
-                &:hover {
-                    cursor: pointer;
-                    text-decoration: underline;
-                }
-            }
-        }
-    
-        .GridRow {
-            min-width: 750px;
-            width: 60%;
-            border-radius: 10px;
-            padding: 5px 15px 5px 15px;
-            display: grid;
-            grid-template-columns: 14% 14% 14% 14% 14% 14% 14%;
-            column-gap: 10px;
-            align-items: center;
-            border: 4px outset black;
-            background-color: whitesmoke;
-    
-            p {
-                word-wrap: break-word;
-            }
-        }
+    .ant-table-wrapper {
+        min-width: 700px;
     }
+
 
     .GraphSection {
         width: 100%;

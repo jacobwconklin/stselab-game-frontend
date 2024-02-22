@@ -69,7 +69,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
             return (shotScore + costScore);
         }
     } else {
-        console.log("Error invalid round")
+        console.error("Error invalid round")
         return -1;
     }
 }

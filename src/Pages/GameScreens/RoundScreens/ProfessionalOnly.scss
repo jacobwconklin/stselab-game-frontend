@@ -10,28 +10,10 @@
         align-items: center;
 
         .Instructions {
-            margin: 20px;
-            min-width: 210px;
-            width: calc(100% - 80px);
-            max-width: 730px;
-            background-color: whitesmoke;
-            border-radius: 10px;
-            box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
-            padding: 5px 20px 15px 20px;
-            display: flex;
-            flex-direction: column;
-            
-            // TODO decide if these two should be here (or if instructions should be left aligned
-            align-items: center;
-            text-align: center;
-            // ^^^^
-
-            p {
-                text-align: left;
-            }
 
             .InfoContainer {
                 text-align: left;
+                width: 60%;
             }
         }
 
