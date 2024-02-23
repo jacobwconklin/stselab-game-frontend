@@ -4,11 +4,9 @@
     align-items: center;
 
     .AmateurResults {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
+        width: 100%;
+        height: fit-content;
+        min-height: calc(100vh - 60px);
         background-color: lightblue;
         display: flex;
         flex-direction: column;
@@ -18,7 +16,7 @@
 
         .AmateurResultInfo {
             margin: 40px 20px 20px 20px;
-            max-width: calc(60% - 40px);
+            width: calc(60% - 40px);
             min-width: 560px;
             background-color: whitesmoke;
             border-radius: 10px;
@@ -33,8 +31,12 @@
                 text-align: left;
             }
 
-            .BeginNextRoundButton {
+            .ResultButtons {
+                display: flex;
+                justify-content: center;
+                width: 100%;
                 margin-top: 20px;
+                gap: 20px;
             }
         }
 

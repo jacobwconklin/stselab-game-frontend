@@ -71,6 +71,7 @@ const GameController = (props: any) => {
                         sessionId, round: currentRound
                     }));
                     if (resultsResponse.success) {
+                        // Only update state if the length of results changed (new player info came)
                         setCurrentResults(resultsResponse.results);
                     }
                     else {
@@ -80,8 +81,8 @@ const GameController = (props: any) => {
                     const resultsResponse = await postRequest('/session/finalresults', JSON.stringify({
                         sessionId
                     }));
-                    console.error(resultsResponse);
                     if (resultsResponse.success) {
+                        // Only update state if the length of results changed (new player info came)
                         setFinalResults(resultsResponse.results);
                     }
                     else {
@@ -97,7 +98,7 @@ const GameController = (props: any) => {
         return () => {
             clearInterval(interval);
         }
-    }, [sessionId, playerId, setCurrentResults, sessionStatus?.session?.round, setFinalResults]);
+    }, [sessionId, playerId, setCurrentResults, sessionStatus?.session?.round, setFinalResults, currentResults.length, finalResults.length]);
 
 
     // useBeforeUnload(

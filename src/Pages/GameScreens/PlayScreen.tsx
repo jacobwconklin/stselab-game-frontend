@@ -1,5 +1,5 @@
 import './PlayScreen.scss';
-import { Solver, runDAP, runDS, runLP, runSimEntireHole} from '../../Utils/Simulation';
+import { Solver, runDAP, runDS, runLP, runSimEntireHole } from '../../Utils/Simulation';
 import { useContext, useState } from 'react';
 import { postRequest } from '../../Utils/Api';
 import { UserContext } from '../../App';
@@ -8,6 +8,7 @@ import TournamentStage from './RoundScreens/TournamentStage';
 import ProfessionalOnly from './RoundScreens/ProfessionalOnly';
 import AmateurOnly from './RoundScreens/AmateurOnly';
 import EntireHole from './RoundScreens/EntireHole';
+import { scoreRound } from '../../Utils/Utils';
 
 // PlayScreen
 const PlayScreen = (props: any) => {
@@ -16,13 +17,14 @@ const PlayScreen = (props: any) => {
     const [playingRound, setPlayingRound] = useState(false);
 
     // pull playerId from Context
-    const {playerId, playerColor} = useContext(UserContext) as any;
+    const { playerId, playerColor, customPerformanceWeight } = useContext(UserContext) as any;
 
     // Plays round with selected solver
-    const playRound = async ( architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => {
+    const playRound = async (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => {
 
+        try {
             setPlayingRound(true);
-            let score = {shots: 0, cost: 0};
+            let score = { shots: 0, cost: 0 };
             if (architecture === 'h') {
                 score = await runSimEntireHole(solver1);
             } else if (architecture === 'ds' && solver2) {
@@ -37,6 +39,8 @@ const PlayScreen = (props: any) => {
                 return;
             }
 
+            const pointsEarned = scoreRound(props.round, score.shots, score.cost, customPerformanceWeight);
+
             // save score to database and record that player has completed the round
             const response = await postRequest('player/roundResult', JSON.stringify({
                 playerId,
@@ -46,7 +50,8 @@ const PlayScreen = (props: any) => {
                 solverOne: solver1,
                 solverTwo: solver2,
                 solverThree: solver3,
-                round: props.round
+                round: props.round,
+                score: pointsEarned !== null ? Math.floor( pointsEarned * 100) : null
             }));
             if (response.success) {
                 props.setFinishedRound((val: [Boolean, Boolean, Boolean, Boolean]) => {
@@ -59,7 +64,10 @@ const PlayScreen = (props: any) => {
                 console.error(response);
                 setPlayingRound(false);
             }
-        
+        } catch (error) {
+            console.error("Error playing round: ", error)
+            setPlayingRound(false);
+        }
     }
 
     // Rounds allow the host to move the game forward and change the screen displayed for all players.

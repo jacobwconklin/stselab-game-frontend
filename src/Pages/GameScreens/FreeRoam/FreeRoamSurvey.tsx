@@ -123,12 +123,12 @@ const FreeRoamSurvey = (props: {setShowModuleResultsSurvey: (val: SetStateAction
                         >
                             Review Results
                         </Button>
-                            <h3>Continue the game for all players when you are ready</h3>
+                            <h3>Continue the game and begin the tournament for all players when you are ready</h3>
                             <Button
                                 onClick={() => hostBeginNextRound()}
                                 disabled={hostClickedButton}
                             >
-                                Continue
+                                Begin Tournament
                             </Button>
                         </div>
                         :
@@ -138,7 +138,7 @@ const FreeRoamSurvey = (props: {setShowModuleResultsSurvey: (val: SetStateAction
                             >
                                 Review Results
                             </Button>
-                            <h3>Wait for the host to continue the game</h3>
+                            <h3>Wait for the host to continue the game and begin the tournament</h3>
                         </div>
                     }
                 </div>

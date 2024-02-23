@@ -72,4 +72,5 @@ export interface RoundResult {
     solverTwo: number;
     solverThree: number;
     architecture: string;
+    score: number;
 }

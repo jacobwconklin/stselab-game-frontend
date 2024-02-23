@@ -19,6 +19,8 @@ const TournamentStage = (props: {
     // Context to save user's slider choice for custom performance weight
     const { setCustomPerformanceWeight } = useContext(UserContext) as any;
 
+    const [showTournamentBeginModal, setShowTournamentBeginModal] = useState(props?.round === 6 ? true : false);
+
     // value of architecture chosen (on changing architecture remove all chosen solvers)
     const [architecture, setArchitecture] = useState<string>('h'); // 'h' | 'lp' | 'ds' | 'dap'
 
@@ -57,7 +59,7 @@ const TournamentStage = (props: {
     const roundObjectives = [
         "Best performance no matter the cost",
         "Minimize cost with performance of at most 45 strokes",
-        "Minimize both cost and performance with equal weight",
+        "Minimize cost and performance",
         "Choose the weight of performance versus cost yourself"
     ];
 
@@ -225,7 +227,7 @@ const TournamentStage = (props: {
             <div className='Controls'>
                 <div className='Instructions'>
                     <h1> 
-                        Round {'' + props.round}
+                        Tournament Round {'' + (props.round - 5)}
                         {
                             selectedDriveSolver &&
                             <img className='HeaderIconImage' src={solverIcons[selectedDriveSolver - 1]} alt="Solver Icon" />
@@ -248,9 +250,9 @@ const TournamentStage = (props: {
                         }
                     </h1>
                     <div className='InfoContainer'>
-                        <p>
+                        <h2>
                             Round Objective: {roundObjectives[props.round - 6]}
-                        </p>
+                        </h2>
                         {
                             props.round === 9 &&
                             <div className='DetermineObjective'>
@@ -386,6 +388,23 @@ const TournamentStage = (props: {
                     <AmateurSolverCard select={selectGolfer} />
                 </div>
             </div>
+            
+            {
+                showTournamentBeginModal &&
+                <div className='TournamentBeginModal'
+                    // Can have click out here but they may not read
+                >
+                    <div className='TournamentBeginModalBody'>
+                        <h2>The Tournament Begins Now!</h2>
+                        <p>
+                            You will play four rounds each with a unique objective. In each round you may select any architecture and any solvers you would like. Points are awarded for acheiving the objectives. The winner will be the player with the most points at the end of the tournament.
+                        </p>
+                        <div className='ModalButtons'>
+                            <Button onClick={() => setShowTournamentBeginModal(false)}>Begin</Button>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     )
 }

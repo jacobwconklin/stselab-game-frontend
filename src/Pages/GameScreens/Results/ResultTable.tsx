@@ -2,7 +2,7 @@ import { Table } from "antd";
 import GolfBall from "../../../ReusableComponents/GolfBall";
 import { Solver, solverNames } from "../../../Utils/Simulation";
 import { RoundResult } from "../../../Utils/Types";
-import { getArchitectureCommonName, scoreRound } from "../../../Utils/Utils";
+import { getArchitectureCommonName } from "../../../Utils/Utils";
 import { UserContext } from "../../../App";
 import { useContext, useState } from "react";
 import { postRequest } from "../../../Utils/Api";
@@ -11,9 +11,6 @@ import VerificationModal from "../../../ReusableComponents/VerificationModal";
 
 // Creates a table to display results for a round or session
 const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
-
-    // get player's custom performance weight from context (only needed for round 9)
-    const { customPerformanceWeight } = useContext(UserContext) as any;
 
     const { isHost, playerId } = useContext(UserContext) as any;
 
@@ -174,8 +171,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 cost: player.cost ? player.cost / 100 : '...',
                 solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver),
                 architecture: player.architecture ? getArchitectureCommonName(player.architecture) : 'waiting...',
-                score: player.shots ? scoreRound(props.round, player.shots, player.cost, customPerformanceWeight).toFixed(1)
-                    : '...'
+                score: player.score ? player.score / 100 : '...'
             }
         ))
     }
@@ -189,7 +185,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 rowClassName={(record, index) => {
                     if (isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
                         return 'Clickable';
-                    } else if (record.key === playerId) {
+                    } else if (record.key.toLowerCase() === playerId.toLowerCase()) {
                         return 'MatchingPlayer';
                     } else {
                         return 'HighlightRow'

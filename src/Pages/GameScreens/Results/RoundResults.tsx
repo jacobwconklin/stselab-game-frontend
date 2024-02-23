@@ -31,7 +31,7 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
             <h1>Results for Round {props?.round}</h1>
             {
                 isHost && props?.round >= 9 &&
-                <div className='HostInstruction'>
+                <div className='Instructions HostInstruction'>
                     {
                         props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
                             <h3>
@@ -56,6 +56,7 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                     <Button
                         disabled={hostClickedButton}
                         onClick={hostBeginNextRound}
+                        type='primary'
                     >
                         End Tournament
                     </Button>
@@ -63,7 +64,7 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
             }
             {
                 isHost && props?.round < 9 &&
-                <div className='HostInstruction'>
+                <div className='Instructions HostInstruction'>
                     {
                         props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
                             <h3>
@@ -88,6 +89,7 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                     <Button
                         disabled={hostClickedButton}
                         onClick={hostBeginNextRound}
+                        type='primary'
                     >
                         Begin Next Round
                     </Button>
@@ -95,7 +97,7 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
             }
             {
                 !isHost &&
-                <div className='HostInstruction'>
+                <div className='Instructions HostInstruction'>
                     {
                         props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
                             <h3>

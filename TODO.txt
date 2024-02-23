@@ -1,7 +1,5 @@
 This can outline the major TODOs so they can be ordered 
 
-ADD "Points" category so that values can be given in tournament stages and rankings made
-
 - ASK Professor: 
 1. What is 'size' in playShort and playPutt, is it the distance to accept making a whole ie should it always be 0.5?
 2. What is 'strategy' parameter (sometimes called with 0 and sometimes 1)
@@ -10,3 +8,9 @@ ADD "Points" category so that values can be given in tournament stages and ranki
 ADD TYPES for all "any" placeholders
 
 ADD ENUM for round numbers rather than raw ints
+
+ISSUES:
+Buttons broken on amateur results and game page
+
+ADD number of players who have submitted survey to survey submitted screen (after free roam) so host can wait until 
+everyone is done submitting it. 

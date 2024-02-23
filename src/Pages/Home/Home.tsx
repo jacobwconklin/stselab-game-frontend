@@ -51,14 +51,11 @@ const Home = (props: any) => {
                             demonstrate that breaking a problem down into smaller components and finding solutions that better fit each 
                             component can lead to better solutions. 
                         </p><p>   
-                            Throughout 4 rounds of golf, users will have increased freedom to choose different types of golfers to play 
-                            specific portions of the course. 
+                            Throughout rounds of golf, users will have increased freedom to choose different types of golfers to play specific portions of the course. 
                             These types of golfers are known as solvers and represent different potential avenues to solve a problem. 
                             They come with different trade offs in terms of costs and skill levels.
-                            The goal is to acheive the least number of shots needed as well as maintaining the 
-                            lowest overall cost. The number of shots needed to complete a round of golf is analogous to the time required to 
+                            The number of shots needed to complete a round of golf is analogous to the time required to 
                             complete a real world project, and the cost is representative of the total cost spent on a solution. 
-                            {/* TODO Talk about rankings based on shots but cost is still important */}
                         </p><p>   
                             The three options for solvers are: 1 Professional golfer, 3 long drive specialists, 
                             and 25 amateurs. When choosing the specialists and amateurs the results of all 3 or 25 golfers will be simulated and
@@ -83,6 +80,20 @@ const Home = (props: any) => {
                     </h2>
                     <div className='CollapsableSection' style={{maxHeight: collapseHow ? '0px' : '1000px'}}>
                         <p>
+                            1) One player serves as the Host and and unlimited number of other users join the game.
+                        </p><p>
+                            2) Three practice rounds are played to familiarize players with the Solvers: Professional, Specialist, and Amateur.
+                        </p><p>
+
+                            3) An experimental round lets players test breaking the golf course down into smaller modules.
+                        </p><p>
+
+                            4) The tournament begins. It consists of four rounds each with a unique objective which will reward points. Players will choose how they want to break the golf course into modules, and what solvers they want for each module to best meet the objective.
+                        </p><p>
+
+                            5) The final results are shown, and the player who collected the most points wins the tournament.
+                        </p>
+                        {/* <p>
                             The game is played with one user who serves as the host, and an unlimited number of other users who join the game.
                             When the host creates a new game they will receive a code and link to share with all players who wish to join. Playing 
                             involves 4 rounds of golf, with 5 holes in each round. 
@@ -112,7 +123,7 @@ const Home = (props: any) => {
                             choose their solver for each section of the course, and all 5 holes will be simulated with the chosen selection. The results
                             for the round will be shown again, and then the host can take all players in the session to a screen showing the combined 
                             results of the entire tournament. Good shooting!
-                        </p>
+                        </p> */}
                     </div>
                 </div>
                 <div className='DialogCard'>

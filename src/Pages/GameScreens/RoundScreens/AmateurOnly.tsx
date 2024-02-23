@@ -140,15 +140,18 @@ const AmateurOnly = (props: { round: Number }) => {
                                     <p>Host must begin the next round.</p>
                             }
                             <p>Average number of shots: {avgShots()} </p>
-                            <Button onClick={() => setShowAmateurResults(false)}>Return to simulation</Button>
-                            {
-                                isHost &&
-                                <Button
-                                    className='BeginNextRoundButton'
-                                    disabled={hostClickedButton}
-                                    onClick={() => hostBeginNextRound()}
-                                >Begin Next Round</Button>
-                            }
+                            <div className='ResultButtons'>
+                                <Button onClick={() => setShowAmateurResults(false)}>Return to simulation</Button>
+                                {
+                                    isHost &&
+                                    <Button
+                                        className='BeginNextRoundButton'
+                                        disabled={hostClickedButton}
+                                        onClick={() => hostBeginNextRound()}
+                                        type='primary'
+                                    >Begin Next Round</Button>
+                                }
+                            </div>
                         </div>
                         {/* Table */}
                         <div className='AmateurResultGraph'>

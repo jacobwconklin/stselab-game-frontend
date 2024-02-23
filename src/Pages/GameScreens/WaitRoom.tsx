@@ -35,8 +35,11 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
     }
 
     // tells backend to remove a player from their session
-    const removePlayer = async (playerId: any) => {
-        const response = await postRequest("player/remove", JSON.stringify({ playerId }));
+    const removePlayer = async (playerIdToRemove: any) => {
+        const response = await postRequest("player/remove", JSON.stringify({ playerId: playerIdToRemove }));
+        if (playerId === playerIdToRemove) {
+            navigate('/');
+        }
         if (!response.success) {
             alert("Error removing player from session, please try again.");
             console.error(response);
@@ -111,6 +114,7 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
                         <Button
                             disabled={beginningTournament}
                             onClick={hostBeginTournament}
+                            type='primary'
                         >
                             Begin Tournament
                         </Button>
@@ -135,8 +139,10 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
                         <h2> Players in the Tournament: {props.players && props.players.length > 0 ? props.players.length : "..."} </h2>
                         <Button
                             onClick={() => {
-                                removePlayer(playerId);
-                                navigate("/");
+                                setPlayerIdToRemove(playerId);
+                                setModalTitle('Are you sure you want to exit the tournament?');
+                                setModalMessage('You will leave the tournament.');
+                                setShowModal(true);
                             }}
                         >
                             Exit Tournament

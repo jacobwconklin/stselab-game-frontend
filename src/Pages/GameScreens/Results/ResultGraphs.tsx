@@ -20,6 +20,9 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
     // golfBallImage.src = golfBallSvg;
     // chart options and data
     const options = {
+        animation: {
+            duration: 0, // general animation time
+        },
         plugins: {
             title: {
                 display: true,

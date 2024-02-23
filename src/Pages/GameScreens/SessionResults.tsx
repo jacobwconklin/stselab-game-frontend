@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Table } from 'antd';
 import './SessionResults.scss';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
@@ -11,21 +11,51 @@ import {
     LineElement,
     Tooltip,
     Legend,
-  } from 'chart.js';
+} from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 
 // SessionResults
 // TODO only show for tournament stage results (not professional only or h_arch)
 const SessionResults = (props: any) => {
 
-        // chart options and data
-        // for all rounds separately
-        // chart options and data
-    const options = {
+    const navigate = useNavigate();
+    const { playerId } = useContext(UserContext) as any;
+
+    const sumShots = (scores: any[]) => {
+        let total = 0;
+        scores.forEach((score: any) => {
+            total += score.shots;
+        });
+        return total;
+    }
+
+    const sumCost = (scores: any[]) => {
+        let total = 0;
+        scores.forEach((score: any) => {
+            total += score.cost;
+        });
+        return total / 100;
+    }
+
+    const sumScore = (scores: any[]) => {
+        let total = 0;
+        scores.forEach((score: any) => {
+            total += score.score;
+        });
+        return total / 100;
+    }
+
+    // chart options and data
+    // for all rounds separately
+    // chart options and data
+    const shotsCostOptions = {
+        animation: {
+            duration: 0, // general animation time
+        },
         plugins: {
             title: {
                 display: true,
-                text: `Shots and Costs for Round ${props?.round}`
+                text: `Shots and Costs of all Tournament Rounds`
             }
         },
         scales: {
@@ -57,89 +87,185 @@ const SessionResults = (props: any) => {
         },
     };
 
-        // .filter((result: any) => {
-        //     return result.scores.length > 0;
-        // })
-    
-        const data = {
-            datasets: props?.players?.map((result: any) => {
-                return {
-                    label: result.name,
-                    data: result.scores.map((round: any) => { return {
+    const shotsCostData = {
+        datasets: props?.players?.map((result: any) => {
+            return {
+                label: result.name,
+                data: result.scores.map((round: any) => {
+                    return {
                         x: round.cost / 100,
                         y: round.shots
-                    }}),
-                    backgroundColor: result.color,
+                    }
+                }),
+                backgroundColor: result.color,
+            }
+        })
+    };
+
+    // chart options and data
+    // for all rounds separately
+    // chart options and data
+    const scoreRoundOptions = {
+        animation: {
+            duration: 0, // general animation time
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: `Score per Player by Round`
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Score'
                 }
-            })
-        };
-    
+            },
+            x: {
+                beginAtZero: true,
+                max: 5,
+                title: {
+                    display: true,
+                    text: 'Tournament Round'
+                }
+            },
+        },
+        elements: {
+            point: {
+                radius: 10,
+                // pointStyle: golfBallImage,
+            }
+        },
+        layout: {
+            padding: 20
+        },
+    };
+
+    const scoreRoundData = {
+        datasets: props?.players?.map((result: any) => {
+            return {
+                label: result.name,
+                data: result.scores.map((round: any) => {
+                    return {
+                        x: round.round - 5,
+                        y: round.score / 100
+                    }
+                }),
+                backgroundColor: result.color,
+            }
+        })
+    };
+
     // set up chart js
     ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
-    const navigate = useNavigate();
-    const { playerId } = useContext(UserContext) as any;
+    // table columns and data
+    const tableColumns = [
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Golf Ball',
+            dataIndex: 'color',
+            key: 'color',
+            render: (color: string) => <GolfBall color={color} ></GolfBall>
+        },
+        {
+            title: 'Total Shots',
+            dataIndex: 'shots',
+            key: 'shots',
+            sorter: (a: any, b: any) => {
+                if (a.shots === '...' && !(b.shots === '...')) {
+                    return 1;
+                } else if (!(a.shots === '...') && b.shots === '...') {
+                    return -1;
+                } else if (a.shots === '...' && b.shots === '...') {
+                    return 0;
+                } else {
+                    return a.shots - b.shots
+                }
+            }
+        },
+        {
+            title: 'Total Cost',
+            key: 'cost',
+            dataIndex: 'cost',
+            sorter: (a: any, b: any) => {
+                if (a.cost === '...' && !(b.cost === '...')) {
+                    return 1;
+                } else if (!(a.cost === '...') && b.cost === '...') {
+                    return -1;
+                } else if (a.cost === '...' && b.cost === '...') {
+                    return 0;
+                } else {
+                    return a.cost - b.cost
+                }
+            }
+        },
+        {
+            title: 'Total Score',
+            dataIndex: 'score',
+            key: 'score',
+            defaultSortOrder: 'descend' as any,
+            sorter: (a: any, b: any) => {
+                if (a.score === '...' && !(b.score === '...')) {
+                    return -1;
+                } else if (!(a.score === '...') && b.score === '...') {
+                    return 1;
+                } else if (a.score === '...' && b.score === '...') {
+                    return 0;
+                } else {
+                    return a.score - b.score
+                }
+            }
+        }
+    ];
 
-    const sumShots = (scores: any[]) => {
-        let total = 0;
-        scores.forEach((score: any) => {
-            total += score.shots;
-        });
-        return total;
-    }
-
-    const sumCost = (scores: any[]) => {
-        let total = 0;
-        scores.forEach((score: any) => {
-            total += score.cost;
-        });
-        return total / 100;
-    }
+    const tableData = props?.players?.map((player: any, index: number) => (
+            {
+                key: player.id,
+                name: player.name,
+                color: player.color,
+                shots: sumShots(player.scores),
+                cost: sumCost(player.scores),
+                score: sumScore(player.scores),
+            }
+        ))
 
     return (
         <div className='SessionResults'>
-            <h1>Thanks for playing!</h1>
-            <Button onClick={() => navigate('/')}>Return Home</Button>
-            <Button>View Lifetime Results</Button>
-            <Button>Save Results</Button>
-            <br></br>
-            <h1>Final Tournament Results: </h1>
-            
-            {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
-            <Scatter className='ScatterCanvas' options={options} data={data} />
+            <h1>Final Results </h1>
 
             <div className='ResultTable'>
-                {
-                    // TODO allow sort by stroke and cost
-                    props.players && props.players.length > 0 && 
-                    <div className='GridHeader'>
-                        <p>Rank</p>
-                        <p>Name</p>
-                        <p>Golf Ball</p>
-                        <p>
-                            Total Shots
-                        </p>
-                        <p>
-                            Total Cost
-                        </p>
-                    </div>
-                }
-                {
-                    props.players && props.players.length > 0 && 
-                    props.players.sort((a: any, b: any) => {
-                        return sumShots(a.scores) - sumShots(b.scores)
-                    }).map((result: any, index: number) => (
-                        <div key={result.id} className={`UserResult 
-                                ${result?.id?.toLowerCase() === playerId?.toLowerCase() ? 'MatchingPlayer' : ''}`}>
-                            <p>{index + 1}</p>
-                            <p>{result.name}</p>
-                            <GolfBall color={result.color} />
-                            <p>{sumShots(result.scores)}</p>
-                            <p>{sumCost(result.scores)}</p>
-                        </div>
-                    ))
-                }
+                <Table
+                    pagination={{ pageSize: 10, position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"] }}
+                    columns={tableColumns}
+                    dataSource={tableData}
+                    rowClassName={(record, index) => {
+                        if (record.key.toLowerCase() === playerId.toLowerCase()) {
+                            return 'MatchingPlayer';
+                        } else {
+                            return 'HighlightRow'
+                        }
+                    }}
+                />
             </div>
+
+            {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
+            <Scatter className='ScatterCanvas' options={shotsCostOptions} data={shotsCostData} />
+            <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
+
+            <h1>Thanks for playing!</h1>
+            <div className='EndTournamentButtons'>
+                <Button onClick={() => navigate('/')}>Return Home</Button>
+                <Button onClick={() => alert("Not implemented yet")}>View Lifetime Results</Button>
+                <Button onClick={() => alert("Not implemented yet")}>Save Results</Button>
+            </div>
+            <br></br>
         </div>
     )
 }

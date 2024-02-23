@@ -278,7 +278,7 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                                 onClick={() => hostBeginNextRound()}
                                 disabled={hostClickedButton}
                             >
-                                End Expiremental Round
+                                End Experimental Round
                             </Button>
                         }
                     </div>
