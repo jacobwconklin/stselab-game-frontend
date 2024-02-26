@@ -8,7 +8,7 @@ import TournamentStage from './RoundScreens/TournamentStage';
 import ProfessionalOnly from './RoundScreens/ProfessionalOnly';
 import AmateurOnly from './RoundScreens/AmateurOnly';
 import EntireHole from './RoundScreens/EntireHole';
-import { scoreRound } from '../../Utils/Utils';
+import { RoundNames, scoreRound } from '../../Utils/Utils';
 
 // PlayScreen
 const PlayScreen = (props: any) => {
@@ -79,7 +79,7 @@ const PlayScreen = (props: any) => {
     // Fifth: round 4 -> jump to experimental round
     // Sixth: round 5 -> experimental round survey
     // Seventh: round 6 -> play Tournament Stage 1 (best performance)
-    // Eigth: round 7 -> Play Tournament Stage 2 (minimize cost for 45 strokes)
+    // Eigth: round 7 -> Play Tournament Stage 2 (minimize cost for 35 strokes)
     // Ninth: round 8 -> Play Tournament Stage 3 (balance)
     // Tenth: round 9 -> Play Tournament Stage 4 (custom reward function)
     // Eleventh: round 10 -> Show final Tournament Results
@@ -88,19 +88,19 @@ const PlayScreen = (props: any) => {
         <div className='PlayScreen'>
             <PlayGolfBackground playerColor={playerColor} />
             {
-                props.round === 1 &&
+                props.round === RoundNames.PracticeHArchPro &&
                 <ProfessionalOnly round={props.round} playingRound={playingRound} playRound={playRound} />
             }
             {
-                props.round === 2 &&
+                props.round === RoundNames.PracticeHArchAmateur &&
                 <AmateurOnly round={props.round} />
             }
             {
-                props.round === 3 &&
+                props.round === RoundNames.PracticeHArchAll &&
                 <EntireHole round={props.round} playingRound={playingRound} playRound={playRound} />
             }
             {
-                props.round >= 6 &&
+                props.round >= RoundNames.TournamentStage1 &&
                 <TournamentStage round={props.round} playingRound={playingRound} playRound={playRound} />
             }
         </div>

@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import './WaitRoom.scss';
 import { UserContext } from '../../App';
 import { Button, Table } from 'antd';
-import { postRequest } from '../../Utils/Api';
+import { advanceSession, postRequest } from '../../Utils/Api';
 import { useNavigate } from 'react-router-dom';
 import VerificationModal from '../../ReusableComponents/VerificationModal';
 import GolfBall from '../../ReusableComponents/GolfBall';
@@ -20,19 +20,9 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
     // check host status and session id / join code from context
     const { isHost, sessionId, playerId } = useContext(UserContext) as any;
     // Ensure host doesn't click button multiple times
-    const [beginningTournament, setBeginningTournament] = useState(false);
+    const [beginningTournament, setBeginningTournament] = useState<Boolean>(false);
 
     const navigate = useNavigate();
-
-    const hostBeginTournament = async () => {
-        setBeginningTournament(true);
-        const response = await postRequest("session/advance", JSON.stringify({ sessionId }));
-        if (!response.success) {
-            setBeginningTournament(false);
-            alert("Error beginning tournament, please try again.");
-            console.error(response);
-        }
-    }
 
     // tells backend to remove a player from their session
     const removePlayer = async (playerIdToRemove: any) => {
@@ -112,8 +102,8 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
 
                         <h2> Players in the Tournament: {props.players && props.players.length > 0 ? props.players.length : "..."} </h2>
                         <Button
-                            disabled={beginningTournament}
-                            onClick={hostBeginTournament}
+                            disabled={!!beginningTournament}
+                            onClick={() => advanceSession(sessionId, setBeginningTournament)}
                             type='primary'
                         >
                             Begin Tournament

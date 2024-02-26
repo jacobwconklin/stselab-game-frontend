@@ -14,7 +14,6 @@ const Home = (props: any) => {
     return (
         <div className='Home'>
             <div className='Contents'>
-                {/* TODO add hero image for welcoming players to home page */}
                 <div className='Hero'>
                     <div className='PictogramBlue'></div>
                     <div className='PictogramGreen'></div>
@@ -24,13 +23,6 @@ const Home = (props: any) => {
                         <h1>
                             Welcome to STSELab's Golf Tournament
                         </h1>
-                        {/* <div>
-                            <p>
-                                This free multiplayer game is designed to be instructional and fun. You will learn about Industrial 
-                                Systems Engineering concepts, support research, play golf, and have a chance to beat your 
-                                competitors all at the same time!
-                            </p>
-                        </div> */}
                     </div>
                 </div>
                 <div className='DialogCard'>

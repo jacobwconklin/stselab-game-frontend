@@ -2,35 +2,23 @@ import { useContext, useState } from 'react';
 import './RoundResults.scss';
 import { UserContext } from '../../../App';
 import { Button } from 'antd';
-import { postRequest } from '../../../Utils/Api';
+import { advanceSession } from '../../../Utils/Api';
 import ResultTable from './ResultTable';
 import ResultGraphs from './ResultGraphs';
 import { RoundResult } from '../../../Utils/Types';
+import { RoundNames } from '../../../Utils/Utils';
 // import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
 const RoundResults = (props: { round: number, players: Array<RoundResult> }) => {
     const { isHost, sessionId } = useContext(UserContext) as any;
-    const [hostClickedButton, setHostClickedButton] = useState(false);
-
-    const hostBeginNextRound = async () => {
-        setHostClickedButton(true);
-        // Force host to go through modal if some players haven't finished
-        const response = await postRequest("session/advance", JSON.stringify({ sessionId }));
-        if (response.success) {
-
-        } else {
-            alert("Error advancing round, please try again.")
-            setHostClickedButton(false);
-            console.error(response);
-        }
-    }
+    const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
 
     return (
         <div className='RoundResults'>
             <h1>Results for Round {props?.round}</h1>
             {
-                isHost && props?.round >= 9 &&
+                isHost && props?.round >= RoundNames.TournamentStage4 &&
                 <div className='Instructions HostInstruction'>
                     {
                         props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
@@ -54,8 +42,8 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                         have finished playing this round or not. You may also remove players from the tournament by clicking on their row.
                     </p>
                     <Button
-                        disabled={hostClickedButton}
-                        onClick={hostBeginNextRound}
+                        disabled={!!hostClickedButton}
+                        onClick={() => advanceSession(sessionId, setHostClickedButton)}
                         type='primary'
                     >
                         End Tournament
@@ -63,7 +51,7 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                 </div>
             }
             {
-                isHost && props?.round < 9 &&
+                isHost && props?.round < RoundNames.TournamentStage4 &&
                 <div className='Instructions HostInstruction'>
                     {
                         props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
@@ -87,8 +75,8 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                         You may also remove players from the tournament by clicking on their row.
                     </p>
                     <Button
-                        disabled={hostClickedButton}
-                        onClick={hostBeginNextRound}
+                        disabled={!!hostClickedButton}
+                        onClick={() => advanceSession(sessionId, setHostClickedButton)}
                         type='primary'
                     >
                         Begin Next Round
@@ -116,7 +104,7 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                         </h3>
                     }
                     <p>
-                        {props?.round < 9 ? "Host must begin the next round" : "Host must end the tournament"}
+                        {props?.round < RoundNames.TournamentStage4 ? "Host must begin the next round" : "Host must end the tournament"}
                     </p>
                 </div>
             }

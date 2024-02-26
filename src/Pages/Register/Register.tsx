@@ -420,7 +420,6 @@ const Register = (props: any) => {
 
                 // Save to context whether a player is joining or hosting the session. The Player's unique playerId
                 // will also need to be saved.
-                // TODO save player ID to localstorage or cookies beyond just context. 
 
                 // Save player information to localStorage and retreive it if it is there on start
                 localStorage.setItem('playerInformation', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation }));

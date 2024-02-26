@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../../App';
-import { postRequest } from '../../../Utils/Api';
+import { advanceSession } from '../../../Utils/Api';
 import {
     Chart as ChartJS,
     LinearScale,
@@ -31,20 +31,7 @@ const AmateurOnly = (props: { round: Number }) => {
     const [loading, setLoading] = useState(false);
 
     const { isHost, sessionId } = useContext(UserContext) as any;
-    const [hostClickedButton, setHostClickedButton] = useState(false);
-
-    const hostBeginNextRound = async () => {
-        setHostClickedButton(true);
-        // Force host to go through modal if some players haven't finished
-        const response = await postRequest("session/advance", JSON.stringify({ sessionId }));
-        if (response.success) {
-
-        } else {
-            alert("Error advancing round, please try again.")
-            setHostClickedButton(false);
-            console.error(response);
-        }
-    }
+    const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
 
     const playAmateurRound = async () => {
         try {
@@ -146,8 +133,8 @@ const AmateurOnly = (props: { round: Number }) => {
                                     isHost &&
                                     <Button
                                         className='BeginNextRoundButton'
-                                        disabled={hostClickedButton}
-                                        onClick={() => hostBeginNextRound()}
+                                        disabled={!!hostClickedButton}
+                                        onClick={() => advanceSession(sessionId, setHostClickedButton)}
                                         type='primary'
                                     >Begin Next Round</Button>
                                 }

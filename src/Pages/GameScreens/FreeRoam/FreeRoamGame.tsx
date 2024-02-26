@@ -6,7 +6,7 @@ import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
 import { UserContext } from '../../../App';
-import { postRequest } from '../../../Utils/Api';
+import { advanceSession, postRequest } from '../../../Utils/Api';
 import { ProfessionalSolverCard, SpecialistSolverCard, AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
 import PlayGolfBackground from '../../../ReusableComponents/PlayGolfBackground';
 
@@ -44,7 +44,7 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
     // Set true when user simulates all rounds to tell user it was successful
     const [simulatedAll, setSimulatedAll] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [hostClickedButton, setHostClickedButton] = useState(false);
+    const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
 
     // Play round
     const playModule = async () => {
@@ -125,19 +125,6 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
 
         } catch (error) {
             console.error("Error saving free roam result: ", error)
-        }
-    }
-
-    const hostBeginNextRound = async () => {
-        setHostClickedButton(true);
-        // Force host to go through modal if some players haven't finished
-        const response = await postRequest("session/advance", JSON.stringify({sessionId}));
-        if (response.success) {
-
-        } else {
-            alert("Error advancing round, please try again.")
-            setHostClickedButton(false);
-            console.error(response);
         }
     }
     
@@ -275,8 +262,8 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                             <Button
                                 className='EndRoundButton'
                                 type='primary'
-                                onClick={() => hostBeginNextRound()}
-                                disabled={hostClickedButton}
+                                onClick={() => advanceSession(sessionId, setHostClickedButton)}
+                                disabled={!!hostClickedButton}
                             >
                                 End Experimental Round
                             </Button>

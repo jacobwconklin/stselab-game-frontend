@@ -1,21 +1,55 @@
 import {
     Button,
     Checkbox,
-  } from 'antd';
+} from 'antd';
 import './FreeRoamSurvey.scss';
 import { SetStateAction, useContext, useEffect, useState } from 'react';
-import { postRequest } from '../../../Utils/Api';
+import { advanceSession, postRequest } from '../../../Utils/Api';
 import { UserContext } from '../../../App';
 import { solverNames } from '../../../Utils/Simulation';
 
 // FreeRoamSurvey
-const FreeRoamSurvey = (props: {setShowModuleResultsSurvey: (val: SetStateAction<boolean>) => void, 
-    surveySuccesfullySubmitted: Boolean, setSurveySuccessfullySubmitted: (val: SetStateAction<boolean>) => void }) => {
+const FreeRoamSurvey = (props: {
+    setShowModuleResultsSurvey: (val: SetStateAction<boolean>) => void,
+    surveySuccesfullySubmitted: Boolean, setSurveySuccessfullySubmitted: (val: SetStateAction<boolean>) => void
+}) => {
 
     // Scroll to top on entering page
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [])
+
+    const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
+    const [surveysSubmitted, setSurveysSubmitted] = useState<number | null>(null);
+
+    const { isHost, playerId, sessionId } = useContext(UserContext);
+
+    // TODO as per meeting add ("Not sure") option to each question
+    // TODO also may want to add or move simulate all button into view-results page
+    // TODO may also want to write survey results to localStorage 
+
+    useEffect(() => {
+        // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
+        // Interval will regularly poll back-end for updates 
+        const interval = setInterval(async () => {
+            try {
+                if (!totalPlayers || !surveysSubmitted || surveysSubmitted < totalPlayers) {
+                    const response = await postRequest('session/surveyssubmitted', JSON.stringify({ sessionId }));
+                    if (response.success) {
+                        setTotalPlayers(response.totalPlayers);
+                        setSurveysSubmitted(response.surveysSubmitted);
+                    }
+                }
+            } catch (error) {
+                console.error("Error pulling suverys submitted: ", error);
+            }
+        }, 2500); // This is the frequency of the polling in milliseconds.
+
+        // clear interval when component unmounts
+        return () => {
+            clearInterval(interval);
+        }
+    }, [sessionId, surveysSubmitted, totalPlayers]);
 
     // To make choices simple to store, can use values of:
     // 1 -> Professional
@@ -33,9 +67,7 @@ const FreeRoamSurvey = (props: {setShowModuleResultsSurvey: (val: SetStateAction
     const [shortChoice, setShortChoice] = useState([]);
     const [puttChoice, setPuttChoice] = useState([]);
     // const modules = ["Drive", "Long", "Fairway", "Short", "Putt"]
-    const [hostClickedButton, setHostClickedButton] = useState(false);
-
-    const { isHost, playerId, sessionId } = useContext(UserContext);
+    const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
 
     const convertChoicesToNumber = (choices: string[]) => {
         let number = 0;
@@ -53,8 +85,6 @@ const FreeRoamSurvey = (props: {setShowModuleResultsSurvey: (val: SetStateAction
             number = 2;
         } else if (choices.includes("Professional")) {
             number = 1;
-        } else {
-            // CANNOT leave blank TODO make sure this is not possible
         }
         return number;
     }
@@ -64,7 +94,7 @@ const FreeRoamSurvey = (props: {setShowModuleResultsSurvey: (val: SetStateAction
         try {
             setSubmitting(true);
             setAttemptedSubmit(true);
-            // TODO check for all 5 modules having values
+            // Check for all 5 modules having values
             if (driveChoice.length > 0 && longChoice.length > 0 && fairwayChoice.length > 0 &&
                 shortChoice.length > 0 && puttChoice.length > 0) {
                 // save player information
@@ -92,59 +122,60 @@ const FreeRoamSurvey = (props: {setShowModuleResultsSurvey: (val: SetStateAction
         }
     }
 
-    const hostBeginNextRound = async () => {
-        setHostClickedButton(true);
-        // Force host to go through modal if some players haven't finished
-        const response = await postRequest("session/advance", JSON.stringify({sessionId}));
-        if (response.success) {
-
-        } else {
-            alert("Error advancing round, please try again.")
-            setHostClickedButton(false);
-            console.error(response);
-        }
-    }
-
     return (
         <div className='FreeRoamSurvey'>
             {
-                props.surveySuccesfullySubmitted ? 
-                <div className='SuccessfullySubmittedMessage'>
-                    <h1>Survey Submitted!</h1>
-                    {/* 
-                        TODO addd method to track how many (and maybe which) players have submitted the survey. Will likely need backend endpoint to gather all surveys in db for players in this session, and will need to poll that endpoint.
-                    <p> _______ Players still filling out survey</p> */}
-                    {/* Take # of players in session - number of surveys in db (which will have to come with status? -> maybe should be written in session to make polling easy) */}
-                    {
-                        isHost ?
-                        <div className='VerticalContainer'>
-                        <Button
-                            onClick={() => props.setShowModuleResultsSurvey(true)}
-                        >
-                            Review Results
-                        </Button>
-                            <h3>Continue the game and begin the tournament for all players when you are ready</h3>
-                            <Button
-                                onClick={() => hostBeginNextRound()}
-                                disabled={hostClickedButton}
-                            >
-                                Begin Tournament
-                            </Button>
-                        </div>
-                        :
-                        <div className='VerticalContainer'>
-                            <Button
-                                onClick={() => props.setShowModuleResultsSurvey(true)}
-                            >
-                                Review Results
-                            </Button>
-                            <h3>Wait for the host to continue the game and begin the tournament</h3>
-                        </div>
-                    }
-                </div>
-                :
-                <div className='SurveyForms'>
-                    <h2>Please select who you believe are the best solvers for each module. You may select more than one.</h2>
+                props.surveySuccesfullySubmitted ?
+                    <div className='SuccessfullySubmittedMessage'>
+                        <h1>Survey Submitted!</h1>
+                        {
+                            totalPlayers && surveysSubmitted && totalPlayers === surveysSubmitted ?
+                                <h3>All players have submitted their surveys</h3>
+                                :
+                                (
+                                    totalPlayers && surveysSubmitted ?
+                                    <div>
+                                        <h3>
+                                            {surveysSubmitted} player{surveysSubmitted > 1 ? 's have' : ' has'} submitted their surveys
+                                        </h3>
+                                        <h3>
+                                            {totalPlayers - surveysSubmitted} player{totalPlayers - surveysSubmitted > 1 ? 's are' : ' is'} still taking the survey
+                                        </h3>
+                                    </div>
+                                    :
+                                    <></>
+                                )
+                        }
+                        {
+                            isHost ?
+                                <div className='VerticalContainer'>
+                                    <Button
+                                        onClick={() => props.setShowModuleResultsSurvey(true)}
+                                    >
+                                        Review Results
+                                    </Button>
+                                    <h3>Continue the game and begin the tournament for all players when you are ready</h3>
+                                    <Button
+                                        onClick={() => advanceSession(sessionId, setHostClickedButton)}
+                                        disabled={!!hostClickedButton}
+                                    >
+                                        Begin Tournament
+                                    </Button>
+                                </div>
+                                :
+                                <div className='VerticalContainer'>
+                                    <Button
+                                        onClick={() => props.setShowModuleResultsSurvey(true)}
+                                    >
+                                        Review Results
+                                    </Button>
+                                    <h3>Wait for the host to continue the game and begin the tournament</h3>
+                                </div>
+                        }
+                    </div>
+                    :
+                    <div className='SurveyForms'>
+                        <h2>Please select who you believe are the best solvers for each module. You may select more than one.</h2>
                         <Button
                             onClick={() => props.setShowModuleResultsSurvey(true)}
                         >
@@ -152,71 +183,71 @@ const FreeRoamSurvey = (props: {setShowModuleResultsSurvey: (val: SetStateAction
                         </Button>
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
-                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Drive module?
                         </h3>
-                        <Checkbox.Group 
+                        <Checkbox.Group
                             className={attemptedSubmit && driveChoice.length === 0 ? 'ErrorCheckBox' : ''}
                             options={solverNames}
                             value={driveChoice}
-                            onChange={(checkedValues) => {setDriveChoice(checkedValues)}}
+                            onChange={(checkedValues) => { setDriveChoice(checkedValues) }}
                         />
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
-                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Long module?
                         </h3>
-                        <Checkbox.Group 
+                        <Checkbox.Group
                             className={attemptedSubmit && longChoice.length === 0 ? 'ErrorCheckBox' : ''}
                             options={solverNames}
                             value={longChoice}
-                            onChange={(checkedValues) => {setLongChoice(checkedValues)}}
+                            onChange={(checkedValues) => { setLongChoice(checkedValues) }}
                         />
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
-                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Fairway module?
                         </h3>
-                        <Checkbox.Group 
+                        <Checkbox.Group
                             className={attemptedSubmit && fairwayChoice.length === 0 ? 'ErrorCheckBox' : ''}
                             options={solverNames}
                             value={fairwayChoice}
-                            onChange={(checkedValues) => {setFairwayChoice(checkedValues)}}
+                            onChange={(checkedValues) => { setFairwayChoice(checkedValues) }}
                         />
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
-                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Short module?
                         </h3>
-                        <Checkbox.Group 
+                        <Checkbox.Group
                             className={attemptedSubmit && shortChoice.length === 0 ? 'ErrorCheckBox' : ''}
                             options={solverNames}
                             value={shortChoice}
-                            onChange={(checkedValues) => {setShortChoice(checkedValues)}}
+                            onChange={(checkedValues) => { setShortChoice(checkedValues) }}
                         />
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
-                            <span style={{color: 'red', fontSize: 'large'}}>* </span>
+                            <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Putt module?
                         </h3>
-                        <Checkbox.Group 
+                        <Checkbox.Group
                             className={attemptedSubmit && puttChoice.length === 0 ? 'ErrorCheckBox' : ''}
                             options={solverNames}
                             value={puttChoice}
-                            onChange={(checkedValues) => {setPuttChoice(checkedValues)}}
+                            onChange={(checkedValues) => { setPuttChoice(checkedValues) }}
                         />
                         <br></br>
                         <br></br>
                         <div className='ButtonHolder'>
-                            <Button 
-                                disabled={ submitting } 
+                            <Button
+                                disabled={submitting}
                                 onClick={submit}
                             >
                                 Submit
                             </Button>
                         </div>
                         <br></br>
-                </div>
+                    </div>
             }
         </div>
     )

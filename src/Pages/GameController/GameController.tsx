@@ -9,6 +9,7 @@ import RoundResults from '../GameScreens/Results/RoundResults';
 import SessionResults from '../GameScreens/SessionResults';
 import FreeRoam from '../GameScreens/FreeRoam/FreeRoam';
 import { RoundResult } from '../../Utils/Types';
+import { RoundNames } from '../../Utils/Utils';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
 // displays the session screen showing all of the players in a the tournament. Once started, it will 
@@ -66,7 +67,7 @@ const GameController = (props: any) => {
                 // Rounds where OTHER player results want to be seen will pull round results and include:
                 // 1, 3, 6, 7, 8, 9, 10 (but 10 requires results from entire tournament)
                 const currentRound = response?.session?.round;
-                if (currentRound === 1 || currentRound === 3 || (currentRound >= 6 && currentRound < 10)) {
+                if (currentRound === RoundNames.PracticeHArchPro || currentRound === RoundNames.PracticeHArchAll || (currentRound >= RoundNames.TournamentStage1 && currentRound < RoundNames.FinalResults)) {
                     const resultsResponse = await postRequest('/session/roundresults', JSON.stringify({
                         sessionId, round: currentRound
                     }));
@@ -77,7 +78,7 @@ const GameController = (props: any) => {
                     else {
                         console.error(`Error fetching results for round${currentRound} received: `, resultsResponse);
                     }
-                } else if (currentRound === 10) {
+                } else if (currentRound === RoundNames.FinalResults) {
                     const resultsResponse = await postRequest('/session/finalresults', JSON.stringify({
                         sessionId
                     }));
@@ -116,7 +117,7 @@ const GameController = (props: any) => {
     // Fifth: round 4 -> jump to experimental round
     // Sixth: round 5 -> experimental round survey
     // Seventh: round 6 -> play Tournament Stage 1 (best performance)
-    // Eigth: round 7 -> Play Tournament Stage 2 (minimize cost for 45 strokes)
+    // Eigth: round 7 -> Play Tournament Stage 2 (minimize cost for 35 strokes)
     // Ninth: round 8 -> Play Tournament Stage 3 (balance)
     // Tenth: round 9 -> Play Tournament Stage 4 (custom reward function)
     // Eleventh: round 10 -> Show final Tournament Results
@@ -129,7 +130,7 @@ const GameController = (props: any) => {
         return <Navigate to="/" />
     }
     // if session has not started show wait room
-    else if (!sessionStatus || sessionStatus?.session?.round === 0) {
+    else if (!sessionStatus || sessionStatus?.session?.round === RoundNames.WaitRoom) {
         return (
             <div className='GameController'>
                 <WaitRoom players={sessionStatus?.players ? sessionStatus.players : []} />
@@ -137,7 +138,7 @@ const GameController = (props: any) => {
         )
     }
     // show practice rounds (some with results) or Tournament Stages
-    else if (sessionStatus?.session?.round < 4 || (sessionStatus?.session?.round > 5 && sessionStatus?.session?.round < 10)) {
+    else if (sessionStatus?.session?.round < RoundNames.Experimental || (sessionStatus?.session?.round > RoundNames.ExperimentalSurvey && sessionStatus?.session?.round < RoundNames.FinalResults)) {
         if (!finishedRound[sessionStatus?.session?.round]) {
             return (
                 <div className='GameController'>
@@ -153,7 +154,8 @@ const GameController = (props: any) => {
         }
     }
     // if on experimental round show experimental round
-    else if (sessionStatus?.session?.round >= 4 && sessionStatus?.session?.round <= 5) {
+    else if (sessionStatus?.session?.round >= RoundNames.Experimental && sessionStatus?.session?.round 
+        <= RoundNames.ExperimentalSurvey) {
         return (
             <div className='GameController'>
                 <FreeRoam round={sessionStatus?.session?.round} />

@@ -4,6 +4,7 @@ import { Solver } from '../../../Utils/Simulation';
 import ModuleResults from './ModuleResults';
 import FreeRoamGame from './FreeRoamGame';
 import FreeRoamSurvey from './FreeRoamSurvey';
+import { RoundNames } from '../../../Utils/Utils';
 
 // Free Roam
 // Allow players to freely play around with selecting solvers for the 5 various modules.
@@ -31,7 +32,7 @@ const FreeRoam = (props: {round?: number}) => {
     return (
         <div className='FreeRoam'>
             {
-                props?.round === 5 ?
+                props?.round === RoundNames.ExperimentalSurvey ?
                 (
                     showModuleResultsSurvey ?
                     <ModuleResults results={allResults} origin={"Survey"} return={() => setShowModuleResultsSurvey(false)} />

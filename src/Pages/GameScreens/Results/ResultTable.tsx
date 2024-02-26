@@ -2,7 +2,7 @@ import { Table } from "antd";
 import GolfBall from "../../../ReusableComponents/GolfBall";
 import { Solver, solverNames } from "../../../Utils/Simulation";
 import { RoundResult } from "../../../Utils/Types";
-import { getArchitectureCommonName } from "../../../Utils/Utils";
+import { RoundNames, getArchitectureCommonName } from "../../../Utils/Utils";
 import { UserContext } from "../../../App";
 import { useContext, useState } from "react";
 import { postRequest } from "../../../Utils/Api";
@@ -55,7 +55,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             title: 'Shots',
             dataIndex: 'shots',
             key: 'shots',
-            defaultSortOrder: props.round < 6 ? 'ascend' as any : null,
+            defaultSortOrder: props.round < RoundNames.TournamentStage1 ? 'ascend' as any : null,
             sorter: (a: any, b: any) => {
                 if (a.shots === '...' && !(b.shots === '...')) {
                     return 1;
@@ -180,8 +180,8 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
         <div className="ResultTable">
             <Table
                 pagination={{ pageSize: 10, position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"] }}
-                columns={props.round < 6 ? baseColumns : getExtendedColumns()}
-                dataSource={props.round < 6 ? getBaseData() : getExtendedData()}
+                columns={props.round < RoundNames.TournamentStage1 ? baseColumns : getExtendedColumns()}
+                dataSource={props.round < RoundNames.TournamentStage1 ? getBaseData() : getExtendedData()}
                 rowClassName={(record, index) => {
                     if (isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
                         return 'Clickable';

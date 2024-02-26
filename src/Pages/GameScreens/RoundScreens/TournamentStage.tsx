@@ -7,6 +7,7 @@ import { UserContext } from '../../../App';
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
+import { RoundNames } from '../../../Utils/Utils';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
@@ -58,7 +59,7 @@ const TournamentStage = (props: {
 
     const roundObjectives = [
         "Best performance no matter the cost",
-        "Minimize cost with performance of at most 45 strokes",
+        "Minimize cost with performance of at most 35 strokes",
         "Minimize cost and performance",
         "Choose the weight of performance versus cost yourself"
     ];
@@ -254,7 +255,7 @@ const TournamentStage = (props: {
                             Round Objective: {roundObjectives[props.round - 6]}
                         </h2>
                         {
-                            props.round === 9 &&
+                            props.round === RoundNames.TournamentStage4 &&
                             <div className='DetermineObjective'>
                                 <Slider
                                     tooltip={{

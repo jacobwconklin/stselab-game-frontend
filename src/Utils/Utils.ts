@@ -1,3 +1,19 @@
+// When updating round numbers do so here to not break application
+export enum RoundNames {
+    WaitRoom = 0,
+    PracticeHArchPro = 1,
+    PracticeHArchAmateur = 2,
+    PracticeHArchAll = 3,
+    Experimental = 4,
+    ExperimentalSurvey = 5,
+    TournamentStage1 = 6,
+    TournamentStage2 = 7,
+    TournamentStage3 = 8,
+    TournamentStage4 = 9,
+    FinalResults = 10
+}
+
+
 // Useful reusable functions
 export const getArchitectureCommonName = (architecture: string) => {
     if (architecture === "h") { 
@@ -12,7 +28,7 @@ export const getArchitectureCommonName = (architecture: string) => {
     else return "Unknown Architecture"
 }
 
-// Scores the results of a round in the tournament (TODO will probably store score in db)
+// Scores the results of a round in the tournament 
 // @param customPerfomance is a percent (between 0 and 1) of the score that is associated with shots.
 // 1 - customPerformance is the percent associated with cost
 export const scoreRound = (round: number, shots: number, cost: number, customPerformance?: number) => {
@@ -27,7 +43,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
             return (45 - shots - 5) * (100 / 45);
         }
     } else if (round === 7) {
-        // On round 7 minimum cost is rewarded as long as the performance is <= 45 strokes (TODO too high for 5 holes)
+        // On round 7 minimum cost is rewarded as long as the performance is <= 35 strokes (TODO settle on stroke number)
         // This one may need to not be linear
         // Minimum cost ~ (3 specialists 60 - 90), (3 amateurs = 25), (3 professional ~ 50), 
         // Say Minimum cost is 10 = score of 100
@@ -38,7 +54,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         }
 
         const score = (140 - cost - 10) * (100 / 140); 
-        if (shots > 45) {
+        if (shots > 35) {
             // divide score by amount as penalty
             return Math.floor(score / 10);
         } else {

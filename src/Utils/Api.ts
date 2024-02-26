@@ -31,7 +31,19 @@ export const postRequest = async (endpoint: string, payload: string) => {
     return data;
 }
 
-// TODO move hostAdvanceSession here For host to advance a session along
-// export const advanceSession = async (sessionId: string) => {
-
-// }
+// Whenever Host advances session this function can be called. setAdvancingTournmanet is a function call back
+// allowing the advance button to be disabled and avoid multiple clicks. 
+export const advanceSession = async (sessionId: string, setAdvancingTournament: (val: Boolean) => void) => {
+    try {
+        setAdvancingTournament(true);
+        const response = await postRequest("session/advance", JSON.stringify({ sessionId }));
+        if (!response.success) {
+            setAdvancingTournament(false);
+            alert("Error beginning tournament, please try again.");
+            console.error(response);
+        }
+    } catch (error) {
+        setAdvancingTournament(false);
+        console.error(error);
+    }
+}

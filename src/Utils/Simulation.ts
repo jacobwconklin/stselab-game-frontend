@@ -6,6 +6,16 @@ import { getBackendUrl } from "./Api";
 // Update to change holes played on each architecture:
 const holesPerArchitecture = 5;
 
+export enum Solver {
+    Professional = 1,
+    Amateur = 2,
+    Specialist = 3
+}
+
+export const solverNames = ['Professional', 'Amateur', 'Specialist'];
+
+const groupSizePerSolver = [1, 25, 3];
+
 // use for post requests to simulation
 const simulationPostRequest = async (endpoint: string, payload: string) => {
     // for now must hit back-end for access to simulation, 
@@ -25,16 +35,6 @@ const simulationPostRequest = async (endpoint: string, payload: string) => {
     const data = await response.json();
     return data;
 }
-
-export enum Solver {
-    Professional = 1,
-    Amateur = 2,
-    Specialist = 3
-}
-
-export const solverNames = ['Professional', 'Amateur', 'Specialist'];
-
-const groupSizePerSolver = [1, 25, 3];
 
 // methods for each specific simulation run
 // TODO can set up hole length, holes, and runs to be dynamic if desired and changable by host on a settings page
