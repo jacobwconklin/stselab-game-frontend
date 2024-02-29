@@ -1,0 +1,14 @@
+.SessionResults {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 30px;
+
+    
+    .EndTournamentButtons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }    
+
+}

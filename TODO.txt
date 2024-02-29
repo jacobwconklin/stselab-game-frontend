@@ -1,1 +1,10 @@
-This will outline the major TODOs so they can be ordered 
+This can outline the major TODOs so they can be ordered 
+
+- ASK Professor: 
+1. What is 'size' in playShort and playPutt, is it the distance to accept making a whole ie should it always be 0.5?
+2. What is 'strategy' parameter (sometimes called with 0 and sometimes 1)
+3. Play fairway should I use rule 1 (minimize distance to hole) or rule 2 (minimize strokes)
+
+ADD TYPES for all "any" placeholders
+
+Work on Final Results page, display winner and tell user what they placed. Implement save results button to print screen or at least save graphs.

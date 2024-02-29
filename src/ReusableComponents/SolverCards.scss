@@ -1,0 +1,38 @@
+.SolverCard {
+    width: 220px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: whitesmoke;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
+    padding: 10px 15px 10px 15px;
+    margin: 4px;
+
+    h2 {
+
+        height: 50px;
+        margin: 0px 0px 10px 0px;
+        
+        .GolferIcon {
+            padding-left: 10px;
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    .Description {
+        height: 100px;
+        margin: 0px;
+    }
+
+    .InfoTooltipHolder {
+        background-color: rgba(0, 0, 0, 0);
+        border: none;
+        box-shadow: none;
+        height: 22px;
+        width: 22px;
+        padding: 2px 0px 0px 3px;
+    }
+}

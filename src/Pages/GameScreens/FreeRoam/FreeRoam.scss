@@ -1,0 +1,210 @@
+.FreeRoam {
+
+    width: 100%;
+    min-height: calc(100vh - 60px);
+    height: fit-content;
+    overflow: hidden;
+    position: relative;
+
+    .FreeRoamExperiment {
+        width: 100% ;
+        min-height: calc(100vh - 60px);
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    .Highlight {
+        position: absolute;
+        bottom: 0px;
+        width: 34%;
+        height: 22px;
+        background-color: rgba(255, 217, 0, 0);
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background-color: rgba(255, 217, 0, 0.5);
+            border: 3px solid rgb(255, 238, 0);
+            cursor: pointer;
+        }
+    }
+
+    .Long {
+        bottom: 52px;
+        left: 0px;
+        width: calc(72% - 4px);
+        border: 3px solid rgba(0, 0, 0, 0);
+    }
+
+    .Drive {
+        left: 0px;
+        bottom: 0px;
+        height: 48px;
+        width: calc(10% + 8px);
+        z-index: 5;
+        border: 3px solid rgba(0, 0, 0, 0);
+    }
+
+    .Fairway {
+        bottom: 26px;
+        left: calc(10% + 12px);;
+        width: calc( 62% - 16px ) ;
+        border: 3px solid rgba(0, 0, 0, 0);
+    }
+
+    .Short {
+        right: 0px;
+        width: calc(90% - 16px);
+        border: 3px solid rgba(0, 0, 0, 0);
+    }
+
+    .Putt {
+        justify-content: flex-start;
+        height: 48px;
+        bottom: 26px;
+        right: 0px;
+        width: calc(28% - 4px);
+        border: 3px solid rgba(0, 0, 0, 0);
+    }
+
+    .Active {
+        border: 3px solid white;
+        background-color: rgba(5, 98, 0, 0.99);
+        color: white;
+    }
+
+    // .PositionDrive {
+    //     left: 50px;
+    // }
+
+    // .SolverIcon {
+    //     position: absolute;
+    //     bottom: 10px;
+
+    //     .SolverIconImage {
+    //         width: 100px;
+    //         height: 100px;
+    //     }
+    // }
+    
+    .Controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .Instructions {
+            text-align: center;
+            margin: 20px;
+            width: 650px;
+            background-color: whitesmoke;
+            border-radius: 10px;
+            box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
+            padding: 5px 20px 15px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            p {
+                text-align: left;
+            }
+
+            .EndRoundButton {
+                margin-top: 20px;
+            }
+        }
+
+        .Modules {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+
+            .ModuleButton {
+                width: 80px;
+            }
+        }
+
+        .InformationHorizontalSplit {
+            gap: 15px;
+
+            .SelectionsAndActions {
+                height: 150px;
+                min-width: 400px;
+                display: flex;
+                align-items: center;
+
+                .Selections {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 15px 0px 15px 0px;
+        
+                    h2 {
+                        width: 350px;
+                        text-align: left;
+                        margin-top: 0px;
+                        margin-bottom: 5px;
+                    }
+                }
+
+                .PlayAndShowResults {
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 15px;
+                }
+            }
+
+            .SolverIcons {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+        
+        .Solvers {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 100px;
+        }
+    }
+
+    .ExplanationModal {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100vw;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 11;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .ExplanationModalBody {
+            width: 50%;
+            background-color: whitesmoke;        
+            border: 3px solid black;
+            border-radius: 10px;
+            padding: 40px;
+            z-index: 12;
+
+            h2 {
+                text-align: center;
+            }
+
+            .ModalButtons {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 20px;
+            }
+        }
+    }
+}

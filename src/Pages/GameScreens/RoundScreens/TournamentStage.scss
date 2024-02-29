@@ -1,0 +1,82 @@
+.TournamentStage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .Controls {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .Instructions {
+            min-width: 210px;
+            width: calc(100% - 80px);
+            max-width: 730px;
+
+            h1 {
+                margin: 10px 0px 5px 0px;
+            }
+
+            h2 {
+                margin: 5px 0px 5px 0px;
+            }
+
+            .HeaderIconImage {
+                width: 40px;
+                height: 40px;
+                margin: 0px 10px 0px 10px;
+            }
+
+            .InfoContainer {
+                text-align: left;
+
+                .DetermineObjective {
+                    padding: 2px 25px 2px 35px;
+                }
+            }
+        }
+
+        .Solvers {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 100px;
+        }
+    }
+
+    .TournamentBeginModal {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100vw;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 11;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .TournamentBeginModalBody {
+            width: 50%;
+            background-color: whitesmoke;        
+            border: 3px solid black;
+            border-radius: 10px;
+            padding: 40px;
+            z-index: 12;
+
+            h2 {
+                text-align: center;
+            }
+
+            .ModalButtons {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 20px;
+            }
+        }
+    }
+}

@@ -1,15 +1,5 @@
 .Home {
 
-    @keyframes slide{
-        0% {
-          transform: translate3d(0, 0, 0);
-        }
-        100% {
-          transform: translate3d(-1024px, 0, 0);
-        }
-      }
-
-
     .Contents {
 
         display: flex;
@@ -17,19 +7,76 @@
         align-items: center;
         gap: 30px;
         text-align: left;
-        padding-top: 45px;
 
-        .WelcomeCard {
-            width: 50%;
-            min-width: 300px;
-            background-color: whitesmoke;
-            border-radius: 10px;
-            box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
+        .Hero {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0px 0px 0px 0px;
+            width: calc(100% - 40px);
+            background-color: rgb(132, 172, 132);
+            background-image: url("../../Assets/Hero/colorful-course.jpg");
+            background-size: cover;
+            height: calc(100vh - 170px);
             padding: 5px 20px 5px 20px;
         }
 
+        // .PictogramBlue {
+        //     background-image: url("../../Assets/Hero/pictogram-blue.jpg");
+        //     background-size: cover;
+        //     position: absolute;
+        //     top: 0;
+        //     right: 0;
+        //     width: 50%;
+        //     height: 50%;
+        // }
+
+        // .PictogramGreen {
+        //     background-image: url("../../Assets/Hero/pictogram-green.jpg");
+        //     background-size: cover;
+        //     position: absolute;
+        //     bottom: 0;
+        //     right: 0;
+        //     width: 80%;
+        //     height: 51%;
+        // }
+
+        // .PictogramPink {
+        //     background-image: url("../../Assets/Hero/pictogram-pink.jpg");
+        //     background-size: cover;
+        //     position: absolute;
+        //     bottom: 0;
+        //     left: 0;
+        //     width: 51%;
+        //     height: 100%;
+        // }
+
+        // .PictogramOrange {
+        //     background-image: url("../../Assets/Hero/pictogram-orange.jpg");
+        //     background-size: cover;
+        //     position: absolute;
+        //     bottom: 0;
+        //     left: 0;
+        //     width: 51%;
+        //     height: 50%;
+        // }
+
+        .WelcomeCard {
+            min-width: 300px;
+            background-color: rgba(245, 245, 245, 0.85);
+            border-radius: 10px;
+            padding: 5px 15px 5px 15px;
+            z-index: 1;
+            text-align: center;
+            h1 {
+                font-size: 4em;
+                font-weight: 700;
+            }
+        }
+
         .DialogCard {
-            width: 50%;
+            width: 60%;
             min-width: 300px;
             background-color: whitesmoke;
             border-radius: 10px;
