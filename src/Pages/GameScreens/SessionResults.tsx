@@ -11,15 +11,17 @@ import {
     LineElement,
     Tooltip,
     Legend,
+    Title
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
+import { UserContextType } from '../../Utils/Types';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
 const SessionResults = (props: any) => {
 
     const navigate = useNavigate();
-    const { playerId } = useContext(UserContext) as any;
+    const { playerId } = useContext(UserContext) as UserContextType;
 
     const sumShots = (scores: any[]) => {
         let total = 0;
@@ -159,10 +161,27 @@ const SessionResults = (props: any) => {
     };
 
     // set up chart js
-    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title);
 
     // table columns and data
     const tableColumns = [
+        {
+            title: 'Total Score',
+            dataIndex: 'score',
+            key: 'score',
+            defaultSortOrder: 'descend' as any,
+            sorter: (a: any, b: any) => {
+                if (a.score === '...' && !(b.score === '...')) {
+                    return -1;
+                } else if (!(a.score === '...') && b.score === '...') {
+                    return 1;
+                } else if (a.score === '...' && b.score === '...') {
+                    return 0;
+                } else {
+                    return a.score - b.score
+                }
+            }
+        },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -206,35 +225,18 @@ const SessionResults = (props: any) => {
                 }
             }
         },
-        {
-            title: 'Total Score',
-            dataIndex: 'score',
-            key: 'score',
-            defaultSortOrder: 'descend' as any,
-            sorter: (a: any, b: any) => {
-                if (a.score === '...' && !(b.score === '...')) {
-                    return -1;
-                } else if (!(a.score === '...') && b.score === '...') {
-                    return 1;
-                } else if (a.score === '...' && b.score === '...') {
-                    return 0;
-                } else {
-                    return a.score - b.score
-                }
-            }
-        }
     ];
 
     const tableData = props?.players?.map((player: any, index: number) => (
-            {
-                key: player.id,
-                name: player.name,
-                color: player.color,
-                shots: sumShots(player.scores),
-                cost: sumCost(player.scores),
-                score: sumScore(player.scores),
-            }
-        ))
+        {
+            key: player.id,
+            name: player.name,
+            color: player.color,
+            shots: sumShots(player.scores),
+            cost: sumCost(player.scores).toFixed(2),
+            score: sumScore(player.scores).toFixed(2),
+        }
+    ));
 
     return (
         <div className='SessionResults'>
@@ -242,11 +244,12 @@ const SessionResults = (props: any) => {
 
             <div className='ResultTable'>
                 <Table
-                    pagination={{ pageSize: 10, position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"] }}
+                    pagination={{ pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
                     columns={tableColumns}
                     dataSource={tableData}
+                    rowKey={(record) => record.key}
                     rowClassName={(record, index) => {
-                        if (record.key.toLowerCase() === playerId.toLowerCase()) {
+                        if (playerId && record.key.toLowerCase() === playerId.toLowerCase()) {
                             return 'MatchingPlayer';
                         } else {
                             return 'HighlightRow'
@@ -262,7 +265,7 @@ const SessionResults = (props: any) => {
             <h1>Thanks for playing!</h1>
             <div className='EndTournamentButtons'>
                 <Button onClick={() => navigate('/')}>Return Home</Button>
-                <Button onClick={() => alert("Not implemented yet")}>View Lifetime Results</Button>
+                <Button onClick={() => navigate('/results')}>View Lifetime Results</Button>
                 <Button onClick={() => alert("Not implemented yet")}>Save Results</Button>
             </div>
             <br></br>

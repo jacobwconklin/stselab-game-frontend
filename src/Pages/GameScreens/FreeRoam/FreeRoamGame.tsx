@@ -1,6 +1,6 @@
 import { SetStateAction, useContext, useState } from 'react';
 import './FreeRoamGame.scss';
-import { Solver, runPlayDrive, runPlayFairway, runPlayLong, runPlayPutt, runPlayShort, solverNames  } from '../../../Utils/Simulation';
+import { Solver, runPlayDrive, runPlayFairway, runPlayLong, runPlayPutt, runPlayShort, solverNames } from '../../../Utils/Simulation';
 import { Button, Tooltip } from 'antd';
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
@@ -9,6 +9,7 @@ import { UserContext } from '../../../App';
 import { advanceSession, postRequest } from '../../../Utils/Api';
 import { ProfessionalSolverCard, SpecialistSolverCard, AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
 import PlayGolfBackground from '../../../ReusableComponents/PlayGolfBackground';
+import { UserContextType } from '../../../Utils/Types';
 
 // Free Roam
 // Allow players to freely play around with selecting solvers for the 5 various modules.
@@ -20,12 +21,14 @@ import PlayGolfBackground from '../../../ReusableComponents/PlayGolfBackground';
 // by clicking on the corresponding part of the golf course (a little tricky as many overlap like short and putt, but 
 // I can probably just make the smaller ones sit on top). 
 // Requires no props, and should not even require being in a tournament. 
-const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean>) => void, 
-    allResults: {shots: number, distance: number, solver: Solver, module: string}[], 
-    setAllResults: (newValue: {shots: number, distance: number, solver: Solver, module: string}[]) => void,
-    showExplanationModal: boolean, setShowExplanationModal: (val: SetStateAction<boolean>) => void}) => {
+const FreeRoamGame = (props: {
+    setShowModuleResults: (val: SetStateAction<boolean>) => void,
+    allResults: { shots: number, distance: number, solver: Solver, module: string }[],
+    setAllResults: (newValue: { shots: number, distance: number, solver: Solver, module: string }[]) => void,
+    showExplanationModal: boolean, setShowExplanationModal: (val: SetStateAction<boolean>) => void
+}) => {
 
-    const { playerColor, playerId, isHost, sessionId } = useContext(UserContext) as any;
+    const { playerColor, playerId, isHost, sessionId } = useContext(UserContext) as UserContextType;
     const modules = ['Drive', 'Long', 'Fairway', 'Short', 'Putt'];
     const moduleDescriptions = [
         "Driving off the Tee involves hitting the ball as far as possible towards the hole. Driving is only the first hit, so it will always only be one shot.",
@@ -51,7 +54,7 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
         try {
             setSimulatedAll(false);
             setLoading(true);
-            let result = {shots: -1, distance: -1};
+            let result = { shots: -1, distance: -1 };
             if (selectedModule === 'Drive') {
                 result = await runPlayDrive(selectedSolver);
             } else if (selectedModule === 'Long') {
@@ -66,14 +69,14 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
             setLatestShot(result.shots);
             setLatestDistance(result.distance);
             setLoading(false);
-            props.setAllResults([...props.allResults, {shots: result.shots, distance: result.distance, solver: selectedSolver, module: selectedModule}]);
+            props.setAllResults([...props.allResults, { shots: result.shots, distance: result.distance, solver: selectedSolver, module: selectedModule }]);
             // For now do not save free roam results to database only for all 
             // only save it for those in tournaments
             if (playerId) {
                 saveFreeRoamResult(result.shots, result.distance);
             }
             // saveFreeRoamResult(result.shots, result.distance);
-        } catch(error) {
+        } catch (error) {
             console.error("Error playing module: ", error);
         }
     }
@@ -86,16 +89,16 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
             // For each solver play each module once
             for (let i = 1; i < 4; i++) {
                 let result = await runPlayDrive(i);
-                simulatedResults.push({shots: result.shots, distance: result.distance, solver: i, module: 'Drive'});
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Drive' });
                 result = await runPlayLong(i);
-                simulatedResults.push({shots: result.shots, distance: result.distance, solver: i, module: 'Long'});
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Long' });
                 result = await runPlayFairway(i);
-                simulatedResults.push({shots: result.shots, distance: result.distance, solver: i, module: 'Fairway'});
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Fairway' });
                 result = await runPlayShort(i);
-                simulatedResults.push({shots: result.shots, distance: result.distance, solver: i, module: 'Short'});
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Short' });
                 result = await runPlayPutt(i);
-                simulatedResults.push({shots: result.shots, distance: result.distance, solver: i, module: 'Putt'});
-            }            
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Putt' });
+            }
             // For now do not save free roam results to database only for all 
             // only save it for those in tournaments
             if (playerId) {
@@ -127,7 +130,7 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
             console.error("Error saving free roam result: ", error)
         }
     }
-    
+
     return (
         <div className='FreeRoamGame'>
             <div className='FreeRoamExperiment'>
@@ -152,14 +155,14 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                 </div> */}
                 <div className='Controls'>
                     <div className='Instructions'>
-                        <h1> 
-                            Experimental Round 
+                        <h1>
+                            Experimental Round
                             <Button className='InfoButtonHolder' onClick={() => props.setShowExplanationModal(true)}>
                                 &nbsp;
                                 <svg width="24" height="24" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </Button>
                         </h1>
@@ -168,11 +171,18 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                                 modules.map((module, index) => (
                                     <div className='SelectableModule' key={module}>
                                         <Tooltip title={moduleDescriptions[index]}>
-                                            <Button 
+                                            <Button
+                                                type={selectedModule === module ? 'primary' : 'default'}
                                                 onClick={() => setSelectedModule(module)}
                                                 className='ModuleButton'
                                             >
                                                 {module}
+                                                &nbsp;
+                                                <svg width="12" height="12" strokeWidth="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
                                             </Button>
                                         </Tooltip>
                                     </div>
@@ -181,20 +191,21 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                         </div>
                         <div className='InformationHorizontalSplit'>
                             <div className='SelectionsAndActions'>
-                                <div className='Selections'>
+                                {/* <div className='Selections'>
                                         <h2>
                                             Selected Module: {selectedModule}
                                         </h2>
                                         <h2>
                                             Selected Solver: {solverNames[selectedSolver - 1]}
                                         </h2>
-                                </div>
+                                </div> */}
+                                <br></br>
                                 <div className='PlayAndShowResults'>
-                                    <Button 
+                                    <Button
                                         onClick={() => playModule()}
                                         disabled={loading}
                                     >
-                                        Play Module
+                                        Play {solverNames[selectedSolver - 1]} on {selectedModule}
                                     </Button>
                                     <Button
                                         onClick={() => simulateAll()}
@@ -203,7 +214,7 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                                         Simulate All
                                     </Button>
                                     <Button
-                                        onClick={() => {props.setShowModuleResults(true)}}
+                                        onClick={() => { props.setShowModuleResults(true) }}
                                         disabled={props.allResults.length === 0}
                                     >
                                         View Results
@@ -236,7 +247,7 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                             </div>
                         </div>
                         {
-                            loading && 
+                            loading &&
                             <div className='LatestResults'>
                                 <p>Simulating ... </p>
                             </div>
@@ -251,8 +262,8 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                             !simulatedAll && latestShot !== null && latestDistance !== null && !loading &&
                             <div className='LatestResults'>
                                 <p>
-                                    You took {latestShot} shot{latestShot === 1 ? '' : 's'} and 
-                                    {latestDistance <= 0.5 ? " made it in the hole!" 
+                                    You took {latestShot} shot{latestShot === 1 ? '' : 's'} and
+                                    {latestDistance <= 0.5 ? " made it in the hole!"
                                         : " hit the ball " + (latestDistance) + " units towards the hole!"}
                                 </p>
                             </div>
@@ -283,7 +294,16 @@ const FreeRoamGame = (props: {setShowModuleResults: (val: SetStateAction<boolean
                         <div className='ExplanationModalBody'>
                             <h2>What is the Experimental Round?</h2>
                             <p>
-                                In this round scores do not count towards the Tournament rankings. Instead this is an opportunity for players to test different solvers on different modules. Play as much as you would like with as many different combinations as you would like. This will go on until the host moves the game forward. Try selecting different modules by clicking their name at the top of the screen or by clicking on the corresponding part of the golf course at the bottom of the screen. Then choose your solver and click play game. All of you scores can be seen by clicking view results. This experiment should allow you to familiarize yourself with how golf can be broken down into modules to be solved in more novel ways.
+                                In this round scores still do not count towards the Tournament rankings. Instead this is an opportunity for players to test different solvers on different modules.
+                            </p>
+                            <p>
+                                Play as much as you would like with as many different combinations as you would like. This will go on until the host moves the game forward.
+                            </p>
+                            <p>
+                                Select different modules by clicking their name at the top of the screen or by clicking on the corresponding part of the golf course at the bottom of the screen. Then choose your solver and click play game. All of you scores can be seen by clicking view results. Click Simulate All to have every golfer play every module once.
+                            </p>
+                            <p>
+                                This experiment should allow you to familiarize yourself with how golf can be broken down into modules to be solved in more novel ways.
                             </p>
                             <div className='ModalButtons'>
                                 <Button onClick={() => props.setShowExplanationModal(false)}>Continue</Button>

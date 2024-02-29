@@ -33,7 +33,7 @@ export const postRequest = async (endpoint: string, payload: string) => {
 
 // Whenever Host advances session this function can be called. setAdvancingTournmanet is a function call back
 // allowing the advance button to be disabled and avoid multiple clicks. 
-export const advanceSession = async (sessionId: string, setAdvancingTournament: (val: Boolean) => void) => {
+export const advanceSession = async (sessionId: number | null, setAdvancingTournament: (val: Boolean) => void) => {
     try {
         setAdvancingTournament(true);
         const response = await postRequest("session/advance", JSON.stringify({ sessionId }));

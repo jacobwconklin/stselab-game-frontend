@@ -187,6 +187,12 @@
   margin-bottom: 100px;
 }
 
+.ResultGraphs {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 // default graph styling
 .ScatterCanvas {
   max-width: 60%;
@@ -197,4 +203,13 @@
   margin: 0px 20px 40px 20px;
   border-radius: 10px;
   box-shadow: 5px 5px 5px 3px rgba(0, 0, 0, 0.2);
+}
+
+.InfoButtonHolder {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  box-shadow: none;
+  height: 32px;
+  width: 32px;
+  padding: 2px 0px 0px 3px;
 }

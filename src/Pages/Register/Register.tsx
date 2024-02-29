@@ -448,6 +448,9 @@ const Register = (props: any) => {
                         setPlayerId(submitResult.playerId);
                         setPlayerColor(color);
                         navigate('/game');
+                    } else if (submitResult.error === "Session has already started") {
+                        alert("Cannot join session, it has already started.");
+                        setSubmitting(false);
                     } else {
                         alert("Failed to submit form.");
                         console.error(submitResult)

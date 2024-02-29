@@ -31,7 +31,7 @@ export const getArchitectureCommonName = (architecture: string) => {
 // Scores the results of a round in the tournament 
 // @param customPerfomance is a percent (between 0 and 1) of the score that is associated with shots.
 // 1 - customPerformance is the percent associated with cost
-export const scoreRound = (round: number, shots: number, cost: number, customPerformance?: number) => {
+export const scoreRound = (round: number, shots: number, cost: number, customPerformance?: number | null) => {
     if (round === 6) {
         // On round 6 best performance is rewarded no matter the cost
         // 5 shots is perfect (and impossible) = score of 100
@@ -87,5 +87,99 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
     } else {
         // console.error("Error invalid round")
         return null;
+    }
+}
+
+// Animate player ball going into the hole
+export const animateBallIntoHole = (callBack: () => void) => {
+    const ball = document.getElementById("player-ball");
+    // calculate start and end pixels based on screen width
+    // const startPixels = 0.1 * window.innerWidth - 16;
+    // const endPixels = 0.9 * window.innerWidth - 40;
+    // const startBottomPixels = 62;
+    // const endBottomPixels = 30;
+    // let ballBottomPixels = 62;
+    // let ballHitDownPixels = 0.5 * window.innerWidth;
+    // let ballPosition = startPixels;
+    // Uses JS animation:
+    // if (ball) ball.style.display = 'block';
+    // const animationInterval = setInterval(() => {
+    //     if (ballPosition > endPixels) {
+    //         // make ball dissapear
+    //         if (ball) ball.style.display = 'none';
+    //         clearInterval(animationInterval);
+    //     } else if (ball) {
+    //         ballPosition += 1;
+    //         ball.style.left = `${ballPosition}px`;
+    //         // go up for 25% of screen
+    //         if (ballPosition < window.innerWidth * 0.25) {
+    //             ballBottomPixels += 1;
+    //             ball.style.bottom = `${ballBottomPixels}px`
+    //         } else if (ballPosition < window.innerWidth * 0.28) {
+    //             // Do nothing
+    //         } else if (ballPosition < window.innerWidth * 0.5) {
+    //             // go down for next 25%
+    //             ballBottomPixels -= 2;
+    //             if (ballBottomPixels < startBottomPixels) {
+    //                 ballHitDownPixels = ballPosition;
+    //                 ball.style.bottom = `${startBottomPixels}px`
+    //             } else {
+    //                 ball.style.bottom = `${ballBottomPixels}px`
+    //             }
+    //         } else {
+    //             // go down into hole
+    //             ball.style.bottom = `${startBottomPixels - Math.floor(((ballPosition - ballHitDownPixels) / (endPixels - ballHitDownPixels))*(startBottomPixels - endBottomPixels))}px`;
+    //         }
+    //         ball.style.rotate = `rotate(${360 * ballPosition}deg)`
+    //     }
+    // }, 1);
+
+    const topPointX = 0.4 * window.innerWidth - (Math.random() * 100);
+    const topPointY = 0.5 * window.innerHeight + (Math.random() * 100);
+    // const floatPointX = 0.45 * window.innerWidth;
+    // const floatPointY = 0.45 * window.innerHeight;
+    const hitDownPointX = 0.5 * window.innerWidth;
+    const hitDownPointY = 62;
+    const inHoleX = 0.9 * window.innerWidth - 50;
+    const inHoleY = 30;
+
+    // Use CSS transition: 
+    // define movement points and place the ball there after timeout intervals, let css make smooth transition
+    if (ball) {
+        setTimeout(() => {
+            // first move to top point
+            ball.style.transition = "all 1s ease-out"; // time to rist to top point
+            ball.style.left = topPointX + 'px';
+            ball.style.bottom = topPointY + "px";
+            ball.style.transform = "rotate(360deg)";
+            // setTimeout(() => {
+            //     // move to float point
+            //     ball.style.transition = "all 0.3s ease-out"; // time at float point 
+            //     ball.style.left = floatPointX + 'px';
+            //     ball.style.bottom = floatPointY + "px";
+            //     ball.style.transform = "rotate(560deg)";
+                setTimeout(() => {
+                    // move to hitDownPoint 
+                    ball.style.transition = "all 0.5s ease-in"; // time falling onto hit point
+                    ball.style.left = hitDownPointX + 'px';
+                    ball.style.bottom = hitDownPointY + "px";
+                    ball.style.transform = "rotate(720deg)";
+                    setTimeout(() => {
+                        // move to inHolePoint
+                        ball.style.transition = "all 1.2s ease-out"; // time to roll into hole  
+                        ball.style.left = inHoleX + 'px';
+                        ball.style.bottom = inHoleY + "px";
+                        ball.style.transform = "rotate(800deg)"; 
+                        setTimeout(() => {
+                            ball.style.transition = "all 0.5s ease-out"; // time to fade away ball 
+                            ball.style.opacity = "0";
+                            setTimeout(() => {
+                                callBack();
+                            }, 0.5)
+                        }, 1200) // time to roll ball into hole 
+                    }, 500); // time falling onto hit point
+                // }, 300); // time at float point
+            }, 1000); // time to rise to top point
+        }, 100);
     }
 }

@@ -6,6 +6,7 @@ import {
     LineElement,
     Tooltip,
     Legend,
+    Title
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import { RoundResult } from '../../../Utils/Types';
@@ -13,7 +14,7 @@ import { RoundResult } from '../../../Utils/Types';
 const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
 
     // set up chart js
-    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title);
 
     
     // const golfBallImage = new Image(20, 20); // WORKS and sets image to golf ball, but eliminates player colors 

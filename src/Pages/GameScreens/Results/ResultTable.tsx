@@ -108,12 +108,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
     ];
 
     const getExtendedColumns = () => {
-        return baseColumns.concat([
-            {
-                title: 'Architecture',
-                dataIndex: 'architecture',
-                key: 'architecture',
-            },
+        const scorePrefix: any = [
             {
                 title: 'Score',
                 dataIndex: 'score',
@@ -131,7 +126,15 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                     }
                 }
             }
-        ])
+        ]
+        const baseAndArchitectureSuffix = baseColumns.concat([
+            {
+                title: 'Architecture',
+                dataIndex: 'architecture',
+                key: 'architecture',
+            }
+        ]);
+        return scorePrefix.concat(baseAndArchitectureSuffix);
     }
 
     /*
@@ -155,7 +158,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 name: player.name,
                 color: player.color,
                 shots: player.shots ? player.shots : '...',
-                cost: player.cost ? player.cost / 100 : '...',
+                cost: player.cost ? (player.cost / 100).toFixed(2) : '...',
                 solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver)
             }
         ))
@@ -165,13 +168,13 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
         return props?.players?.map((player, index) => (
             {
                 key: player.id,
+                score: player.score ? (player.score / 100).toFixed(2) : '...',
                 name: player.name,
                 color: player.color,
                 shots: player.shots ? player.shots : '...',
-                cost: player.cost ? player.cost / 100 : '...',
+                cost: player.cost ? (player.cost / 100).toFixed(2) : '...',
                 solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver),
                 architecture: player.architecture ? getArchitectureCommonName(player.architecture) : 'waiting...',
-                score: player.score ? player.score / 100 : '...'
             }
         ))
     }
@@ -179,9 +182,10 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
     return (
         <div className="ResultTable">
             <Table
-                pagination={{ pageSize: 10, position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"] }}
+                pagination={{ pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
                 columns={props.round < RoundNames.TournamentStage1 ? baseColumns : getExtendedColumns()}
                 dataSource={props.round < RoundNames.TournamentStage1 ? getBaseData() : getExtendedData()}
+                rowKey={(record) => record.key}
                 rowClassName={(record, index) => {
                     if (isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
                         return 'Clickable';

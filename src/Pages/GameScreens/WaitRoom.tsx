@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './WaitRoom.scss';
 import { UserContext } from '../../App';
 import { Button, Table } from 'antd';
@@ -6,26 +6,46 @@ import { advanceSession, postRequest } from '../../Utils/Api';
 import { useNavigate } from 'react-router-dom';
 import VerificationModal from '../../ReusableComponents/VerificationModal';
 import GolfBall from '../../ReusableComponents/GolfBall';
-import { PlayerBrief } from '../../Utils/Types';
+import { PlayerBrief, UserContextType } from '../../Utils/Types';
 
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
 // can invite players to join their session.
-const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
-
-    // all players come from session status from GameController rather than storing in state it should be
-    // available through props
-    // const [allPlayers, setAllPlayers] = useState<[any] | []>([]);
+const WaitRoom = () => {
 
     // check host status and session id / join code from context
-    const { isHost, sessionId, playerId } = useContext(UserContext) as any;
+    const { isHost, sessionId, playerId } = useContext(UserContext) as UserContextType;
     // Ensure host doesn't click button multiple times
     const [beginningTournament, setBeginningTournament] = useState<Boolean>(false);
+    const [players, setPlayers] = useState<Array<PlayerBrief> | []>([]);
 
     const navigate = useNavigate();
 
+    // Poll for all players in session
+    useEffect(() => {
+        // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
+        // Interval will regularly poll back-end for updates 
+        const interval = setInterval(async () => {
+            try {
+                const response = await postRequest('session/players', JSON.stringify({ sessionId }));
+                if (response.success) {
+                    setPlayers(response.players);
+                } else {
+                    console.error("Error pulling players in session in wait room: ", response);
+                }
+            } catch (error) {
+                console.error("Error pulling players in session in wait room: ", error);
+            }
+        }, 2500); // This is the frequency of the polling in milliseconds.
+
+        // clear interval when component unmounts
+        return () => {
+            clearInterval(interval);
+        }
+    }, [sessionId]);
+
     // tells backend to remove a player from their session
-    const removePlayer = async (playerIdToRemove: any) => {
+    const removePlayer = async (playerIdToRemove: string) => {
         const response = await postRequest("player/remove", JSON.stringify({ playerId: playerIdToRemove }));
         if (playerId === playerIdToRemove) {
             navigate('/');
@@ -70,7 +90,7 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
         },
     ];
 
-    const data = props?.players?.map((player, index) => (
+    const data = players.map((player, index) => (
         {
             key: player.id,
             number: index + 1,
@@ -100,7 +120,7 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
                             longer join. You must share the join code or join link with other players so that they may enter the tournament. You can remove players from the tournament by clicking on their row.
                         </p>
 
-                        <h2> Players in the Tournament: {props.players && props.players.length > 0 ? props.players.length : "..."} </h2>
+                        <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>
                         <Button
                             disabled={!!beginningTournament}
                             onClick={() => advanceSession(sessionId, setBeginningTournament)}
@@ -126,10 +146,10 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
                             below. You can also click the title in the header to return to the landing page at any time.
                             Share the join code or join link to help other players join the tournament.
                         </p>
-                        <h2> Players in the Tournament: {props.players && props.players.length > 0 ? props.players.length : "..."} </h2>
+                        <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>
                         <Button
                             onClick={() => {
-                                setPlayerIdToRemove(playerId);
+                                setPlayerIdToRemove(playerId ? playerId : '');
                                 setModalTitle('Are you sure you want to exit the tournament?');
                                 setModalMessage('You will leave the tournament.');
                                 setShowModal(true);
@@ -142,13 +162,14 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
 
             <div className='ResultTable'>
                 <Table
-                    pagination={{ pageSize: 10, position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"] }}
+                    pagination={{ pageSize: 5, position: ['none', players.length > 5 ? 'bottomCenter' : "none"] }}
                     columns={columns}
                     dataSource={data}
+                    rowKey={(record) => record.key ? record.key : 'row-key'}
                     rowClassName={(record, index) => {
-                        if (isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
+                        if (playerId && isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
                             return 'Clickable';
-                        } else if (record.key?.toLowerCase() === playerId.toLowerCase()) {
+                        } else if (playerId && record.key?.toLowerCase() === playerId.toLowerCase()) {
                             return 'MatchingPlayer';
                         } else {
                             return 'HighlightRow'
@@ -157,7 +178,7 @@ const WaitRoom = (props: { players: Array<PlayerBrief> }) => {
                     onRow={(record, rowIndex) => {
                         return {
                             onClick: event => {
-                                if (isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
+                                if (playerId && isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
                                     setPlayerIdToRemove(record.key);
                                     setModalTitle('Are you sure you want to remove: ' + record.name + '?');
                                     setModalMessage('The player will be removed from the Tournament including all of their information');

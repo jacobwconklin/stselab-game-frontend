@@ -73,4 +73,18 @@ export interface RoundResult {
     solverThree: number;
     architecture: string;
     score: number;
+    round: number;
+}
+
+export interface UserContextType {
+    isHost: Boolean;
+    setIsHost: (isHost: boolean) => void;
+    sessionId: number | null;
+    setSessionId: (id: number) => void;
+    playerId: string | null;
+    setPlayerId: (id: string) => void;
+    playerColor: string | null;
+    setPlayerColor: (id: string) => void;
+    customPerformanceWeight: number | null;
+    setCustomPerformanceWeight: (id: number) => void;
 }

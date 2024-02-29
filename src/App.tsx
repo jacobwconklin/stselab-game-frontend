@@ -3,13 +3,14 @@ import './App.scss';
 import Router from './Router';
 import NavHeader from './Navigation/NavHeader';
 import { useState, createContext } from 'react';
+import { UserContextType } from './Utils/Types';
 
 function App() {
 
   // Context will hold this information to be accessible from anywhere in the App
   const [isHost, setIsHost] = useState(false);
   const [sessionId, setSessionId] = useState<number | null>(null);
-  const [playerId, setPlayerId] = useState<number | null>(null);
+  const [playerId, setPlayerId] = useState<string | null>(null);
   const [playerColor, setPlayerColor] = useState<string | null>(null);
   const [customPerformanceWeight, setCustomPerformanceWeight] = useState<number | null>(null);
 
@@ -35,13 +36,13 @@ function App() {
 
 
 
-export const UserContext = createContext<any>({
+export const UserContext = createContext<UserContextType>({
   isHost: false,
   setIsHost: (isHost: boolean) => { },
   sessionId: null,
   setSessionId: (id: number) => { },
   playerId: null,
-  setPlayerId: (id: number) => { },
+  setPlayerId: (id: string) => { },
   playerColor: null,
   setPlayerColor: (id: string) => { },
   customPerformanceWeight: null,

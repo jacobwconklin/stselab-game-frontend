@@ -9,15 +9,22 @@ import ProfessionalOnly from './RoundScreens/ProfessionalOnly';
 import AmateurOnly from './RoundScreens/AmateurOnly';
 import EntireHole from './RoundScreens/EntireHole';
 import { RoundNames, scoreRound } from '../../Utils/Utils';
+import { UserContextType } from '../../Utils/Types';
 
 // PlayScreen
-const PlayScreen = (props: any) => {
+const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean>) => void, finishedRounds: Array<Boolean>}) => {
 
     // prevent players from clicking play round multiple times
     const [playingRound, setPlayingRound] = useState(false);
 
     // pull playerId from Context
-    const { playerId, playerColor, customPerformanceWeight } = useContext(UserContext) as any;
+    const { playerId, playerColor, customPerformanceWeight } = useContext(UserContext) as UserContextType;
+
+    const updateFinishedRounds = () => {
+        const copy = props.finishedRounds;
+        copy[props.round] = true;
+        props.setFinishedRound(copy);
+    }
 
     // Plays round with selected solver
     const playRound = async (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => {
@@ -54,11 +61,7 @@ const PlayScreen = (props: any) => {
                 score: pointsEarned !== null ? Math.floor( pointsEarned * 100) : null
             }));
             if (response.success) {
-                props.setFinishedRound((val: [Boolean, Boolean, Boolean, Boolean]) => {
-                    const copy = val;
-                    copy[props.round] = true;
-                    return copy;
-                });
+                updateFinishedRounds();
             } else {
                 alert("Error playing round, please try again");
                 console.error(response);

@@ -1,10 +1,23 @@
 
+import { useEffect } from 'react';
 import GolfBall from './GolfBall';
 import './PlayGolfBackground.scss';
 
 // PlayGolfBackground
 // the background for all rounds and free roam golf play
-const PlayGolfBackground = (props: {playerColor?: string}) => {
+const PlayGolfBackground = (props: { playerColor?: string | null }) => {
+
+    useEffect(() => {
+        // make sure to reset ball
+        const ball = document.getElementById("player-ball");
+        if (ball) {
+            ball.style.transition = "none";
+            ball.style.left = (0.1 * window.innerWidth - 16) + 'px';
+            ball.style.bottom =  "62px";
+            ball.style.transform = "rotate(0deg)";
+            ball.style.opacity = "1";
+        }
+    }, [])
 
     return (
         <div className='PlayGolfBackground'>
@@ -12,40 +25,40 @@ const PlayGolfBackground = (props: {playerColor?: string}) => {
             <div className='GrassBackground'></div>
             <div className='Tee'></div>
             <div className='TeeTop'></div>
-            <div className='PlayerBall'>
-                <GolfBall color={props.playerColor ? props.playerColor : '#ffffff'}/>
+            <div className='PlayerBall' id='player-ball'>
+                <GolfBall color={props.playerColor ? props.playerColor : '#ffffff'} />
             </div>
             <svg className='FlagAndHole' viewBox="0 0 793.7 1122.5" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                <linearGradient id="j" x1=".26274" x2=".7261" y1="-.36265" y2="1.3706">
-                <stop stopColor="#fff" offset="0"/>
-                <stop stopColor="#fff" stopOpacity="0" offset="1"/>
-                </linearGradient>
-                <linearGradient id="g" x1=".50003" x2=".50003" y1=".87761" y2=".97313">
-                <stop stopColor="#e2c500" offset="0"/>
-                <stop stopColor="#eaf800" stopOpacity="0" offset="1"/>
-                </linearGradient>
-                <linearGradient id="i" x1=".18486" x2=".85461" y1=".40423" y2=".41031">
-                <stop stopColor="#ff5c36" offset="0"/>
-                <stop stopColor="#c42400" offset=".5"/>
-                <stop stopColor="#ff3000" offset="1"/>
-                </linearGradient>
-                <linearGradient id="h" x1="-.22574" x2="1.6449" y1=".008961" y2=".99403">
-                <stop stopColor="#f8f8f8" offset="0"/>
-                <stop stopColor="#f8f8f8" stopOpacity="0" offset="1"/>
-                </linearGradient>
-                <linearGradient id="f" x1=".30938" x2=".54918" y1="1.156" y2="-.28778">
-                <stop offset="0"/>
-                <stop stopOpacity="0" offset="1"/>
-                </linearGradient>
+                    <linearGradient id="j" x1=".26274" x2=".7261" y1="-.36265" y2="1.3706">
+                        <stop stopColor="#fff" offset="0" />
+                        <stop stopColor="#fff" stopOpacity="0" offset="1" />
+                    </linearGradient>
+                    <linearGradient id="g" x1=".50003" x2=".50003" y1=".87761" y2=".97313">
+                        <stop stopColor="#e2c500" offset="0" />
+                        <stop stopColor="#eaf800" stopOpacity="0" offset="1" />
+                    </linearGradient>
+                    <linearGradient id="i" x1=".18486" x2=".85461" y1=".40423" y2=".41031">
+                        <stop stopColor="#ff5c36" offset="0" />
+                        <stop stopColor="#c42400" offset=".5" />
+                        <stop stopColor="#ff3000" offset="1" />
+                    </linearGradient>
+                    <linearGradient id="h" x1="-.22574" x2="1.6449" y1=".008961" y2=".99403">
+                        <stop stopColor="#f8f8f8" offset="0" />
+                        <stop stopColor="#f8f8f8" stopOpacity="0" offset="1" />
+                    </linearGradient>
+                    <linearGradient id="f" x1=".30938" x2=".54918" y1="1.156" y2="-.28778">
+                        <stop offset="0" />
+                        <stop stopOpacity="0" offset="1" />
+                    </linearGradient>
                 </defs>
-                <path d="m372.44 450.52a39.286 22.857 0 1 1 -78.571 0 39.286 22.857 0 1 1 78.571 0z" fill="url(#f)" strokeWidth=".2"/>
-                <rect x="325" y="179.65" width="18.571" height="290.71" fill="url(#g)" strokeWidth=".2"/>
-                <rect x="327.6" y="201.77" width="8.4556" height="224.55" rx="4.2278" ry="16.335" fill="url(#h)" strokeWidth=".179"/>
+                <path d="m372.44 450.52a39.286 22.857 0 1 1 -78.571 0 39.286 22.857 0 1 1 78.571 0z" fill="url(#f)" strokeWidth=".2" />
+                <rect x="325" y="179.65" width="18.571" height="290.71" fill="url(#g)" strokeWidth=".2" />
+                <rect x="327.6" y="201.77" width="8.4556" height="224.55" rx="4.2278" ry="16.335" fill="url(#h)" strokeWidth=".179" />
                 <g strokeWidth=".2">
-                <path d="m543.51 223.99c0-3.0182-210.34 46.552-203.94 48.061 6.4037 1.5091 6.4037-97.631 0-96.122-6.4037 1.5091 203.94 51.079 203.94 48.061z" fill="url(#i)"/>
-                <path d="m350.67 175.47a16.429 16.429 0 1 1 -32.857 0 16.429 16.429 0 1 1 32.857 0z" fill="#ff9800"/>
-                <path d="m340.76 162.31c1.8294 2.755-2.4167 7.5368-8.0778 11.296s-11.235 5.4581-13.065 2.7031c-1.8294-2.755 0.39639-9.6834 6.0575-13.443 5.6611-3.7592 13.256-3.3115 15.085-0.55653z" fill="url(#j)"/>
+                    <path d="m543.51 223.99c0-3.0182-210.34 46.552-203.94 48.061 6.4037 1.5091 6.4037-97.631 0-96.122-6.4037 1.5091 203.94 51.079 203.94 48.061z" fill="url(#i)" />
+                    <path d="m350.67 175.47a16.429 16.429 0 1 1 -32.857 0 16.429 16.429 0 1 1 32.857 0z" fill="#ff9800" />
+                    <path d="m340.76 162.31c1.8294 2.755-2.4167 7.5368-8.0778 11.296s-11.235 5.4581-13.065 2.7031c-1.8294-2.755 0.39639-9.6834 6.0575-13.443 5.6611-3.7592 13.256-3.3115 15.085-0.55653z" fill="url(#j)" />
                 </g>
             </svg>
         </div>

@@ -74,6 +74,7 @@
         left: calc(10% - 16px);
         z-index: 10;
         pointer-events: none;
+        transition: all 0.5s linear;
     }
 
     .FlagAndHole {

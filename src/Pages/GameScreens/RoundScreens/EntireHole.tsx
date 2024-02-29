@@ -6,6 +6,7 @@ import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from 
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
+import { animateBallIntoHole } from '../../../Utils/Utils';
 
 // EntireHole
 // Have players play on h_arch, which means they can only choose one type of solver for the
@@ -17,15 +18,18 @@ const EntireHole = (props: {
     playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void
 }) => {
 
-
     // Only need one solver for h_arch
     const [selectedSolver, setSelectedSolver] = useState<Solver | null>(null);
+
+    const playRoundCallback = () => {
+        props.playRound("h", selectedSolver ? selectedSolver : Solver.Professional);
+    }
 
     return (
         <div className='EntireHole'>
             <div className='Controls'>
                 <div className='Instructions'>
-                    <h1> Practice Round 3</h1>
+                    <h1> Practice Round 3: Choose a Solver</h1>
                     <div className='InformationHorizontalSplit'>
                         <div className='InfoContainer'>
                             <p>In this practice round you may now select between different golfer types</p>
@@ -65,7 +69,7 @@ const EntireHole = (props: {
                     {
                         selectedSolver &&
                         <Button
-                            onClick={() => props.playRound("h", selectedSolver)}
+                            onClick={() => animateBallIntoHole(playRoundCallback)}
                             disabled={!!props.playingRound}
                         >
                             Play Round

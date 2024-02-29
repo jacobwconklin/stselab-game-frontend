@@ -1,0 +1,44 @@
+.AllResults {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    .ant-table-wrapper {
+       min-width: 700px;
+    }
+    
+    .ScatterCanvas {
+        min-width: 700px;
+    }
+
+    .Instructions {
+        min-width: 660px;
+    }
+
+    .ArchitectureAndRound {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 100px;
+        padding-bottom: 30px;
+
+        .TitleAndSelect {
+            display: flex;
+            flex-direction: column;
+
+            h3 {
+                text-align: left;
+            }
+
+            .ResultCheckbox {
+                width: 100%;
+                flex-direction: column;
+            }
+        }
+    }
+
+    .AggregateResultGraphs {
+        width: 100%;
+    }
+}

@@ -16,6 +16,7 @@ const VerificationModal = (props: {
 
     return (
         <div className='VerificationModal'
+            style={{margin: '0px'}}
             onClick={() => props.cancel()}
         >
             <div className='ModalBody'>

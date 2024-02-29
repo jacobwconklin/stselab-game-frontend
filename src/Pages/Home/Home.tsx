@@ -2,6 +2,7 @@ import { Button } from 'antd';
 import './Home.scss';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Confetti from '../../ReusableComponents/Confetti';
 
 // Home
 const Home = (props: any) => {
@@ -19,7 +20,7 @@ const Home = (props: any) => {
                     <div className='PictogramGreen'></div>
                     <div className='PictogramPink'></div>
                     <div className='PictogramOrange'></div>
-                    <div className='WelcomeCard'>
+                    <div className='WelcomeCard title-font'>
                         <h1>
                             Welcome to STSELab's Golf Tournament
                         </h1>
@@ -163,6 +164,7 @@ const Home = (props: any) => {
                     <p>Choose below to join a running tournament or to host and create a new game</p>
                     <div className='BeginButtons'>
                         <Button
+                            type='primary'
                             onClick={() => {
                                 navigate('/register/host');
                             }}
@@ -170,6 +172,7 @@ const Home = (props: any) => {
                             Host a new Game
                         </Button>
                         <Button
+                            type='primary'
                             onClick={() => {
                                 navigate('/register/join');
                             }}
@@ -177,10 +180,15 @@ const Home = (props: any) => {
                             Join a Tournament 
                         </Button>
                     </div>
+                    <p>Want to see old results?</p>
+                    <Button onClick={() => navigate('/results')}>View All Results</Button>
+                    <div style={{height: '30px'}}></div>
                 </div>
-                {/* <Button onClick={() => navigate('/Results')}>View Past Results</Button> */}
                 <br></br>
             </div>
+            {
+                <Confetti />
+            }
         </div>
     )
 }

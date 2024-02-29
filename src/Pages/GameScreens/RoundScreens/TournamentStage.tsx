@@ -7,7 +7,7 @@ import { UserContext } from '../../../App';
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
-import { RoundNames } from '../../../Utils/Utils';
+import { RoundNames, animateBallIntoHole } from '../../../Utils/Utils';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
@@ -229,6 +229,15 @@ const TournamentStage = (props: {
                 <div className='Instructions'>
                     <h1> 
                         Tournament Round {'' + (props.round - 5)}
+                        
+                        <Button className='InfoButtonHolder' onClick={() => setShowTournamentBeginModal(true)}>
+                            &nbsp;
+                            <svg width="24" height="24" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </Button>
                         {
                             selectedDriveSolver &&
                             <img className='HeaderIconImage' src={solverIcons[selectedDriveSolver - 1]} alt="Solver Icon" />
@@ -376,7 +385,7 @@ const TournamentStage = (props: {
                     {
                         readyToPlay() &&
                         <Button
-                            onClick={() => submitPlayRound()}
+                            onClick={() => animateBallIntoHole(submitPlayRound)}
                             disabled={!!props.playingRound}
                         >
                             Play Round
@@ -396,9 +405,9 @@ const TournamentStage = (props: {
                     // Can have click out here but they may not read
                 >
                     <div className='TournamentBeginModalBody'>
-                        <h2>The Tournament Begins Now!</h2>
+                        <h2>The Tournament Has Begun!</h2>
                         <p>
-                            You will play four rounds each with a unique objective. In each round you may select any architecture and any solvers you would like. Points are awarded for acheiving the objectives. The winner will be the player with the most points at the end of the tournament.
+                            Here you will play four rounds each with a unique objective. In each round you may select any architecture and any solvers you would like. Points are awarded for acheiving the objectives. The winner will be the player with the most total points at the end of the tournament.
                         </p>
                         <div className='ModalButtons'>
                             <Button onClick={() => setShowTournamentBeginModal(false)}>Begin</Button>

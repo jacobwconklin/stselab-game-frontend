@@ -8,7 +8,7 @@ import PlayScreen from '../GameScreens/PlayScreen';
 import RoundResults from '../GameScreens/Results/RoundResults';
 import SessionResults from '../GameScreens/SessionResults';
 import FreeRoam from '../GameScreens/FreeRoam/FreeRoam';
-import { RoundResult } from '../../Utils/Types';
+import { RoundResult, UserContextType } from '../../Utils/Types';
 import { RoundNames } from '../../Utils/Utils';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
@@ -17,14 +17,14 @@ import { RoundNames } from '../../Utils/Utils';
 // finally, when the session / tournament is over, it will show the final results of the tournament. From 
 // there users can save the results and / or view total aggregate results of everyone who has played the game. 
 // TODO may switch to web-socket connection with https://www.npmjs.com/package/react-use-websocket
-const GameController = (props: any) => {
+const GameController = () => {
 
     // use to make sure user is in a valid session
     const [inValidSession, setInValidSession] = useState(true);
 
     // check host status and session id / join code from context
-    const { sessionId, playerId } = useContext(UserContext) as any;
-    const [sessionStatus, setSessionStatus] = useState<any | null>(null);
+    const { sessionId, playerId } = useContext(UserContext) as UserContextType;
+    const [currRound, setCurrRound] = useState<number>(0);
 
     // TODO potentially move the calls for these results INTO the result components (and could move
     // playerlist out of sessionStatus and into waiting room call meaning only session round would have
@@ -33,7 +33,7 @@ const GameController = (props: any) => {
     const [finalResults, setFinalResults] = useState<[any] | []>([]);
 
     // When player finishes the current round allow them to see scores for the round
-    const [finishedRound, setFinishedRound] = useState(Array.apply(false, Array(10)));
+    const [finishedRound, setFinishedRound] = useState<Array<Boolean>>(Array.apply(false, Array(10)).map(val => !!val));
 
     useEffect(() => {
         // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
@@ -54,12 +54,17 @@ const GameController = (props: any) => {
                 } else if (response.error) {
                     // TODO may need to attempt to exit player from session they are in then redirect them home?
                     alert("Error getting session: " + response.error);
+                } else if (response?.session?.endDate && response?.session?.endDate !== "None") {
+                    // on receiving a session with an end date we know we are on the final results page and 
+                    // no longer need to poll the BE for updates to round number)
+                    setCurrRound(RoundNames.FinalResults);
+                    clearInterval(interval);
                 } else {
                     // if we changed rounds reset currentResults
-                    if (sessionStatus?.session?.round !== response?.session?.round) {
+                    if (currRound !== response?.session?.round) {
                         setCurrentResults([]);
                     }
-                    setSessionStatus(response);
+                    setCurrRound(response?.session?.round);
                 }
                 // TODO could get results separately from status based on round we are in.?
                 // IE if response.?.session?.round === 1 then get results for round 1 (professional only)
@@ -99,7 +104,7 @@ const GameController = (props: any) => {
         return () => {
             clearInterval(interval);
         }
-    }, [sessionId, playerId, setCurrentResults, sessionStatus?.session?.round, setFinalResults, currentResults.length, finalResults.length]);
+    }, [sessionId, playerId, setCurrentResults, setFinalResults, currentResults.length, finalResults.length, currRound]);
 
 
     // useBeforeUnload(
@@ -130,35 +135,35 @@ const GameController = (props: any) => {
         return <Navigate to="/" />
     }
     // if session has not started show wait room
-    else if (!sessionStatus || sessionStatus?.session?.round === RoundNames.WaitRoom) {
+    else if (currRound === RoundNames.WaitRoom) {
         return (
             <div className='GameController'>
-                <WaitRoom players={sessionStatus?.players ? sessionStatus.players : []} />
+                <WaitRoom />
             </div>
         )
     }
     // show practice rounds (some with results) or Tournament Stages
-    else if (sessionStatus?.session?.round < RoundNames.Experimental || (sessionStatus?.session?.round > RoundNames.ExperimentalSurvey && sessionStatus?.session?.round < RoundNames.FinalResults)) {
-        if (!finishedRound[sessionStatus?.session?.round]) {
+    else if (currRound < RoundNames.Experimental || (currRound > RoundNames.ExperimentalSurvey && 
+        currRound < RoundNames.FinalResults)) {
+        if (!finishedRound[currRound]) {
             return (
                 <div className='GameController'>
-                    <PlayScreen round={sessionStatus?.session?.round} setFinishedRound={setFinishedRound} />
+                    <PlayScreen round={currRound} setFinishedRound={setFinishedRound} finishedRounds={finishedRound} />
                 </div>
             )
         } else {
             return (
                 <div className='GameController'>
-                    <RoundResults round={sessionStatus?.session?.round} players={currentResults} />
+                    <RoundResults round={currRound} players={currentResults} />
                 </div>
             )
         }
     }
     // if on experimental round show experimental round
-    else if (sessionStatus?.session?.round >= RoundNames.Experimental && sessionStatus?.session?.round 
-        <= RoundNames.ExperimentalSurvey) {
+    else if (currRound >= RoundNames.Experimental && currRound <= RoundNames.ExperimentalSurvey) {
         return (
             <div className='GameController'>
-                <FreeRoam round={sessionStatus?.session?.round} />
+                <FreeRoam round={currRound} />
             </div>
         )
     }

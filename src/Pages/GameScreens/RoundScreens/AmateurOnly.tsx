@@ -1,7 +1,7 @@
 import './AmateurOnly.scss';
 import { Solver, runSimEntireHole } from '../../../Utils/Simulation';
 import { Button } from 'antd';
-import { AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
+// import { AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../../App';
 import { advanceSession } from '../../../Utils/Api';
@@ -12,10 +12,12 @@ import {
     LineElement,
     Tooltip,
     Legend,
+    Title
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import golfBallSvg from '../../../Assets/golfBall.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
+import { animateBallIntoHole } from '../../../Utils/Utils';
 
 // AmateurOnly
 // Have players play on h_arch with only one amateur as many time as they would like to learn
@@ -35,12 +37,19 @@ const AmateurOnly = (props: { round: Number }) => {
 
     const playAmateurRound = async () => {
         try {
-            setLoading(true);
             const score = await runSimEntireHole(Solver.Amateur, 1);
             setLatestShot(score.shots);
             setLatestCost(score.cost);
             setAllResults([...allResults, score]);
             setLoading(false);
+            const ball = document.getElementById("player-ball");
+            if (ball) {
+                ball.style.transition = "none";
+                ball.style.left = (0.1 * window.innerWidth - 16) + 'px';
+                ball.style.bottom = "62px";
+                ball.style.transform = "rotate(0deg)";
+                ball.style.opacity = "1";
+            }
         } catch (error) {
             setLoading(false);
             console.error("Error playing amateur only round: ", error);
@@ -49,7 +58,7 @@ const AmateurOnly = (props: { round: Number }) => {
 
     // graph information
     // set up chart js
-    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title);
 
 
     const golfBallImage = new Image(20, 20); // WORKS and sets image to golf ball, but eliminates player colors 
@@ -149,15 +158,14 @@ const AmateurOnly = (props: { round: Number }) => {
                     :
                     <div className='Controls'>
                         <div className='Instructions'>
-                            <h1> Practice Round 2</h1>
+                            <h1> Practice Round 2: One Amateur</h1>
                             <div className='InformationHorizontalSplit'>
 
                                 <div className='InfoContainer'>
                                     <p>
-                                        In this round all players must use only one Amateur golfer to play all 5 holes. This is the only time a single Amateur will be an options, everywhere else 25 Amateurs will be used and the best result out of all of them will be taken. Here you will learn the "skills" of an individual Amateur.
+                                        In this round all players must use only one Amateur golfer to play all 5 holes. This is the only time a single Amateur will be an option. Everywhere else 25 Amateurs will be used and the best result out of all of them will be taken. Here you will learn the "skills" of an individual Amateur. Combining the results of multiple Amateurs represents crowd-sourcing solutions and picking the best one. This can be an affordable alternative to hiring a professional.
                                     </p>
                                     <p>You may run this simulation as many times as you would like. You can see all of the outcomes by clicking view results.{isHost ? " As host you must begin the next round from the view results page." : ""} </p>
-                                    <h2>Amateur Golfer Selected</h2>
                                     {
                                         loading &&
                                         <p>Amateur is playing ... </p>
@@ -174,7 +182,10 @@ const AmateurOnly = (props: { round: Number }) => {
                             </div>
                             <div className='InfoButtonContainer'>
                                 <Button
-                                    onClick={() => playAmateurRound()}
+                                    onClick={() => {
+                                        setLoading(true);
+                                        animateBallIntoHole(playAmateurRound)
+                                    }}
                                     disabled={loading}
                                 >
                                     Play Round
@@ -187,9 +198,9 @@ const AmateurOnly = (props: { round: Number }) => {
                                 </Button>
                             </div>
                         </div>
-                        <div className='Solvers'>
+                        {/* <div className='Solvers'>
                             <AmateurSolverCard select={undefined} onlyOne={true} />
-                        </div>
+                        </div> */}
                     </div>
             }
         </div>
