@@ -1,7 +1,7 @@
 import { Button, Table } from 'antd';
 import './SessionResults.scss';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { UserContext } from '../../App';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import {
@@ -15,6 +15,8 @@ import {
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import { UserContextType } from '../../Utils/Types';
+import { useReactToPrint } from 'react-to-print';
+import { FullScreenConfetti } from '../../ReusableComponents/Confetti';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
@@ -238,13 +240,76 @@ const SessionResults = (props: any) => {
         }
     ));
 
+    const getPlacement = () => {
+        let sortedPlayers = props.players.sort((a: any, b: any) => {
+            return sumScore(a.scores) - sumScore(b.scores);
+        });
+
+        for (let i = 0; i < sortedPlayers.length; i++) {
+            if (playerId && sortedPlayers[i].id.toLowerCase() === playerId.toLowerCase()) {
+                if (i === 0) {
+                    return "Congratulations! You came in 1st place!"
+                } else if (i === 1) {
+                    return "You came in " + (i + 1) + "nd place!";
+                } else if (i === 2) {
+                    return "You came in " + (i + 1) + "rd place!";
+                } else if (i === 3) {   
+                    return "You came in " + (i + 1) + "th place!";
+                }
+            }
+        }
+
+        return "You came in 4th place!";
+    }
+    
+    const [isPrinting, setIsPrinting] = useState(false);
+    const contentToPrint = useRef(null);
+    const handlePrint = useReactToPrint({
+        documentTitle: "Print Final Tournament Results",
+        onBeforeGetContent(): Promise<void> {
+            return new Promise<void>((resolve) => {
+                setIsPrinting(true);
+                resolve();
+            });
+        },
+        onAfterPrint: () => setIsPrinting(false),
+        removeAfterPrint: true,
+    });
+
+    const saveGraphs = () => {
+        const canvases = document.querySelectorAll('canvas');
+        canvases.forEach((canvas: any) => {
+            console.log(canvas);
+            if (canvas.role === 'img') {
+                console.log("seen");
+                const link = document.createElement('a');
+                link.download = 'STSELab-Tournament-Results.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        });
+    }
+
     return (
-        <div className='SessionResults'>
-            <h1>Final Results </h1>
+        <div className='SessionResults' ref={contentToPrint}>
+
+            <div className='Instructions'>
+                <h1>Tournament Results </h1>
+                <h2>{getPlacement()}</h2>
+                <div className='EndTournamentButtons'>
+                    <Button onClick={() => navigate('/')}>Return Home</Button>
+                    <Button onClick={() => navigate('/results')}>View Historical Results</Button>
+                    <Button onClick={() => handlePrint(null, () => contentToPrint.current)}>Save Results</Button>
+                    <Button onClick={() => saveGraphs()}>Save Graphs</Button>
+                </div>
+            </div>
+            
+            <br></br>
 
             <div className='ResultTable'>
                 <Table
-                    pagination={{ pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
+                    pagination={isPrinting ? { pageSize: props.players.length, position: ['none', 'none']} : 
+                        { pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
                     columns={tableColumns}
                     dataSource={tableData}
                     rowKey={(record) => record.key}
@@ -259,16 +324,16 @@ const SessionResults = (props: any) => {
             </div>
 
             {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
-            <Scatter className='ScatterCanvas' options={shotsCostOptions} data={shotsCostData} />
-            <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
-
-            <h1>Thanks for playing!</h1>
-            <div className='EndTournamentButtons'>
-                <Button onClick={() => navigate('/')}>Return Home</Button>
-                <Button onClick={() => navigate('/results')}>View Lifetime Results</Button>
-                <Button onClick={() => alert("Not implemented yet")}>Save Results</Button>
-            </div>
+            {
+                !isPrinting &&
+                <Scatter className='ScatterCanvas' options={shotsCostOptions} data={shotsCostData} />
+            }
+            {
+                !isPrinting &&
+                <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
+            }
             <br></br>
+            <FullScreenConfetti />
         </div>
     )
 }

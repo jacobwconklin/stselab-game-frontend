@@ -7,8 +7,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Federant&display=swap');
 
 :root {
-  --top-font: 'Chakra Petch';
-  --title-font: 'Federant';
+  --title-font: 'Chakra Petch';
+  // --title-font: 'Federant';
   --body-font: 'Red Hat Display';
 }
 
@@ -26,12 +26,12 @@ body {
 }
 
 /* Can add title-font class to any element to get it to use title font instead of body font, and can add user-font lass similarly*/
-.title-font {
-  font-family: var(--top-font);
-}
+// .top-font {
+//   font-family: var(--top-font);
+// }
 
 h1 {
-  font-family: var(-title-font)
+  font-family: var(--title-font)
 }
 
 code {

@@ -2,7 +2,8 @@ import { Button } from 'antd';
 import './Home.scss';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Confetti from '../../ReusableComponents/Confetti';
+import { HeroConfetti } from '../../ReusableComponents/Confetti';
+import arrowGif from '../../Assets/down-arrow-gif.gif';
 
 // Home
 const Home = (props: any) => {
@@ -20,11 +21,14 @@ const Home = (props: any) => {
                     <div className='PictogramGreen'></div>
                     <div className='PictogramPink'></div>
                     <div className='PictogramOrange'></div>
-                    <div className='WelcomeCard title-font'>
+                    <div className='WelcomeCard top-font'>
                         <h1>
                             Welcome to STSELab's Golf Tournament
                         </h1>
                     </div>
+                    <img className='Clickable' onClick={() => {
+                        window.scrollTo({top: window.innerHeight - 160, behavior: 'smooth'})
+                    }} src={arrowGif} alt='Arrows Pointing Down' />
                 </div>
                 <div className='DialogCard'>
                     <h2 className='CollapsableTitle' onClick={() => {setCollapseWhat(val => !val)}}>
@@ -187,7 +191,7 @@ const Home = (props: any) => {
                 <br></br>
             </div>
             {
-                <Confetti />
+                <HeroConfetti />
             }
         </div>
     )

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import './GameController.scss';
 import { postRequest } from '../../Utils/Api';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useBeforeUnload } from 'react-router-dom';
 import { UserContext } from '../../App';
 import WaitRoom from '../GameScreens/WaitRoom';
 import PlayScreen from '../GameScreens/PlayScreen';
@@ -10,6 +10,7 @@ import SessionResults from '../GameScreens/SessionResults';
 import FreeRoam from '../GameScreens/FreeRoam/FreeRoam';
 import { RoundResult, UserContextType } from '../../Utils/Types';
 import { RoundNames } from '../../Utils/Utils';
+import React from 'react';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
 // displays the session screen showing all of the players in a the tournament. Once started, it will 
@@ -26,8 +27,8 @@ const GameController = () => {
     const { sessionId, playerId } = useContext(UserContext) as UserContextType;
     const [currRound, setCurrRound] = useState<number>(0);
 
-    // TODO potentially move the calls for these results INTO the result components (and could move
-    // playerlist out of sessionStatus and into waiting room call meaning only session round would have
+    // TODO potentially move the calls for these results INTO the result components 
+    // just as I moved playerlist out of sessionStatus and into waiting room call meaning only session round would have
     // to be polled here)
     const [currentResults, setCurrentResults] = useState<Array<RoundResult> | []>([]);
     const [finalResults, setFinalResults] = useState<[any] | []>([]);
@@ -66,9 +67,6 @@ const GameController = () => {
                     }
                     setCurrRound(response?.session?.round);
                 }
-                // TODO could get results separately from status based on round we are in.?
-                // IE if response.?.session?.round === 1 then get results for round 1 (professional only)
-
                 // Rounds where OTHER player results want to be seen will pull round results and include:
                 // 1, 3, 6, 7, 8, 9, 10 (but 10 requires results from entire tournament)
                 const currentRound = response?.session?.round;
@@ -107,11 +105,12 @@ const GameController = () => {
     }, [sessionId, playerId, setCurrentResults, setFinalResults, currentResults.length, finalResults.length, currRound]);
 
 
-    // useBeforeUnload(
-    //     React.useCallback(() => {
-    //         // TODO remove player if they navigate away from game
-    //     }, [])
-    // );
+    useBeforeUnload(
+        React.useCallback(() => {
+            // TODO remove player if they navigate away from game
+            if (playerId) postRequest("player/remove", JSON.stringify({ playerId }));
+        }, [playerId])
+    );
 
     // Rounds allow the host to move the game forward and change the screen displayed for all players.
     // Rounds will work like this: 

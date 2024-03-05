@@ -5,8 +5,8 @@ const GolfBall = (props: {size?: number, color?: string}) => {
 
     return (
         <div className='GolfBall' style={{
-            width: props?.size ? props.size : '32px',
-            height: props?.size ? props.size : '32px',
+            width: props?.size ? props.size + 'px' : '32px',
+            height: props?.size ? props.size + "px" : '32px',
         }} >
             <div className='BackColor' style={{backgroundColor: props?.color ? props.color : 'white'}}>
 

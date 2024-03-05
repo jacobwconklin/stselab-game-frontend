@@ -12,6 +12,12 @@
     color: white;
     min-width: 300px;
     z-index: 2;
+    // font-size: 40px;
+
+    .GolfBall {
+        display: inline-block;
+        transform: translate(0px, 3px);
+    }
 }
 
 .NavHeader > * {
@@ -19,8 +25,11 @@
 }
 
 .Title {
+    padding: 5px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+    border-bottom: 3px solid transparent;
     &:hover {
         cursor: pointer;
-        text-decoration: underline;
+        border-bottom: 3px solid white;
     }
 }

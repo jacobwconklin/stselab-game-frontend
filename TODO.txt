@@ -7,4 +7,11 @@ This can outline the major TODOs so they can be ordered
 
 ADD TYPES for all "any" placeholders
 
-Work on Final Results page, display winner and tell user what they placed. Implement save results button to print screen or at least save graphs.
+Modify survey asking for best players to have not sure 
+
+Maybe add simulate all to results instead of simulation side
+
+Make selector cards light up somehow so that they show which is selected
+
+Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
+round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.

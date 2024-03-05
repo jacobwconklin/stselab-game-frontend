@@ -22,7 +22,7 @@ const AllResults = (props: any) => {
         const pullAllPlayerResults = async () => {
             try {
                 const response = await getRequest('/player/allResults');
-                // TODO may need to filter any values missing shots, score, etc (Although they shouldn't be in the DB)
+                // Shouldn't need to filter any values missing shots, score, etc (as they shouldn't be in the DB)
                 setAllResults(response.results);
                 setFilteredResults(response.results);
             } catch (error) {
