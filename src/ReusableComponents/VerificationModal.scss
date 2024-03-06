@@ -5,7 +5,8 @@
     right: 0px;
     height: 100%;
     min-height: 100vh;
-    min-width: 100vw;
+    width: 100vw;
+    max-width: 100%;
     display: flex;
     align-items: flex-start;
     justify-content: center;

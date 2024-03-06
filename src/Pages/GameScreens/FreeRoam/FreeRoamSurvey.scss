@@ -4,6 +4,10 @@
     align-items: center;
     padding-top: 30px;
 
+    .CheckboxAndRadio {
+        display: flex;
+    }
+
     .SuccessfullySubmittedMessage {        
         background-color: whitesmoke;
         border-radius: 10px;

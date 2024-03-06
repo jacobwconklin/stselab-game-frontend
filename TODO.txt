@@ -5,9 +5,9 @@ This can outline the major TODOs so they can be ordered
 2. What is 'strategy' parameter (sometimes called with 0 and sometimes 1)
 3. Play fairway should I use rule 1 (minimize distance to hole) or rule 2 (minimize strokes)
 
-ADD TYPES for all "any" placeholders
+Modify survey asking for best players to have "not sure" option 
 
-Modify survey asking for best players to have not sure 
+Add placeholder page for questionnaire at start and end (taking place of Yahtzee)
 
 Maybe add simulate all to results instead of simulation side
 

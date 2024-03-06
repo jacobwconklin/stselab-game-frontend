@@ -4,4 +4,15 @@
     align-items: center;
     padding: 45px 10px 20px 10px;
     gap: 40px;
+
+    .JoinLinkContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .CopyJoinLinkButton {
+            position: inherit;
+            display: inline-block;
+            margin-left: 15px;
+        }
+    }
 }

@@ -1,16 +1,17 @@
 import { Button, Checkbox, Table } from 'antd';
 import './AllResults.scss';
-import { RoundResult } from '../../Utils/Types';
+import { DisplayRoundResult, RoundResult } from '../../Utils/Types';
 import { useEffect, useState } from 'react';
 import { getRequest } from '../../Utils/Api';
 import { useNavigate } from 'react-router-dom';
 import AggregateResultGraphs from './AggregateResultGraphs';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import { Solver, solverNames } from '../../Utils/Simulation';
+import { RoundNames } from '../../Utils/Utils';
 
 // AllResults
 // Only show for tournament stage results (not professional only or h_arch)
-const AllResults = (props: any) => {
+const AllResults = () => {
 
     const navigate = useNavigate();
     const [allResults, setAllResults] = useState<RoundResult[]>([]);
@@ -81,7 +82,8 @@ const AllResults = (props: any) => {
     // When user changes what architecture and rounds they want to see, re-filter the results
     useEffect(() => {
         setFilteredResults(allResults.filter((result) => {
-            return selectedArchitecture.includes(result.architecture) && selectedRound.includes((result.round - 5).toString());
+            return selectedArchitecture.includes(result.architecture) && 
+            selectedRound.includes((result.round - RoundNames.TournamentStage1 + 1).toString());
         }));
     }, [selectedArchitecture, selectedRound, allResults]);
 
@@ -90,21 +92,22 @@ const AllResults = (props: any) => {
 
     // table columns and data
     const tableColumns = [
-
         {
             title: 'Score',
             dataIndex: 'score',
             key: 'score',
             defaultSortOrder: 'descend' as any,
-            sorter: (a: any, b: any) => {
-                if (a.score === '...' && !(b.score === '...')) {
+            sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
+                const scoreA = Number(a.score);
+                const scoreB = Number(b.score);
+                if (isNaN(scoreA) && !isNaN(scoreB)) {
                     return -1;
-                } else if (!(a.score === '...') && b.score === '...') {
+                } else if (!isNaN(scoreA) && isNaN(scoreB)) {
                     return 1;
-                } else if (a.score === '...' && b.score === '...') {
+                } else if (isNaN(scoreA) && isNaN(scoreB)) {
                     return 0;
                 } else {
-                    return a.score - b.score
+                    return scoreA - scoreB;
                 }
             }
         },
@@ -123,15 +126,17 @@ const AllResults = (props: any) => {
             title: 'Shots',
             dataIndex: 'shots',
             key: 'shots',
-            sorter: (a: any, b: any) => {
-                if (a.shots === '...' && !(b.shots === '...')) {
+            sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
+                const shotsA = Number(a.shots);
+                const shotsB = Number(b.shots);
+                if (isNaN(shotsA) && !isNaN(shotsB)) {
                     return 1;
-                } else if (!(a.shots === '...') && b.shots === '...') {
+                } else if (!isNaN(shotsA) && isNaN(shotsB)) {
                     return -1;
-                } else if (a.shots === '...' && b.shots === '...') {
+                } else if (isNaN(shotsA) && isNaN(shotsB)) {
                     return 0;
                 } else {
-                    return a.shots - b.shots
+                    return shotsA - shotsB;
                 }
             }
         },
@@ -139,15 +144,17 @@ const AllResults = (props: any) => {
             title: 'Cost',
             key: 'cost',
             dataIndex: 'cost',
-            sorter: (a: any, b: any) => {
-                if (a.cost === '...' && !(b.cost === '...')) {
+            sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
+                const costA = Number(a.cost);
+                const costB = Number(b.cost);
+                if (isNaN(costA) && !isNaN(costB)) {
                     return 1;
-                } else if (!(a.cost === '...') && b.cost === '...') {
+                } else if (!isNaN(costA) && isNaN(costB)) {
                     return -1;
-                } else if (a.cost === '...' && b.cost === '...') {
+                } else if (isNaN(costA) && isNaN(costB)) {
                     return 0;
                 } else {
-                    return a.cost - b.cost
+                    return costA - costB;
                 }
             }
         },
@@ -184,7 +191,7 @@ const AllResults = (props: any) => {
         }
     ];
 
-    const tableData = filteredResults.map((player: any, index: number) => (
+    const tableData: DisplayRoundResult[] = filteredResults.map((player: RoundResult, index: number) => ( 
         {
             key: player.id,
             score: player.score / 100,
@@ -192,7 +199,7 @@ const AllResults = (props: any) => {
             color: player.color,
             shots: player.shots,
             cost: player.cost / 100,
-            round: player.round - 5,
+            round: player.round - RoundNames.TournamentStage1 + 1,
             architecture: player.architecture,
             solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver),
         }

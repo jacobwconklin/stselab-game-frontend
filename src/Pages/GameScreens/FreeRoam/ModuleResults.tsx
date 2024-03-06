@@ -14,16 +14,17 @@ import {
 import { Bar, Scatter } from 'react-chartjs-2';
 import { Solver, solverNames } from '../../../Utils/Simulation';
 import { useState } from 'react';
+import { ModuleResult } from '../../../Utils/Types';
 
 // ModuleResults
-const ModuleResults = (props: any) => {
+const ModuleResults = (props: {results: ModuleResult[], origin: string, return: () => void}) => {
 
     // Gets avg for type of value from props.results
-    const getModuleAverage = (module: string, solver: Solver, type: string) => {
+    const getModuleAverage = (module: string, solver: Solver, type: 'shots' | 'distance' ) => {
         let value = 0;
         let numberOfValues = 0;
-        props?.results?.filter((result: any) => result.module === module && result.solver === solver)
-            .map((result: any) => {
+        props?.results?.filter((result: ModuleResult) => result.module === module && result.solver === solver)
+            .map((result: ModuleResult) => {
                 value += result[type];
                 numberOfValues++;
                 return null;
@@ -85,8 +86,8 @@ const ModuleResults = (props: any) => {
         datasets: solvers.map((solver: Solver, index: number) => {
             return {
                 label: solverNames[solver - 1],
-                data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Drive')
-                    .map((result: any) => {
+                data: props?.results?.filter((result: ModuleResult) => result.solver === solver && result.module === 'Drive')
+                    .map((result: ModuleResult) => {
                         return {
                             x: result.shots,
                             y: result.distance
@@ -131,8 +132,8 @@ const ModuleResults = (props: any) => {
         datasets: solvers.map((solver: Solver, index: number) => {
             return {
                 label: solverNames[solver - 1],
-                data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Long')
-                    .map((result: any) => {
+                data: props?.results?.filter((result: ModuleResult) => result.solver === solver && result.module === 'Long')
+                    .map((result: ModuleResult) => {
                         return {
                             x: result.shots,
                             y: (result.distance)
@@ -178,8 +179,8 @@ const ModuleResults = (props: any) => {
         datasets: solvers.map((solver: Solver, index: number) => {
             return {
                 label: solverNames[solver - 1],
-                data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Fairway')
-                    .map((result: any) => {
+                data: props?.results?.filter((result: ModuleResult) => result.solver === solver && result.module === 'Fairway')
+                    .map((result: ModuleResult) => {
                         return {
                             x: result.shots,
                             y: (result.distance)
@@ -225,8 +226,8 @@ const ModuleResults = (props: any) => {
         datasets: solvers.map((solver: Solver, index: number) => {
             return {
                 label: solverNames[solver - 1],
-                data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Short')
-                    .map((result: any) => {
+                data: props?.results?.filter((result: ModuleResult) => result.solver === solver && result.module === 'Short')
+                    .map((result: ModuleResult) => {
                         return {
                             x: result.shots,
                             y: (result.distance)
@@ -273,8 +274,8 @@ const ModuleResults = (props: any) => {
         datasets: solvers.map((solver: Solver, index: number) => {
             return {
                 label: solverNames[solver - 1],
-                data: props?.results?.filter((result: any) => result.solver === solver && result.module === 'Putt')
-                    .map((result: any) => {
+                data: props?.results?.filter((result: ModuleResult) => result.solver === solver && result.module === 'Putt')
+                    .map((result: ModuleResult) => {
                         return {
                             x: result.shots,
                             y: (result.distance)

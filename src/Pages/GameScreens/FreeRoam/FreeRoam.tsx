@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import './FreeRoam.scss';
-import { Solver } from '../../../Utils/Simulation';
 import ModuleResults from './ModuleResults';
 import FreeRoamGame from './FreeRoamGame';
 import FreeRoamSurvey from './FreeRoamSurvey';
 import { RoundNames } from '../../../Utils/Utils';
+import { ModuleResult } from '../../../Utils/Types';
 
 // Free Roam
 // Allow players to freely play around with selecting solvers for the 5 various modules.
@@ -27,7 +27,7 @@ const FreeRoam = (props: {round?: number}) => {
     const [surveySuccesfullySubmitted, setSurveySuccesfullySubmitted] = useState(false);
 
     // STORES ALL accumulate results of one player in a free roam session, could get quite big
-    const [allResults, setAllResults] = useState<{shots: number, distance: number, solver: Solver, module: string}[]>([]);
+    const [allResults, setAllResults] = useState<ModuleResult[]>([]);
     
     return (
         <div className='FreeRoam'>

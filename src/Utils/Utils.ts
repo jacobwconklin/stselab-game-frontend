@@ -169,7 +169,7 @@ export const animateBallIntoHole = (callBack: () => void) => {
                         ball.style.transition = "all 1.2s ease-out"; // time to roll into hole  
                         ball.style.left = inHoleX + 'px';
                         ball.style.bottom = inHoleY + "px";
-                        ball.style.transform = "rotate(800deg)"; 
+                        ball.style.transform = "rotate(1800deg)"; 
                         setTimeout(() => {
                             ball.style.transition = "all 0.5s ease-out"; // time to fade away ball 
                             ball.style.opacity = "0";

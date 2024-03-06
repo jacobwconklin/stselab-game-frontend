@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import './WaitRoom.scss';
 import { UserContext } from '../../App';
-import { Button, Table } from 'antd';
+import { Button, FloatButton, Table, Tooltip, message } from 'antd';
 import { advanceSession, postRequest } from '../../Utils/Api';
 import { useNavigate } from 'react-router-dom';
 import VerificationModal from '../../ReusableComponents/VerificationModal';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import { PlayerBrief, UserContextType } from '../../Utils/Types';
+import { CopyOutlined } from '@ant-design/icons';
 
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
@@ -99,22 +100,45 @@ const WaitRoom = () => {
         }
     ))
 
+    const [messageApi, contextHolder] = message.useMessage();
+
 
 
     return (
         <div className='WaitRoom'>
+            {contextHolder}
             {
                 isHost ?
                     <div className='Instructions'>
                         <h1>Join Code: {sessionId}</h1>
-                        <h3>
-                            <span>Join Link: </span>
-                            <span style={{ color: 'blue' }}>
-                                {process.env.NODE_ENV === 'production' ?
-                                    "https://stselab.azurewebsites.net/register/join/" + sessionId :
-                                    "localhost:3000/register/join/" + sessionId}
-                            </span>
-                        </h3>
+                        <div className='JoinLinkContainer'>
+                            <h3>
+                                <span>Join Link: </span>
+                                <span style={{ color: 'blue' }}>
+                                    {process.env.NODE_ENV === 'production' ?
+                                        "https://stselab.azurewebsites.net/register/join/" + sessionId :
+                                        "localhost:3000/register/join/" + sessionId}
+                                </span>
+                            </h3>
+                            <Tooltip title="Copy Join Link" placement="top">
+                                <FloatButton
+                                    className='CopyJoinLinkButton'
+                                    icon={<CopyOutlined />}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(process.env.NODE_ENV === 'production' ?
+                                            "https://stselab.azurewebsites.net/register/join/" + sessionId :
+                                            "localhost:3000/register/join/" + sessionId);
+                                        messageApi.open({
+                                            type: 'success',
+                                            content: 'Join Link Copied',
+                                        });
+                                    }}
+                                >
+                                    Copy Join Link
+                                </FloatButton>
+                            </Tooltip>
+
+                        </div>
                         <p>
                             As host you control when the tournament starts and each round ends. After starting the tournament players can no
                             longer join. You must share the join code or join link with other players so that they may enter the tournament. You can remove players from the tournament by clicking on their row.

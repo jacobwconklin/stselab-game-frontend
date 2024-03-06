@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import GolfBall from "../../../ReusableComponents/GolfBall";
 import { Solver, solverNames } from "../../../Utils/Simulation";
-import { RoundResult } from "../../../Utils/Types";
+import { DisplayRoundResult, RoundResult, UserContextType } from "../../../Utils/Types";
 import { RoundNames, getArchitectureCommonName } from "../../../Utils/Utils";
 import { UserContext } from "../../../App";
 import { useContext, useState } from "react";
@@ -12,10 +12,10 @@ import VerificationModal from "../../../ReusableComponents/VerificationModal";
 // Creates a table to display results for a round or session
 const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
 
-    const { isHost, playerId } = useContext(UserContext) as any;
+    const { isHost, playerId } = useContext(UserContext) as UserContextType;
 
     // tells backend to remove a player from their session
-    const removePlayer = async (playerId: any) => {
+    const removePlayer = async (playerId: string) => {
         const response = await postRequest("player/remove", JSON.stringify({ playerId }));
         if (!response.success) {
             alert("Error removing player from session, please try again.");
@@ -56,32 +56,34 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             dataIndex: 'shots',
             key: 'shots',
             defaultSortOrder: props.round < RoundNames.TournamentStage1 ? 'ascend' as any : null,
-            sorter: (a: any, b: any) => {
-                if (a.shots === '...' && !(b.shots === '...')) {
-                    return 1;
-                } else if (!(a.shots === '...') && b.shots === '...') {
-                    return -1;
-                } else if (a.shots === '...' && b.shots === '...') {
+            sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
+                const shotsA = Number(a.shots);
+                const shotsB = Number(b.shots);
+                if (isNaN(shotsA) || isNaN(shotsB)) {
                     return 0;
-                } else {
-                    return a.shots - b.shots
+                }else if (!isNaN(shotsA) && isNaN(shotsB)) {
+                    return 1;
+                } else if (isNaN(shotsA) && !isNaN(shotsB)) {
+                    return -1;
                 }
+                return shotsA - shotsB;
             }
         },
         {
             title: 'Cost',
             key: 'cost',
             dataIndex: 'cost',
-            sorter: (a: any, b: any) => {
-                if (a.cost === '...' && !(b.cost === '...')) {
-                    return 1;
-                } else if (!(a.cost === '...') && b.cost === '...') {
-                    return -1;
-                } else if (a.cost === '...' && b.cost === '...') {
+            sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
+                const costA = Number(a.cost);
+                const costB = Number(b.cost);
+                if (isNaN(costA) || isNaN(costB)) {
                     return 0;
-                } else {
-                    return a.cost - b.cost
+                } else if (!isNaN(costA) && isNaN(costB)) {
+                    return 1;
+                } else if (isNaN(costA) && !isNaN(costB)) {
+                    return -1;
                 }
+                return costA - costB;
             }
         },
         {
@@ -114,15 +116,17 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 dataIndex: 'score',
                 key: 'score',
                 defaultSortOrder: 'descend' as any,
-                sorter: (a: any, b: any) => {
-                    if (a.score === '...' && !(b.score === '...')) {
+                sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
+                    const scoreA = Number(a.score);
+                    const scoreB = Number(b.score);
+                    if (isNaN(scoreA) && !isNaN(scoreB)) {
                         return -1;
-                    } else if (!(a.score === '...') && b.score === '...') {
+                    } else if (!isNaN(scoreA) && isNaN(scoreB)) {
                         return 1;
-                    } else if (a.score === '...' && b.score === '...') {
+                    } else if (isNaN(scoreA) && isNaN(scoreB)) {
                         return 0;
                     } else {
-                        return a.score - b.score
+                        return scoreA - scoreB;
                     }
                 }
             }
@@ -137,21 +141,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
         return scorePrefix.concat(baseAndArchitectureSuffix);
     }
 
-    /*
-    Example
-    [
-      {
-          key: '1',
-          name: 'John Brown',
-          color: '#123456',
-          shots: 32,
-          cost: 100,
-          solvers: [Solver.Professional, Solver.Specialist],
-          architecture: 'Long and Putt'
-      },
-    ];
-    */
-    const getBaseData = () => {
+    const getBaseData: () => DisplayRoundResult[] = () => {
         return props?.players?.map((player, index) => (
             {
                 key: player.id,
@@ -164,7 +154,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
         ))
     }
 
-    const getExtendedData = () => {
+    const getExtendedData: () => DisplayRoundResult[] = () => {
         return props?.players?.map((player, index) => (
             {
                 key: player.id,
@@ -187,9 +177,9 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 dataSource={props.round < RoundNames.TournamentStage1 ? getBaseData() : getExtendedData()}
                 rowKey={(record) => record.key}
                 rowClassName={(record, index) => {
-                    if (isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
+                    if (playerId && isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
                         return 'Clickable';
-                    } else if (record.key.toLowerCase() === playerId.toLowerCase()) {
+                    } else if (playerId && record.key.toLowerCase() === playerId.toLowerCase()) {
                         return 'MatchingPlayer';
                     } else {
                         return 'HighlightRow'
@@ -198,7 +188,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: event => {
-                            if (isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
+                            if (playerId && isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
                                 setPlayerIdToRemove(record.key);
                                 setModalTitle('Are you sure you want to remove: ' + record.name + '?');
                                 setModalMessage('The player will be removed from the Tournament including all of their information');

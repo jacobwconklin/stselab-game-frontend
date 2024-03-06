@@ -9,7 +9,8 @@ import { animateBallIntoHole } from '../../../Utils/Utils';
 // Have players play on h_arch with one professional to showcase the standard way problems are solved
 const ProfessionalOnly = (props: {
     playingRound: Boolean, round: Number,
-    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void
+    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
+    disablePlayRound: () => void
 }) => {
 
     const playRoundCallback = () => {
@@ -32,7 +33,10 @@ const ProfessionalOnly = (props: {
                         <br></br>
                     </div>
                     <Button
-                        onClick={() => animateBallIntoHole(playRoundCallback)}
+                        onClick={() => {
+                            props.disablePlayRound();
+                            animateBallIntoHole(playRoundCallback)
+                        }}
                         disabled={!!props.playingRound}
                     >
                         Play Round

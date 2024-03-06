@@ -18,6 +18,7 @@ import { Scatter } from 'react-chartjs-2';
 import golfBallSvg from '../../../Assets/golfBall.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
 import { animateBallIntoHole } from '../../../Utils/Utils';
+import { UserContextType } from '../../../Utils/Types';
 
 // AmateurOnly
 // Have players play on h_arch with only one amateur as many time as they would like to learn
@@ -32,7 +33,7 @@ const AmateurOnly = (props: { round: Number }) => {
     const [latestCost, setLatestCost] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const { isHost, sessionId } = useContext(UserContext) as any;
+    const { isHost, sessionId } = useContext(UserContext) as UserContextType;
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
 
     const playAmateurRound = async () => {
@@ -101,7 +102,7 @@ const AmateurOnly = (props: { round: Number }) => {
     };
 
     const data = {
-        datasets: allResults.map((result: any, index: number) => {
+        datasets: allResults.map((result: {cost: number, shots: number}, index: number) => {
             return {
                 label: "Amateur #" + (index + 1),
                 data: [{
@@ -127,6 +128,7 @@ const AmateurOnly = (props: { round: Number }) => {
             {
                 showAmateurResults ?
                     <div className='AmateurResults'>
+                        <div className='StaticBackground'><div className='StaticBackgroundImages'></div></div>
                         <div className='AmateurResultInfo'>
                             <h2>Results of Individual Amateurs</h2>
                             {

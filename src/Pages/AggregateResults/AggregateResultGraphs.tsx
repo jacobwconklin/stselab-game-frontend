@@ -10,35 +10,11 @@ import {
 import { Scatter } from 'react-chartjs-2';
 import { RoundResult } from '../../Utils/Types';
 import { solverNames } from '../../Utils/Simulation';
+import { RoundNames } from '../../Utils/Utils';
 
 // AggregateResultGrpahs
 // Only show for tournament stage results (not professional only or h_arch)
 const AggregateResultGraphs = (props: { results: RoundResult[] }) => {
-
-    // Sum player value for use in table
-    // const sumShots = (scores: any[]) => {
-    //     let total = 0;
-    //     scores.forEach((score: any) => {
-    //         total += score.shots;
-    //     });
-    //     return total;
-    // }
-
-    // const sumCost = (scores: any[]) => {
-    //     let total = 0;
-    //     scores.forEach((score: any) => {
-    //         total += score.cost;
-    //     });
-    //     return total / 100;
-    // }
-
-    // const sumScore = (scores: any[]) => {
-    //     let total = 0;
-    //     scores.forEach((score: any) => {
-    //         total += score.score;
-    //     });
-    //     return total / 100;
-    // }
 
     // Returns an informative label with the achitecture and solvers used:
     const getArchitectureSolverLabel = (result: RoundResult) => {
@@ -98,7 +74,7 @@ const AggregateResultGraphs = (props: { results: RoundResult[] }) => {
     };
 
     const shotsCostData = {
-        datasets: props?.results?.map((result: any) => {
+        datasets: props?.results?.map((result: RoundResult) => {
             return {
                 label: getArchitectureSolverLabel(result),
                 data: [{
@@ -155,11 +131,11 @@ const AggregateResultGraphs = (props: { results: RoundResult[] }) => {
     };
 
     const scoreRoundData = {
-        datasets: props?.results?.map((result: any) => {
+        datasets: props?.results?.map((result: RoundResult) => { 
             return {
                 label: getArchitectureSolverLabel(result),
                 data: [{
-                    x: result.round - 5,
+                    x: result.round - RoundNames.TournamentStage1 + 1,
                     y: result.score / 100
                 }],
                 backgroundColor: result.color,

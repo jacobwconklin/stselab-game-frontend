@@ -1,5 +1,7 @@
 // Temporary global types file to hold all types, will be further organized as data load increases.
 
+import { Solver } from "./Simulation";
+
 // Smaller structure to hold just information necessary to poll during the game
 export interface PlayerBrief {
     id?: string;
@@ -68,12 +70,56 @@ export interface RoundResult {
     color: string;
     shots: number;
     cost: number;
-    solverOne: number;
-    solverTwo: number;
-    solverThree: number;
+    solverOne: Solver;
+    solverTwo: Solver;
+    solverThree: Solver;
     architecture: string;
     score: number;
     round: number;
+}
+
+export interface DisplayRoundResult {
+    key: string;
+    name: string;
+    color: string;
+    shots: number | string;
+    cost: number | string;
+    solvers: number[];
+    architecture?: string;
+    score?: number | string;
+    round?: number | string;
+}
+
+export interface ModuleResult {
+    shots: number; 
+    distance: number; 
+    solver: Solver; 
+    module: string;
+}
+
+export interface Score {
+    round: number;
+    score: number;
+    shots: number;
+    cost: number;
+    solverOne: Solver;
+    solverTwo: Solver;
+    solverThree: Solver;
+    architecture: string;
+}
+
+export interface DisplayScore {
+    key: string;
+    score: number | string;
+    shots: number | string;
+    cost: number | string;
+}
+
+export interface FinalResult {
+    id: string;
+    name: string;
+    color: string;
+    scores: Score[];
 }
 
 export interface UserContextType {

@@ -14,36 +14,37 @@ import {
     Title
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
-import { UserContextType } from '../../Utils/Types';
+import { DisplayScore, FinalResult, Score, UserContextType } from '../../Utils/Types';
 import { useReactToPrint } from 'react-to-print';
 import { FullScreenConfetti } from '../../ReusableComponents/Confetti';
+import { RoundNames } from '../../Utils/Utils';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
-const SessionResults = (props: any) => {
+const SessionResults = (props: {players: FinalResult[]}) => {
 
     const navigate = useNavigate();
     const { playerId } = useContext(UserContext) as UserContextType;
 
-    const sumShots = (scores: any[]) => {
+    const sumShots = (scores: Score[]) => {
         let total = 0;
-        scores.forEach((score: any) => {
+        scores.forEach((score: Score) => {
             total += score.shots;
         });
         return total;
     }
 
-    const sumCost = (scores: any[]) => {
+    const sumCost = (scores: Score[]) => {
         let total = 0;
-        scores.forEach((score: any) => {
+        scores.forEach((score: Score) => {
             total += score.cost;
         });
         return total / 100;
     }
 
-    const sumScore = (scores: any[]) => {
+    const sumScore = (scores: Score[]) => {
         let total = 0;
-        scores.forEach((score: any) => {
+        scores.forEach((score: Score) => {
             total += score.score;
         });
         return total / 100;
@@ -92,10 +93,10 @@ const SessionResults = (props: any) => {
     };
 
     const shotsCostData = {
-        datasets: props?.players?.map((result: any) => {
+        datasets: props?.players?.map((result: FinalResult) => {
             return {
                 label: result.name,
-                data: result.scores.map((round: any) => {
+                data: result.scores.map((round: Score) => {
                     return {
                         x: round.cost / 100,
                         y: round.shots
@@ -148,12 +149,12 @@ const SessionResults = (props: any) => {
     };
 
     const scoreRoundData = {
-        datasets: props?.players?.map((result: any) => {
+        datasets: props?.players?.map((result: FinalResult) => {
             return {
                 label: result.name,
-                data: result.scores.map((round: any) => {
+                data: result.scores.map((round: Score) => {
                     return {
-                        x: round.round - 5,
+                        x: round.round - RoundNames.TournamentStage1 + 1,
                         y: round.score / 100
                     }
                 }),
@@ -172,15 +173,17 @@ const SessionResults = (props: any) => {
             dataIndex: 'score',
             key: 'score',
             defaultSortOrder: 'descend' as any,
-            sorter: (a: any, b: any) => {
-                if (a.score === '...' && !(b.score === '...')) {
+            sorter: (a: DisplayScore, b: DisplayScore) => {
+                const scoreA = Number(a.score);
+                const scoreB = Number(b.score);
+                if (isNaN(scoreA) && !isNaN(scoreB)) {
                     return -1;
-                } else if (!(a.score === '...') && b.score === '...') {
+                } else if (!isNaN(scoreA) && isNaN(scoreB)) {
                     return 1;
-                } else if (a.score === '...' && b.score === '...') {
+                } else if (isNaN(scoreA) && isNaN(scoreB)) {
                     return 0;
                 } else {
-                    return a.score - b.score
+                    return scoreA - scoreB;
                 }
             }
         },
@@ -199,15 +202,17 @@ const SessionResults = (props: any) => {
             title: 'Total Shots',
             dataIndex: 'shots',
             key: 'shots',
-            sorter: (a: any, b: any) => {
-                if (a.shots === '...' && !(b.shots === '...')) {
+            sorter: (a: DisplayScore, b: DisplayScore) => {
+                const shotsA = Number(a.shots);
+                const shotsB = Number(b.shots);
+                if (isNaN(shotsA) && !isNaN(shotsB)) {
                     return 1;
-                } else if (!(a.shots === '...') && b.shots === '...') {
+                } else if (!isNaN(shotsA) && isNaN(shotsB)) {
                     return -1;
-                } else if (a.shots === '...' && b.shots === '...') {
+                } else if (isNaN(shotsA) && isNaN(shotsB)) {
                     return 0;
                 } else {
-                    return a.shots - b.shots
+                    return shotsA - shotsB;
                 }
             }
         },
@@ -215,21 +220,23 @@ const SessionResults = (props: any) => {
             title: 'Total Cost',
             key: 'cost',
             dataIndex: 'cost',
-            sorter: (a: any, b: any) => {
-                if (a.cost === '...' && !(b.cost === '...')) {
+            sorter: (a: DisplayScore, b: DisplayScore) => {
+                const costA = Number(a.cost);
+                const costB = Number(b.cost);
+                if (isNaN(costA) && !isNaN(costB)) {
                     return 1;
-                } else if (!(a.cost === '...') && b.cost === '...') {
+                } else if (!isNaN(costA) && isNaN(costB)) {
                     return -1;
-                } else if (a.cost === '...' && b.cost === '...') {
+                } else if (isNaN(costA) && isNaN(costB)) {
                     return 0;
                 } else {
-                    return a.cost - b.cost
+                    return costA - costB;
                 }
             }
         },
     ];
 
-    const tableData = props?.players?.map((player: any, index: number) => (
+    const tableData = props?.players?.map((player: FinalResult, index: number) => (
         {
             key: player.id,
             name: player.name,
@@ -241,7 +248,7 @@ const SessionResults = (props: any) => {
     ));
 
     const getPlacement = () => {
-        let sortedPlayers = props.players.sort((a: any, b: any) => {
+        let sortedPlayers = props.players.sort((a: FinalResult, b: FinalResult) => {
             return sumScore(a.scores) - sumScore(b.scores);
         });
 

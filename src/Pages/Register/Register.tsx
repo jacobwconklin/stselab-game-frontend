@@ -10,14 +10,14 @@ import {
 import './Register.scss';
 import { useContext, useEffect, useState } from 'react';
 import { postRequest } from '../../Utils/Api';
-import { PlayerInformation, PlayerBrief } from '../../Utils/Types';
+import { PlayerInformation, PlayerBrief, UserContextType } from '../../Utils/Types';
 import { UserContext } from '../../App';
 import { useNavigate, useParams } from 'react-router-dom';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import { allCountriesArray } from '../../Utils/Countries';
 
 // Register
-const Register = (props: any) => {
+const Register = () => {
 
     // Scroll to top on entering page
     useEffect(() => {
@@ -274,7 +274,7 @@ const Register = (props: any) => {
     const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
     // setIsHost, setSessionId, and setPlayerId can be retreived from context
-    const { setIsHost, setSessionId, setPlayerId, setPlayerColor } = useContext(UserContext) as any;
+    const { setIsHost, setSessionId, setPlayerId, setPlayerColor } = useContext(UserContext) as UserContextType;
     // take users to session screen on successful submit
     const navigate = useNavigate();
 
@@ -444,7 +444,7 @@ const Register = (props: any) => {
                     if (submitResult.success) {
                         setIsSuccesfullySubmitted(true);
                         setIsHost(false);
-                        setSessionId(joinCode);
+                        setSessionId(Number(joinCode));
                         setPlayerId(submitResult.playerId);
                         setPlayerColor(color);
                         navigate('/game');

@@ -262,7 +262,7 @@ const FreeRoamGame = (props: {
                             !simulatedAll && latestShot !== null && latestDistance !== null && !loading &&
                             <div className='LatestResults'>
                                 <p>
-                                    You took {latestShot} shot{latestShot === 1 ? '' : 's'} and
+                                    They took {latestShot} shot{latestShot === 1 ? '' : 's'} and
                                     {latestDistance <= 0.5 ? " made it in the hole!"
                                         : " hit the ball " + (latestDistance) + " units towards the hole!"}
                                 </p>

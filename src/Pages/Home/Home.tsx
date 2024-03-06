@@ -6,7 +6,7 @@ import { HeroConfetti } from '../../ReusableComponents/Confetti';
 import arrowGif from '../../Assets/down-arrow-gif.gif';
 
 // Home
-const Home = (props: any) => {
+const Home = () => {
 
     const navigate = useNavigate();
     const [collapseWhat, setCollapseWhat] = useState(false);
@@ -90,37 +90,6 @@ const Home = (props: any) => {
 
                             5) The final results are shown, and the player who collected the most points wins the tournament.
                         </p>
-                        {/* <p>
-                            The game is played with one user who serves as the host, and an unlimited number of other users who join the game.
-                            When the host creates a new game they will receive a code and link to share with all players who wish to join. Playing 
-                            involves 4 rounds of golf, with 5 holes in each round. 
-                            The host will control when the game progresses to the next round. 
-                            In each round players will run the simulation and then see the results of all other players in the tournament for 
-                            that round. At the end of the tournament the results of the entire game will be displayed. Finally users can view 
-                            the aggregate results of all games played on the site. 
-                        </p><p>   
-                            The first round simulates the standard practice today, by having one professional golfer play the entire course.
-                            This shows how well the professional is suited for handling each portion of the course. Players will simply run 
-                            the simulation and see their results, which will be fairly close together.
-                        </p><p>    
-                            In the second round the players will each choose one type of golfer, or solver, to again play for them for the 
-                            entire course. The player chooses between 1 Professional golfer, 3 long drive specialists, and 25 amateurs. These 
-                            solvers will play for 5 holes and then the total scores of all players in the game will again be displayed. This time
-                            there will be increased variation in the number of shots and costs based on the solvers chosen.
-                        </p>
-                        <p>   
-                            In the third round players have increased freedom and are able to choose one solver to play the half of the golf 
-                            course closer to the hole, and another solver to play the half of the golf course further from the hole. This allows
-                            players to begin picking solvers based on their strengths. Players may select the same solver for both halves, in which
-                            case the results will be the same as selecting one solver for the entire course. 
-                        </p>
-                        <p>   
-                            Finally, In the fourth round players can choose ione solver type for driving from long range, another solver for 
-                            playing mid-range, which is referred to as the fairway, and another solver for putting close to the hole. The player will 
-                            choose their solver for each section of the course, and all 5 holes will be simulated with the chosen selection. The results
-                            for the round will be shown again, and then the host can take all players in the session to a screen showing the combined 
-                            results of the entire tournament. Good shooting!
-                        </p> */}
                     </div>
                 </div>
                 <div className='DialogCard'>

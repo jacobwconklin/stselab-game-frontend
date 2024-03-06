@@ -8,7 +8,7 @@ import PlayScreen from '../GameScreens/PlayScreen';
 import RoundResults from '../GameScreens/Results/RoundResults';
 import SessionResults from '../GameScreens/SessionResults';
 import FreeRoam from '../GameScreens/FreeRoam/FreeRoam';
-import { RoundResult, UserContextType } from '../../Utils/Types';
+import { FinalResult, RoundResult, UserContextType } from '../../Utils/Types';
 import { RoundNames } from '../../Utils/Utils';
 import React from 'react';
 
@@ -30,8 +30,8 @@ const GameController = () => {
     // TODO potentially move the calls for these results INTO the result components 
     // just as I moved playerlist out of sessionStatus and into waiting room call meaning only session round would have
     // to be polled here)
-    const [currentResults, setCurrentResults] = useState<Array<RoundResult> | []>([]);
-    const [finalResults, setFinalResults] = useState<[any] | []>([]);
+    const [currentResults, setCurrentResults] = useState<RoundResult[]>([]);
+    const [finalResults, setFinalResults] = useState<FinalResult[]>([]);
 
     // When player finishes the current round allow them to see scores for the round
     const [finishedRound, setFinishedRound] = useState<Array<Boolean>>(Array.apply(false, Array(10)).map(val => !!val));

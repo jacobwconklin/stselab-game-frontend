@@ -5,36 +5,38 @@ import { Button } from 'antd';
 import { advanceSession } from '../../../Utils/Api';
 import ResultTable from './ResultTable';
 import ResultGraphs from './ResultGraphs';
-import { RoundResult } from '../../../Utils/Types';
+import { RoundResult, UserContextType } from '../../../Utils/Types';
 import { RoundNames } from '../../../Utils/Utils';
+import VerificationModal from '../../../ReusableComponents/VerificationModal';
 // import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
 const RoundResults = (props: { round: number, players: Array<RoundResult> }) => {
-    const { isHost, sessionId } = useContext(UserContext) as any;
+    const { isHost, sessionId } = useContext(UserContext) as UserContextType;
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
+    const [showVerificationModal, setShowVerificationModal] = useState(false);
 
     return (
         <div className='RoundResults'>
-            <h1>Results for Round {props?.round}</h1>
             {
                 isHost && props?.round >= RoundNames.TournamentStage4 &&
                 <div className='Instructions HostInstruction'>
+                    <h1>Results for Round {props?.round}</h1>
                     {
-                        props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
+                        props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
                             <h3>
                                 All Players are Finished
                             </h3>
                             :
                             <h3>
-                                {props?.players?.filter((player: any) => !!player.shots).length} Player
-                                {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished
+                                {props?.players?.filter((player: RoundResult) => !!player.shots).length} Player
+                                {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
                             </h3>
                     }
                     {
-                        !!props?.players?.filter((player: any) => !player.shots).length &&
+                        !!props?.players?.filter((player: RoundResult) => !player.shots).length &&
                         <h3>
-                            {props?.players?.filter((player: any) => !player.shots).length} Still Playing
+                            {props?.players?.filter((player: RoundResult) => !player.shots).length} Still Playing
                         </h3>
                     }
                     <p>
@@ -43,7 +45,15 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                     </p>
                     <Button
                         disabled={!!hostClickedButton}
-                        onClick={() => advanceSession(sessionId, setHostClickedButton)}
+                        onClick={() => {
+                            // IF not everyone is finished skip modal
+                            if (props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length) {
+                                advanceSession(sessionId, setHostClickedButton);
+                            } else {
+                                // NOT ALL PLAYERS FINISHED ask host if they really want to continue
+                                setShowVerificationModal(true);
+                            }
+                        }}
                         type='primary'
                     >
                         End Tournament
@@ -53,21 +63,22 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
             {
                 isHost && props?.round < RoundNames.TournamentStage4 &&
                 <div className='Instructions HostInstruction'>
+                    <h1>Results for Round {props?.round}</h1>
                     {
-                        props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
+                        props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
                             <h3>
                                 All Players are Finished
                             </h3>
                             :
                             <h3>
-                                {props?.players?.filter((player: any) => !!player.shots).length} Player
-                                {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished
+                                {props?.players?.filter((player: RoundResult) => !!player.shots).length} Player
+                                {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
                             </h3>
                     }
                     {
-                        !!props?.players?.filter((player: any) => !player.shots).length &&
+                        !!props?.players?.filter((player: RoundResult) => !player.shots).length &&
                         <h3>
-                            {props?.players?.filter((player: any) => !player.shots).length} Still Playing
+                            {props?.players?.filter((player: RoundResult) => !player.shots).length} Still Playing
                         </h3>
                     }
                     <p>
@@ -76,7 +87,15 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                     </p>
                     <Button
                         disabled={!!hostClickedButton}
-                        onClick={() => advanceSession(sessionId, setHostClickedButton)}
+                        onClick={() => {
+                            // IF not everyone is finished pull up a modal
+                            if (props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length) {
+                                advanceSession(sessionId, setHostClickedButton);
+                            } else {
+                                // NOT ALL PLAYERS FINISHED ask host if they really want to continue
+                                setShowVerificationModal(true);
+                            }
+                        }}
                         type='primary'
                     >
                         Begin Next Round
@@ -86,21 +105,22 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
             {
                 !isHost &&
                 <div className='Instructions HostInstruction'>
+                    <h1>Results for Round {props?.round}</h1>
                     {
-                        props?.players?.filter((player: any) => !!player.shots).length === props?.players?.length ?
+                        props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
                             <h3>
                                 All Players are Finished
                             </h3>
                             :
                             <h3>
-                                {props?.players?.filter((player: any) => !!player.shots).length} Player
-                                {props?.players?.filter((player: any) => !!player.shots).length > 1 ? 's' : ''} Finished
+                                {props?.players?.filter((player: RoundResult) => !!player.shots).length} Player
+                                {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
                             </h3>
                     }
                     {
-                        !!props?.players?.filter((player: any) => !player.shots).length &&
+                        !!props?.players?.filter((player: RoundResult) => !player.shots).length &&
                         <h3>
-                            {props?.players?.filter((player: any) => !player.shots).length} Still Playing
+                            {props?.players?.filter((player: RoundResult) => !player.shots).length} Still Playing
                         </h3>
                     }
                     <p>
@@ -111,6 +131,16 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
 
             <ResultTable players={props.players} round={props.round} />
             <ResultGraphs players={props.players} round={props.round} />
+
+            {
+                showVerificationModal && 
+                <VerificationModal
+                    title="Not All Players Have Finished"
+                    message="Not all players have finished this round. Are you sure you want to advance to the next round?"
+                    confirm={() => advanceSession(sessionId, setHostClickedButton)}
+                    cancel={() => setShowVerificationModal(false)}
+                />
+            }
 
         </div>
     )

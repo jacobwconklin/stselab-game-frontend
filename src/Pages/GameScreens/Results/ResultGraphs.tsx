@@ -60,7 +60,7 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
     };
 
     const data = {
-        datasets: props?.players?.filter((result: any) => result.shots).map((result: any) => {
+        datasets: props?.players?.filter((result: RoundResult) => result.shots).map((result: RoundResult) => {
             return {
                 label: result.name,
                 data: [{

@@ -8,17 +8,19 @@ import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
 import { RoundNames, animateBallIntoHole } from '../../../Utils/Utils';
+import { UserContextType } from '../../../Utils/Types';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
 // architecture. There will be different objectives based on the round number.
 const TournamentStage = (props: {
     playingRound: Boolean, round: number,
-    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void
+    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
+    disablePlayRound: () => void
 }) => {
 
     // Context to save user's slider choice for custom performance weight
-    const { setCustomPerformanceWeight } = useContext(UserContext) as any;
+    const { setCustomPerformanceWeight } = useContext(UserContext) as UserContextType;
 
     const [showTournamentBeginModal, setShowTournamentBeginModal] = useState(props?.round === 6 ? true : false);
 
@@ -53,8 +55,8 @@ const TournamentStage = (props: {
         setCustomPerformanceWeight((100 - value) / 100);
     }
 
-    const tooltipFormatter = (value: any) => {
-        return isNaN(value) ? 'Error' : (100 - value) + '% Performance, ' + value + '% Cost';
+    const tooltipFormatter = (value?: number) => {
+        return !value || isNaN(value) ? 'Error' : (100 - value) + '% Performance, ' + value + '% Cost';
     }
 
     const roundObjectives = [
@@ -228,7 +230,7 @@ const TournamentStage = (props: {
             <div className='Controls'>
                 <div className='Instructions'>
                     <h1> 
-                        Tournament Round {'' + (props.round - 5)}
+                        Tournament Round {'' + (props.round - RoundNames.TournamentStage1 + 1)}
                         
                         <Button className='InfoButtonHolder' onClick={() => setShowTournamentBeginModal(true)}>
                             &nbsp;
@@ -385,7 +387,10 @@ const TournamentStage = (props: {
                     {
                         readyToPlay() &&
                         <Button
-                            onClick={() => animateBallIntoHole(submitPlayRound)}
+                            onClick={() => {
+                                props.disablePlayRound();
+                                animateBallIntoHole(submitPlayRound)
+                            }}
                             disabled={!!props.playingRound}
                         >
                             Play Round

@@ -5,6 +5,29 @@
     height: fit-content;
     width: 100%;
     min-width: fit-content;
-    background-color: rgb(201, 220, 225); 
-    z-index: 1;
+
+    .StaticBackground {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;    
+        z-index: -1;
+        background-color: rgb(138, 159, 164); 
+
+        .StaticBackgroundImages {
+            width: 100%;
+            height: 100%;    
+            // background-color: rgb(168, 188, 193); 
+            // background-color: black;
+            background-image: url("./Assets/Hero/pictogram-orange.jpg"), url("./Assets/Hero/pictogram-blue.jpg"),  url("./Assets/Hero/pictogram-pink.jpg"), url("./Assets/Hero/pictogram-green.jpg"),  ;
+            background-size: 25vw auto, 25vw auto, 25vw auto, 25vw auto, 100vw 100vh; //;
+            background-repeat: repeat-y;
+            background-attachment: fixed;
+            background-position: 0px, 25vw, 50vw, 75vw; // 50px; // 50px, 75px;
+            // background-blend-mode: luminosity;
+            z-index: -1;
+            opacity: 25%;
+        }
+    }
 }

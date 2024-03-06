@@ -1,12 +1,14 @@
 import {
     Button,
     Checkbox,
+    Radio,
 } from 'antd';
 import './FreeRoamSurvey.scss';
 import { SetStateAction, useContext, useEffect, useState } from 'react';
 import { advanceSession, postRequest } from '../../../Utils/Api';
 import { UserContext } from '../../../App';
 import { solverNames } from '../../../Utils/Simulation';
+import VerificationModal from '../../../ReusableComponents/VerificationModal';
 
 // FreeRoamSurvey
 const FreeRoamSurvey = (props: {
@@ -21,6 +23,8 @@ const FreeRoamSurvey = (props: {
 
     const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
     const [surveysSubmitted, setSurveysSubmitted] = useState<number | null>(null);
+
+    const [showVerificationModal, setShowVerificationModal] = useState(false);
 
     const { isHost, playerId, sessionId } = useContext(UserContext);
 
@@ -66,8 +70,48 @@ const FreeRoamSurvey = (props: {
     const [fairwayChoice, setFairwayChoice] = useState([]);
     const [shortChoice, setShortChoice] = useState([]);
     const [puttChoice, setPuttChoice] = useState([]);
+
+    const [driveNotSure, setDriveNotSure] = useState(false);
+    const [longNotSure, setLongNotSure] = useState(false);
+    const [fairwayNotSure, setFairwayNotSure] = useState(false);
+    const [shortNotSure, setShortNotSure] = useState(false);
+    const [puttNotSure, setPuttNotSure] = useState(false);
+
     // const modules = ["Drive", "Long", "Fairway", "Short", "Putt"]
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
+
+    // pull player choices from localStorage if there
+    useEffect(() => {
+        const choices = localStorage.getItem('freeRoamSurveyChoices');
+        if (choices) {
+            const parsedChoices = JSON.parse(choices);
+            setDriveChoice(parsedChoices.driveChoice);
+            setLongChoice(parsedChoices.longChoice);
+            setFairwayChoice(parsedChoices.fairwayChoice);
+            setShortChoice(parsedChoices.shortChoice);
+            setPuttChoice(parsedChoices.puttChoice);
+            setDriveNotSure(parsedChoices.driveNotSure);
+            setLongNotSure(parsedChoices.longNotSure);
+            setFairwayNotSure(parsedChoices.fairwayNotSure);
+            setShortNotSure(parsedChoices.shortNotSure);
+            setPuttNotSure(parsedChoices.puttNotSure);
+        }
+    }, []);
+
+    const saveCurrentChoices = () => {
+        localStorage.setItem('freeRoamSurveyChoices', JSON.stringify({
+            driveChoice,
+            longChoice,
+            fairwayChoice,
+            shortChoice,
+            puttChoice,
+            driveNotSure,
+            longNotSure,
+            fairwayNotSure,
+            shortNotSure,
+            puttNotSure
+        }));
+    }
 
     const convertChoicesToNumber = (choices: string[]) => {
         let number = 0;
@@ -95,18 +139,20 @@ const FreeRoamSurvey = (props: {
             setSubmitting(true);
             setAttemptedSubmit(true);
             // Check for all 5 modules having values
-            if (driveChoice.length > 0 && longChoice.length > 0 && fairwayChoice.length > 0 &&
-                shortChoice.length > 0 && puttChoice.length > 0) {
+            if ((driveChoice.length > 0 || driveNotSure) && (longChoice.length > 0 || longNotSure) && (fairwayChoice.length > 0 ||
+                fairwayNotSure) && (shortChoice.length > 0 || shortNotSure) && (puttChoice.length > 0 || puttNotSure)) {
                 // save player information
                 const submitResult = await postRequest('player/freeRoamSurvey', JSON.stringify({
-                    drive: convertChoicesToNumber(driveChoice),
-                    long: convertChoicesToNumber(longChoice),
-                    fairway: convertChoicesToNumber(fairwayChoice),
-                    short: convertChoicesToNumber(shortChoice),
-                    putt: convertChoicesToNumber(puttChoice),
+                    drive: driveNotSure ? 0 : convertChoicesToNumber(driveChoice),
+                    long: longNotSure ? 0 : convertChoicesToNumber(longChoice),
+                    fairway: fairwayNotSure ? 0 : convertChoicesToNumber(fairwayChoice),
+                    short: shortNotSure ? 0 : convertChoicesToNumber(shortChoice),
+                    putt: puttNotSure ? 0 : convertChoicesToNumber(puttChoice),
                     playerId // example of one in db -> "06DB4206-1E4D-46E8-A261-AC8B545519FE"
                 }));
                 if (submitResult.success) {
+                    // clear local storage
+                    localStorage.removeItem('freeRoamSurveyChoices');
                     props.setSurveySuccessfullySubmitted(true);
                 } else {
                     alert("Failed to submit free roam survey.");
@@ -134,16 +180,16 @@ const FreeRoamSurvey = (props: {
                                 :
                                 (
                                     totalPlayers && surveysSubmitted ?
-                                    <div>
-                                        <h3>
-                                            {surveysSubmitted} player{surveysSubmitted > 1 ? 's have' : ' has'} submitted their surveys
-                                        </h3>
-                                        <h3>
-                                            {totalPlayers - surveysSubmitted} player{totalPlayers - surveysSubmitted > 1 ? 's are' : ' is'} still taking the survey
-                                        </h3>
-                                    </div>
-                                    :
-                                    <></>
+                                        <div>
+                                            <h3>
+                                                {surveysSubmitted} player{surveysSubmitted > 1 ? 's have' : ' has'} submitted their surveys
+                                            </h3>
+                                            <h3>
+                                                {totalPlayers - surveysSubmitted} player{totalPlayers - surveysSubmitted > 1 ? 's are' : ' is'} still taking the survey
+                                            </h3>
+                                        </div>
+                                        :
+                                        <></>
                                 )
                         }
                         {
@@ -156,8 +202,19 @@ const FreeRoamSurvey = (props: {
                                     </Button>
                                     <h3>Continue the game and begin the tournament for all players when you are ready</h3>
                                     <Button
-                                        onClick={() => advanceSession(sessionId, setHostClickedButton)}
+                                        onClick={() => 
+                                        {
+                                            // IF not everyone is finished skip a modal
+                                            if (totalPlayers && surveysSubmitted && totalPlayers === surveysSubmitted) {
+                                                advanceSession(sessionId, setHostClickedButton);
+                                            } else {
+                                                // NOT ALL PLAYERS FINISHED ask host if they really want to continue
+                                                setShowVerificationModal(true);
+                                            }
+
+                                        }}
                                         disabled={!!hostClickedButton}
+                                        type='primary'
                                     >
                                         Begin Tournament
                                     </Button>
@@ -177,7 +234,11 @@ const FreeRoamSurvey = (props: {
                     <div className='SurveyForms'>
                         <h2>Please select who you believe are the best solvers for each module. You may select more than one.</h2>
                         <Button
-                            onClick={() => props.setShowModuleResultsSurvey(true)}
+                            onClick={() => {
+                                // save current choices into memory so that they can be returned to after reviewing results
+                                saveCurrentChoices();
+                                props.setShowModuleResultsSurvey(true);
+                            }}
                         >
                             Review Results
                         </Button>
@@ -186,56 +247,106 @@ const FreeRoamSurvey = (props: {
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Drive module?
                         </h3>
-                        <Checkbox.Group
-                            className={attemptedSubmit && driveChoice.length === 0 ? 'ErrorCheckBox' : ''}
-                            options={solverNames}
-                            value={driveChoice}
-                            onChange={(checkedValues) => { setDriveChoice(checkedValues) }}
-                        />
+                        <div className='CheckboxAndRadio'>
+                            <Checkbox.Group
+                                disabled={driveNotSure}
+                                className={attemptedSubmit && driveChoice.length === 0 && !driveNotSure ? 'ErrorCheckBox' : ''}
+                                options={solverNames}
+                                value={driveChoice}
+                                onChange={(checkedValues) => { setDriveChoice(checkedValues) }}
+                            />
+                            <Radio
+                                value={driveNotSure}
+                                checked={driveNotSure}
+                                onClick={(e) => setDriveNotSure(value => !value)}
+                            >
+                                Not Sure
+                            </Radio>
+                        </div>
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Long module?
                         </h3>
-                        <Checkbox.Group
-                            className={attemptedSubmit && longChoice.length === 0 ? 'ErrorCheckBox' : ''}
-                            options={solverNames}
-                            value={longChoice}
-                            onChange={(checkedValues) => { setLongChoice(checkedValues) }}
-                        />
+                        <div className='CheckboxAndRadio'>
+                            <Checkbox.Group
+                                disabled={longNotSure}
+                                className={attemptedSubmit && longChoice.length === 0 && !longNotSure ? 'ErrorCheckBox' : ''}
+                                options={solverNames}
+                                value={longChoice}
+                                onChange={(checkedValues) => { setLongChoice(checkedValues) }}
+                            />
+                            <Radio
+                                value={longNotSure}
+                                checked={longNotSure}
+                                onClick={(e) => setLongNotSure(value => !value)}
+                            >
+                                Not Sure
+                            </Radio>
+                        </div>
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Fairway module?
                         </h3>
-                        <Checkbox.Group
-                            className={attemptedSubmit && fairwayChoice.length === 0 ? 'ErrorCheckBox' : ''}
-                            options={solverNames}
-                            value={fairwayChoice}
-                            onChange={(checkedValues) => { setFairwayChoice(checkedValues) }}
-                        />
+                        <div className='CheckboxAndRadio'>
+                            <Checkbox.Group
+                                disabled={fairwayNotSure}
+                                className={attemptedSubmit && fairwayChoice.length === 0 && !fairwayNotSure ? 'ErrorCheckBox' : ''}
+                                options={solverNames}
+                                value={fairwayChoice}
+                                onChange={(checkedValues) => { setFairwayChoice(checkedValues) }}
+                            />
+                            <Radio
+                                value={fairwayNotSure}
+                                checked={fairwayNotSure}
+                                onClick={(e) => setFairwayNotSure(value => !value)}
+                            >
+                                Not Sure
+                            </Radio>
+                        </div>
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Short module?
                         </h3>
-                        <Checkbox.Group
-                            className={attemptedSubmit && shortChoice.length === 0 ? 'ErrorCheckBox' : ''}
-                            options={solverNames}
-                            value={shortChoice}
-                            onChange={(checkedValues) => { setShortChoice(checkedValues) }}
-                        />
+                        <div className='CheckboxAndRadio'>
+                            <Checkbox.Group
+                                disabled={shortNotSure}
+                                className={attemptedSubmit && shortChoice.length === 0 && !shortNotSure ? 'ErrorCheckBox' : ''}
+                                options={solverNames}
+                                value={shortChoice}
+                                onChange={(checkedValues) => { setShortChoice(checkedValues) }}
+                            />
+                            <Radio
+                                value={shortNotSure}
+                                checked={shortNotSure}
+                                onClick={(e) => setShortNotSure(value => !value)}
+                            >
+                                Not Sure
+                            </Radio>
+                        </div>
                         <br></br>
                         <h3 className='FormTitle' id='ParticipationReason' >
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Putt module?
                         </h3>
-                        <Checkbox.Group
-                            className={attemptedSubmit && puttChoice.length === 0 ? 'ErrorCheckBox' : ''}
-                            options={solverNames}
-                            value={puttChoice}
-                            onChange={(checkedValues) => { setPuttChoice(checkedValues) }}
-                        />
+                        <div className='CheckboxAndRadio'>
+                            <Checkbox.Group
+                                disabled={puttNotSure}
+                                className={attemptedSubmit && puttChoice.length === 0 && !puttNotSure ? 'ErrorCheckBox' : ''}
+                                options={solverNames}
+                                value={puttChoice}
+                                onChange={(checkedValues) => { setPuttChoice(checkedValues) }}
+                            />
+                            <Radio
+                                value={puttNotSure}
+                                checked={puttNotSure}
+                                onClick={(e) => setPuttNotSure(value => !value)}
+                            >
+                                Not Sure
+                            </Radio>
+                        </div>
                         <br></br>
                         <br></br>
                         <div className='ButtonHolder'>
@@ -248,6 +359,16 @@ const FreeRoamSurvey = (props: {
                         </div>
                         <br></br>
                     </div>
+            }
+
+            {
+                showVerificationModal &&
+                <VerificationModal
+                    title="Not All Players Have Finished"
+                    message="Not all players have finished the Survey. Are you sure you want to advance to the next round?"
+                    confirm={() => advanceSession(sessionId, setHostClickedButton)}
+                    cancel={() => setShowVerificationModal(false)}
+                />
             }
         </div>
     )

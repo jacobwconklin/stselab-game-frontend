@@ -92,7 +92,7 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
             <PlayGolfBackground playerColor={playerColor} />
             {
                 props.round === RoundNames.PracticeHArchPro &&
-                <ProfessionalOnly round={props.round} playingRound={playingRound} playRound={playRound} />
+                <ProfessionalOnly disablePlayRound={() => setPlayingRound(true)} round={props.round} playingRound={playingRound} playRound={playRound} />
             }
             {
                 props.round === RoundNames.PracticeHArchAmateur &&
@@ -100,11 +100,11 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
             }
             {
                 props.round === RoundNames.PracticeHArchAll &&
-                <EntireHole round={props.round} playingRound={playingRound} playRound={playRound} />
+                <EntireHole disablePlayRound={() => setPlayingRound(true)} round={props.round} playingRound={playingRound} playRound={playRound} />
             }
             {
                 props.round >= RoundNames.TournamentStage1 &&
-                <TournamentStage round={props.round} playingRound={playingRound} playRound={playRound} />
+                <TournamentStage disablePlayRound={() => setPlayingRound(true)} round={props.round} playingRound={playingRound} playRound={playRound} />
             }
         </div>
     )

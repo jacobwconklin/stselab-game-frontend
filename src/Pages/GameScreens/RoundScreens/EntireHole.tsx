@@ -15,7 +15,8 @@ import { animateBallIntoHole } from '../../../Utils/Utils';
 // traditional solutions.
 const EntireHole = (props: {
     playingRound: Boolean, round: Number,
-    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void
+    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
+    disablePlayRound: () => void
 }) => {
 
     // Only need one solver for h_arch
@@ -57,8 +58,8 @@ const EntireHole = (props: {
                                 selectedSolver === Solver.Amateur &&
                                 <div className='AmateurIcons'>
                                     {
-                                        Array.apply(null, Array(25)).map(() => (
-                                            <img className='AmateurIconImage' src={amateurIcon} alt="Amateur Solver Icon" />
+                                        Array.apply(null, Array(25)).map((val, index) => (
+                                            <img key={index} className='AmateurIconImage' src={amateurIcon} alt="Amateur Solver Icon" />
                                         ))
                                     }
                                 </div>
@@ -69,7 +70,10 @@ const EntireHole = (props: {
                     {
                         selectedSolver &&
                         <Button
-                            onClick={() => animateBallIntoHole(playRoundCallback)}
+                            onClick={() => {
+                                props.disablePlayRound();
+                                animateBallIntoHole(playRoundCallback);
+                            }}
                             disabled={!!props.playingRound}
                         >
                             Play Round
@@ -77,7 +81,7 @@ const EntireHole = (props: {
                     }
                 </div>
                 <div className='Solvers'>
-                    <ProfessionalSolverCard select={setSelectedSolver} />
+                    <ProfessionalSolverCard select={setSelectedSolver} selected={selectedSolver === Solver.Professional} />
                     <SpecialistSolverCard select={setSelectedSolver} />
                     <AmateurSolverCard select={setSelectedSolver} />
                 </div>
