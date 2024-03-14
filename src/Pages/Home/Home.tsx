@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { HeroConfetti } from '../../ReusableComponents/Confetti';
 import arrowGif from '../../Assets/down-arrow-gif.gif';
+import WebSocketDemo from '../../Utils/Websocket';
 
 // Home
 const Home = () => {
@@ -12,6 +13,16 @@ const Home = () => {
     const [collapseWhat, setCollapseWhat] = useState(false);
     const [collapseHow, setCollapseHow] = useState(false);
     const [collapseLearn, setCollapseLearn] = useState(false); 
+
+    const testSocket = new WebSocket('ws://localhost:5000');
+    testSocket.onopen = () => {
+      alert("WebSocket connection opened");
+    }
+    testSocket.onerror = (error) => {
+        console.log(error);
+    }
+
+    testSocket.send('Hello');
 
     return (
         <div className='Home'>
@@ -158,6 +169,7 @@ const Home = () => {
                     <div style={{height: '30px'}}></div>
                 </div>
                 <br></br>
+                {/* <WebSocketDemo /> */}
             </div>
             {
                 <HeroConfetti />
