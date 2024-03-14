@@ -5,9 +5,7 @@ This can outline the major TODOs so they can be ordered
 2. What is 'strategy' parameter (sometimes called with 0 and sometimes 1)
 3. Play fairway should I use rule 1 (minimize distance to hole) or rule 2 (minimize strokes)
 
-Modify survey asking for best players to have "not sure" option 
-
-Add placeholder page for questionnaire at start and end (taking place of Yahtzee)
+Add placeholder page for quiz at start and end (taking place of Yahtzee)
 
 Maybe add simulate all to results instead of simulation side
 
@@ -15,3 +13,7 @@ Make selector cards light up somehow so that they show which is selected
 
 Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
 round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.
+
+Ensure there are character limits for all strings going to db
+
+Make mock Mechanical Arm screen to replace golf game screen

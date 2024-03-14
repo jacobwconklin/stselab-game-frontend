@@ -489,7 +489,9 @@ const ModuleResults = (props: {results: ModuleResult[], origin: string, return: 
             {
                 showAverageGraphs &&
                 <div className='GraphSection'>
-                    <h1>Solver Averages</h1>
+                    <div className='Instructions'>
+                        <h1>Solver Averages</h1>
+                    </div>
                     <Bar className='ScatterCanvas ChartJSCanvas' options={avgShotsPerSolverOptions} data={avgShotsPerSolverData} />
                     <Bar className='ScatterCanvas ChartJSCanvas' options={avgDistancePerSolverOptions} data={avgDistancePerSolverData} />
                 </div>
@@ -500,7 +502,9 @@ const ModuleResults = (props: {results: ModuleResult[], origin: string, return: 
             {
                 showModuleGraphs &&
                 <div className='GraphSection'>
-                    <h1>Performances per Module</h1>
+                    <div className='Instructions'>
+                        <h1>Performances per Module</h1>
+                    </div>
                     <Scatter className='ScatterCanvas ChartJSCanvas' options={driveOptions} data={driveData} />
                     <Scatter className='ScatterCanvas ChartJSCanvas' options={longOptions} data={longData} />
                     <Scatter className='ScatterCanvas ChartJSCanvas' options={fairwayOptions} data={fairwayData} />

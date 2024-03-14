@@ -4,6 +4,7 @@ import './Router.scss';
 import Register from './Pages/Register/Register';
 import GameController from './Pages/GameController/GameController';
 import AllResults from './Pages/AggregateResults/AllResults';
+import ArmGameScreen from './Pages/MechanicalArm/ArmGameScreen';
 
 // Router
 const Router = () => {
@@ -18,6 +19,7 @@ const Router = () => {
                 <Route path="register/:playerType?/:joinCodeUrl?" element={<Register />} />
                 <Route path="results" element={<AllResults />} />
                 <Route path="game" element={<GameController />} />
+                <Route path="arm" element={<ArmGameScreen />} />
                 <Route path="*" element={<Home />} />
             </ Routes>
         </div>
