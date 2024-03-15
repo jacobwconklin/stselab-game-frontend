@@ -35,7 +35,12 @@ const FreeRoam = (props: {round?: number}) => {
                 props?.round === RoundNames.ExperimentalSurvey ?
                 (
                     showModuleResultsSurvey ?
-                    <ModuleResults results={allResults} origin={"Survey"} return={() => setShowModuleResultsSurvey(false)} />
+                    <ModuleResults 
+                        results={allResults} 
+                        origin={"Survey"} 
+                        return={() => setShowModuleResultsSurvey(false)}
+                        setAllResults={setAllResults} 
+                    />
                     :
                     <FreeRoamSurvey 
                         setShowModuleResultsSurvey={setShowModuleResultsSurvey} 
@@ -46,7 +51,12 @@ const FreeRoam = (props: {round?: number}) => {
                 :
                 (
                     showModuleResults ?
-                    <ModuleResults results={allResults} origin={"Experiment"} return={() => setShowModuleResults(false)} />
+                    <ModuleResults 
+                        results={allResults} 
+                        origin={"Experiment"} 
+                        return={() => setShowModuleResults(false)}            
+                        setAllResults={setAllResults} 
+                    />
                     :
                     <FreeRoamGame 
                         allResults={allResults} 

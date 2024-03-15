@@ -11,13 +11,17 @@ import {
     CategoryScale,
     BarElement,
 } from 'chart.js';
+import { Solver, runPlayDrive, runPlayFairway, runPlayLong, runPlayPutt, runPlayShort, solverNames } from '../../../Utils/Simulation';
 import { Bar, Scatter } from 'react-chartjs-2';
-import { Solver, solverNames } from '../../../Utils/Simulation';
 import { useState } from 'react';
 import { ModuleResult } from '../../../Utils/Types';
 
 // ModuleResults
-const ModuleResults = (props: {results: ModuleResult[], origin: string, return: () => void}) => {
+const ModuleResults = (props: {
+    results: ModuleResult[], 
+    origin: string, return: () => void,
+    setAllResults: (newValue: { shots: number, distance: number, solver: Solver, module: string }[]) => void,
+}) => {
 
     // Gets avg for type of value from props.results
     const getModuleAverage = (module: string, solver: Solver, type: 'shots' | 'distance' ) => {
@@ -453,6 +457,36 @@ const ModuleResults = (props: {results: ModuleResult[], origin: string, return: 
         }
     ))
 
+    const [loading, setLoading] = useState(false);
+    
+    const simulateAll = async () => {
+        try {
+            setLoading(true);
+            // save all results as it goes
+            const simulatedResults = [];
+            // For each solver play each module once
+            for (let i = 1; i < 4; i++) {
+                let result = await runPlayDrive(i);
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Drive' });
+                result = await runPlayLong(i);
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Long' });
+                result = await runPlayFairway(i);
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Fairway' });
+                result = await runPlayShort(i);
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Short' });
+                result = await runPlayPutt(i);
+                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Putt' });
+            }
+            // TODO Do not save results to database from here
+            // saveFreeRoamResult(result.shots, result.distance);
+            props.setAllResults([...props.results, ...simulatedResults]);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error simulating all: ", error);
+            setLoading(false);
+        }
+    }
+
     return (
         <div className='ModuleResults'>
             <div className='ResultInformation'>
@@ -464,6 +498,9 @@ const ModuleResults = (props: {results: ModuleResult[], origin: string, return: 
                 <div className='ResultActions'>
                     <Button onClick={() => props.return()}>
                         Back to {props.origin}
+                    </Button>
+                    <Button onClick={() => simulateAll()} disabled={loading}>
+                        Simulate All
                     </Button>
                     <Button onClick={() => setShowAverageGraphs(val => !val)}>
                         {showAverageGraphs ? "Hide " : "Show "} Averages Graphs

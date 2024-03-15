@@ -81,6 +81,7 @@ const Register = () => {
                             newEducationalBackgroundSubjectArea[index] = e.target.value;
                             setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
                         }}
+                        maxLength={64}
                         disabled={educationalBackgroundCompleted[index] === 0}
                     />
                 </div>,
@@ -93,6 +94,7 @@ const Register = () => {
                 <Input
                     value={otherEducation}
                     onChange={(e) => setOtherEducation(e.target.value)}
+                    maxLength={64}
                 />
             </div>,
             Completed: <div>
@@ -117,6 +119,7 @@ const Register = () => {
                         newEducationalBackgroundSubjectArea[educationLevels.length] = e.target.value;
                         setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
                     }}
+                    maxLength={64}
                     disabled={educationalBackgroundCompleted[educationLevels.length] === 0}
                 />
             </div>,
@@ -204,6 +207,7 @@ const Register = () => {
                 <Input
                     value={otherSpecialization}
                     onChange={(e) => setOtherSpecialization(e.target.value)}
+                    maxLength={64}
                 />
             </div>,
             Completed: <div>
@@ -387,8 +391,7 @@ const Register = () => {
                     degreeProgram,
                     yearsInProgram,
 
-                    // TODO may be better to just send arrays? Instead of so many ungrouped fields for education levels and specializations
-                    // TODO Sanatize Inputs more so no strings are very long and no SQL injections are possible
+                    // TODO may be better to just send arrays? Instead of so many ungrouped fields for education levels and specializations ... 
                     highschoolEducation: educationalBackgroundCompleted[0] ? educationalBackgroundSubjectArea[0] : null,
                     associatesEducation: educationalBackgroundCompleted[1] ? educationalBackgroundSubjectArea[1] : null,
                     bachelorsEducation: educationalBackgroundCompleted[2] ? educationalBackgroundSubjectArea[2] : null,
@@ -569,6 +572,7 @@ const Register = () => {
                                 onChange={(event) => {
                                     setHobbies(event.target.value);
                                 }}
+                                maxLength={64}
                                 placeholder='Soccer, Chess, etc.'
                             />
 

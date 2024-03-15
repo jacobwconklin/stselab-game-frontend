@@ -33,7 +33,7 @@ const EntireHole = (props: {
                     <h1> Practice Round 3: Choose a Solver</h1>
                     <div className='InformationHorizontalSplit'>
                         <div className='InfoContainer'>
-                            <p>In this practice round you may now select between different golfer types</p>
+                            <p>In this practice round you may now select between different golfer types. Select one solver type to play 5 holes.</p>
                             {
                                 selectedSolver ?
                                     <h2>You Selected: {solverNames[selectedSolver - 1]}{selectedSolver > 1 ? 's' : ''}</h2>

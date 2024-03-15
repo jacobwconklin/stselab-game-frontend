@@ -1,6 +1,6 @@
 import './ArmGameScreen.scss';
 import arm from '../../Assets/MechArm/orange-arm.png';
-import { Button, Tooltip } from "antd";
+import { Button } from "antd";
 import FactoryBackground from './FactoryBackground';
 // The screen shown while playing the Mechanical Arm game
 const ArmGameScreen = () => {

@@ -7,13 +7,13 @@ import './FreeRoamSurvey.scss';
 import { SetStateAction, useContext, useEffect, useState } from 'react';
 import { advanceSession, postRequest } from '../../../Utils/Api';
 import { UserContext } from '../../../App';
-import { solverNames } from '../../../Utils/Simulation';
 import VerificationModal from '../../../ReusableComponents/VerificationModal';
+import { solverNames } from '../../../Utils/Simulation';
 
 // FreeRoamSurvey
 const FreeRoamSurvey = (props: {
     setShowModuleResultsSurvey: (val: SetStateAction<boolean>) => void,
-    surveySuccesfullySubmitted: Boolean, setSurveySuccessfullySubmitted: (val: SetStateAction<boolean>) => void
+    surveySuccesfullySubmitted: Boolean, setSurveySuccessfullySubmitted: (val: SetStateAction<boolean>) => void,
 }) => {
 
     // Scroll to top on entering page
@@ -27,10 +27,6 @@ const FreeRoamSurvey = (props: {
     const [showVerificationModal, setShowVerificationModal] = useState(false);
 
     const { isHost, playerId, sessionId } = useContext(UserContext);
-
-    // TODO as per meeting add ("Not sure") option to each question
-    // TODO also may want to add or move simulate all button into view-results page
-    // TODO may also want to write survey results to localStorage 
 
     useEffect(() => {
         // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
@@ -247,10 +243,11 @@ const FreeRoamSurvey = (props: {
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Drive module?
                         </h3>
-                        <div className='CheckboxAndRadio'>
+                        <div 
+                            className={`CheckboxAndRadio ${attemptedSubmit && driveChoice.length === 0 && !driveNotSure ? 'ErrorCheckBox' : ''}`}
+                        >
                             <Checkbox.Group
                                 disabled={driveNotSure}
-                                className={attemptedSubmit && driveChoice.length === 0 && !driveNotSure ? 'ErrorCheckBox' : ''}
                                 options={solverNames}
                                 value={driveChoice}
                                 onChange={(checkedValues) => { setDriveChoice(checkedValues) }}
@@ -268,10 +265,11 @@ const FreeRoamSurvey = (props: {
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Long module?
                         </h3>
-                        <div className='CheckboxAndRadio'>
+                        <div 
+                            className={`CheckboxAndRadio' ${attemptedSubmit && longChoice.length === 0 && !longNotSure ? 'ErrorCheckBox' : ''}`}
+                        >
                             <Checkbox.Group
                                 disabled={longNotSure}
-                                className={attemptedSubmit && longChoice.length === 0 && !longNotSure ? 'ErrorCheckBox' : ''}
                                 options={solverNames}
                                 value={longChoice}
                                 onChange={(checkedValues) => { setLongChoice(checkedValues) }}
@@ -289,10 +287,11 @@ const FreeRoamSurvey = (props: {
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Fairway module?
                         </h3>
-                        <div className='CheckboxAndRadio'>
+                        <div 
+                            className={`CheckboxAndRadio ${attemptedSubmit && fairwayChoice.length === 0 && !fairwayNotSure ? 'ErrorCheckBox' : ''}`}
+                        >
                             <Checkbox.Group
                                 disabled={fairwayNotSure}
-                                className={attemptedSubmit && fairwayChoice.length === 0 && !fairwayNotSure ? 'ErrorCheckBox' : ''}
                                 options={solverNames}
                                 value={fairwayChoice}
                                 onChange={(checkedValues) => { setFairwayChoice(checkedValues) }}
@@ -310,10 +309,11 @@ const FreeRoamSurvey = (props: {
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Short module?
                         </h3>
-                        <div className='CheckboxAndRadio'>
+                        <div 
+                            className={`CheckboxAndRadio ${attemptedSubmit && shortChoice.length === 0 && !shortNotSure ? 'ErrorCheckBox' : ''}`}
+                        >
                             <Checkbox.Group
                                 disabled={shortNotSure}
-                                className={attemptedSubmit && shortChoice.length === 0 && !shortNotSure ? 'ErrorCheckBox' : ''}
                                 options={solverNames}
                                 value={shortChoice}
                                 onChange={(checkedValues) => { setShortChoice(checkedValues) }}
@@ -331,10 +331,11 @@ const FreeRoamSurvey = (props: {
                             <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                             Who is best for the Putt module?
                         </h3>
-                        <div className='CheckboxAndRadio'>
+                        <div 
+                            className={`CheckboxAndRadio ${attemptedSubmit && puttChoice.length === 0 && !puttNotSure ? 'ErrorCheckBox' : ''}`}
+                        >
                             <Checkbox.Group
                                 disabled={puttNotSure}
-                                className={attemptedSubmit && puttChoice.length === 0 && !puttNotSure ? 'ErrorCheckBox' : ''}
                                 options={solverNames}
                                 value={puttChoice}
                                 onChange={(checkedValues) => { setPuttChoice(checkedValues) }}

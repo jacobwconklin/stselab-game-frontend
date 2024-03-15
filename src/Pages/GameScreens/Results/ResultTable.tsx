@@ -94,8 +94,9 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 solvers.length > 0 ?
                     <div className="SolversHolder">
                         {
-                            solvers.map((solver) => (
+                            solvers.map((solver, index) => (
                                 <p
+                                    key={index}
                                     style={{ margin: '0px 0px 4px 0px' }}
                                 >{solverNames[solver - 1]}</p>
                             ))

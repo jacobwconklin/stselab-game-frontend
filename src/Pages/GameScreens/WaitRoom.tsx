@@ -137,7 +137,6 @@ const WaitRoom = () => {
                                     Copy Join Link
                                 </FloatButton>
                             </Tooltip>
-
                         </div>
                         <p>
                             As host you control when the tournament starts and each round ends. After starting the tournament players can no
@@ -156,14 +155,33 @@ const WaitRoom = () => {
                     :
                     <div className='Instructions'>
                         <h1>Join Code: {sessionId}</h1>
-                        <h3>
-                            <span>Join Link: </span>
-                            <span style={{ color: 'blue' }}>
-                                {process.env.NODE_ENV === 'production' ?
-                                    "https://stselab.azurewebsites.net/register/join/" + sessionId :
-                                    "localhost:3000/register/join/" + sessionId}
-                            </span>
-                        </h3>
+                        <div className='JoinLinkContainer'>
+                            <h3>
+                                <span>Join Link: </span>
+                                <span style={{ color: 'blue' }}>
+                                    {process.env.NODE_ENV === 'production' ?
+                                        "https://stselab.azurewebsites.net/register/join/" + sessionId :
+                                        "localhost:3000/register/join/" + sessionId}
+                                </span>
+                            </h3>
+                            <Tooltip title="Copy Join Link" placement="top">
+                                <FloatButton
+                                    className='CopyJoinLinkButton'
+                                    icon={<CopyOutlined />}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(process.env.NODE_ENV === 'production' ?
+                                            "https://stselab.azurewebsites.net/register/join/" + sessionId :
+                                            "localhost:3000/register/join/" + sessionId);
+                                        messageApi.open({
+                                            type: 'success',
+                                            content: 'Join Link Copied',
+                                        });
+                                    }}
+                                >
+                                    Copy Join Link
+                                </FloatButton>
+                            </Tooltip>
+                        </div>
                         <p>
                             The host controls when the tournament starts and each round ends. You will automatically move to the next screen
                             as soon as the game begins. if you wish to exit the session you may click

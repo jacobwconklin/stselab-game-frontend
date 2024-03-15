@@ -105,7 +105,7 @@ export const runDAP = async(solverDrive: Solver, solverFairway: Solver, solverPu
 // run ds_arch simulation where one solver drives (hitting it only once) and another solver handles the rest
 export const runDS = async(solverDrive: Solver, solverShort: Solver) => {
     try {
-        const response = await simulationPostRequest('lp_arch', JSON.stringify({
+        const response = await simulationPostRequest('ds_arch', JSON.stringify({
             HoleLength: 700,
             Expertise_D: solverDrive,
             Expertise_S: solverShort,

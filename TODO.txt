@@ -5,9 +5,7 @@ This can outline the major TODOs so they can be ordered
 2. What is 'strategy' parameter (sometimes called with 0 and sometimes 1)
 3. Play fairway should I use rule 1 (minimize distance to hole) or rule 2 (minimize strokes)
 
-Add placeholder page for quiz at start and end (taking place of Yahtzee)
-
-Maybe add simulate all to results instead of simulation side
+Add quiz at start and end (taking place of Yahtzee)
 
 Make selector cards light up somehow so that they show which is selected
 
@@ -17,3 +15,5 @@ round players are in. Could place this in header, may also want to add "home" wo
 Ensure there are character limits for all strings going to db
 
 Make mock Mechanical Arm screen to replace golf game screen
+
+Add are you sure modal before leaving session results page
