@@ -10,6 +10,7 @@ import { advanceSession, postRequest } from '../../../Utils/Api';
 import { ProfessionalSolverCard, SpecialistSolverCard, AmateurSolverCard } from '../../../ReusableComponents/SolverCards';
 import PlayGolfBackground from '../../../ReusableComponents/PlayGolfBackground';
 import { UserContextType } from '../../../Utils/Types';
+import VerificationModal from '../../../ReusableComponents/VerificationModal';
 
 // Free Roam
 // Allow players to freely play around with selecting solvers for the 5 various modules.
@@ -48,6 +49,7 @@ const FreeRoamGame = (props: {
     const [simulatedAll, setSimulatedAll] = useState(false);
     const [loading, setLoading] = useState(false);
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
+    const [showVerificationModal, setShowVerificationModal] = useState(false);
 
     // Play round
     const playModule = async () => {
@@ -273,7 +275,7 @@ const FreeRoamGame = (props: {
                             <Button
                                 className='EndRoundButton'
                                 type='primary'
-                                onClick={() => advanceSession(sessionId, setHostClickedButton)}
+                                onClick={() => setShowVerificationModal(true)}
                                 disabled={!!hostClickedButton}
                             >
                                 End Experimental Round
@@ -312,6 +314,15 @@ const FreeRoamGame = (props: {
                     </div>
                 }
             </div>
+            {
+                showVerificationModal && 
+                <VerificationModal
+                    title="Are you sure you end the Experimental Round?"
+                    message="This will end the experiment for all players and begin a survey on their findings."
+                    confirm={() => advanceSession(sessionId, setHostClickedButton)}
+                    cancel={() => setShowVerificationModal(false)}
+                />
+            }
         </div>
     )
 }

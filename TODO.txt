@@ -12,8 +12,6 @@ Make selector cards light up somehow so that they show which is selected
 Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
 round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.
 
-Ensure there are character limits for all strings going to db
-
 Make mock Mechanical Arm screen to replace golf game screen
 
-Add are you sure modal before leaving session results page
+Add horizontal line at shots = 32 on tournament stage 2 to show players they have to get above

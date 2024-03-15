@@ -59,6 +59,17 @@ const GameController = () => {
                     // on receiving a session with an end date we know we are on the final results page and 
                     // no longer need to poll the BE for updates to round number)
                     setCurrRound(RoundNames.FinalResults);
+                    // pull results once then clear interval
+                    const resultsResponse = await postRequest('/session/finalresults', JSON.stringify({
+                        sessionId
+                    }));
+                    if (resultsResponse.success) {
+                        // Only update state if the length of results changed (new player info came)
+                        setFinalResults(resultsResponse.results);
+                    }
+                    else {
+                        console.error(`Error fetching results for final round received: `, resultsResponse);
+                    }
                     clearInterval(interval);
                 } else {
                     // if we changed rounds reset currentResults

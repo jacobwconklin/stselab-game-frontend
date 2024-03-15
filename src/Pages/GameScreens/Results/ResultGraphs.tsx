@@ -37,7 +37,8 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
                 title: {
                     display: true,
                     text: 'Shots'
-                }
+                },
+                
             },
             x: {
                 beginAtZero: true,

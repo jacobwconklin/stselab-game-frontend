@@ -18,12 +18,21 @@ import { DisplayScore, FinalResult, Score, UserContextType } from '../../Utils/T
 import { useReactToPrint } from 'react-to-print';
 import { FullScreenConfetti } from '../../ReusableComponents/Confetti';
 import { RoundNames } from '../../Utils/Utils';
+import VerificationModal from '../../ReusableComponents/VerificationModal';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
 const SessionResults = (props: {players: FinalResult[]}) => {
 
+    
+    const [showVerificationModal, setShowVerificationModal] = useState(false);
+    const [leaveTo, setLeaveTo] = useState('/');
     const navigate = useNavigate();
+
+    const leavePage = () => {
+        navigate(leaveTo);
+    }
+
     const { playerId } = useContext(UserContext) as UserContextType;
 
     const sumShots = (scores: Score[]) => {
@@ -304,8 +313,14 @@ const SessionResults = (props: {players: FinalResult[]}) => {
                 <h1>Tournament Results </h1>
                 <h2>{getPlacement()}</h2>
                 <div className='EndTournamentButtons'>
-                    <Button onClick={() => navigate('/')}>Return Home</Button>
-                    <Button onClick={() => navigate('/results')}>View Historical Results</Button>
+                    <Button onClick={() => {
+                        setLeaveTo('/');
+                        setShowVerificationModal(true);
+                    }}>Return Home</Button>
+                    <Button onClick={() => {
+                        setLeaveTo('/results');
+                        setShowVerificationModal(true);
+                    }}>View Historical Results</Button>
                     <Button onClick={() => handlePrint(null, () => contentToPrint.current)}>Save Results</Button>
                     <Button onClick={() => saveGraphs()}>Save Graphs</Button>
                 </div>
@@ -341,6 +356,15 @@ const SessionResults = (props: {players: FinalResult[]}) => {
             }
             <br></br>
             <FullScreenConfetti />
+            {
+                showVerificationModal && 
+                <VerificationModal
+                    title="Are you sure you want to leave?"
+                    message="Once you leave the session results page you can't come back."
+                    confirm={() => leavePage()}
+                    cancel={() => setShowVerificationModal(false)}
+                />
+            }
         </div>
     )
 }
