@@ -15,7 +15,7 @@ const PlayGolfBackground = (props: { playerColor?: string | null }) => {
             ball.style.left = (0.1 * window.innerWidth - 16) + 'px';
             ball.style.bottom =  "62px";
             ball.style.transform = "rotate(0deg)";
-            ball.style.opacity = "1";
+            ball.style.opacity = "0.99";
         }
     }, [])
 

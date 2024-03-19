@@ -1,4 +1,9 @@
 .GameController {
     min-height: 100%;
     height: 100%;
+
+    // make buttons not show up over bg
+    .ant-btn {
+        z-index: 1;
+    }
 }

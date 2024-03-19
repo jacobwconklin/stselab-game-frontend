@@ -57,10 +57,11 @@
         z-index: 11;
         display: flex;
         justify-content: center;
-        align-items: center;
 
         .TournamentBeginModalBody {
+            margin-top: 100px;
             width: 50%;
+            height: fit-content;
             background-color: whitesmoke;        
             border: 3px solid black;
             border-radius: 10px;

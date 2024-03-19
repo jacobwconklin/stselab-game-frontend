@@ -1,24 +1,18 @@
 .PlayGolfBackground {
 
-    width: 100%;
-    min-height: calc(100vh - 60px);
-    height: 100%;
-    overflow: hidden;
-    position: absolute;
-    pointer-events: none;
-
     .ScrollingBackground {
-        position: absolute;
+        position: fixed;
         top: 0px;
         left: -1024px;
-        width: calc(100vw + 1024px);
+        width: calc(100vw + 3024px);
         height: 100%;
-        z-index: -1;
         background-image: url('../Assets/repeating-clouds-3.jpg');
         background-repeat: repeat;
         // filter: blur(0px);        
         animation: slide 180s linear infinite;
         // pointer-events: none;
+        z-index: -1;
+        opacity: 0.99;
     }
 
     @keyframes slide{
@@ -31,7 +25,7 @@
     }
 
     .GrassBackground {
-        position: absolute;
+        position: fixed;
         bottom: 0px;
         left: 0px;
         width: 100%;
@@ -40,11 +34,12 @@
         background: linear-gradient(90deg, rgb(0, 85, 0) 0%, rgb(9, 155, 9) 30%, rgb(41, 172, 41) 50%,
         rgb(41, 172, 41) 71%, lightgreen 73%, lightgreen 99%, green 100%);
         box-shadow: inset 0px 0px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 2;
     }
 
     .Tee {
         background-color: white;
-        position: absolute;
+        position: fixed;
         bottom: 34px;
         left: calc(10% - 3px);
         width: 6px;
@@ -56,7 +51,7 @@
 
     .TeeTop {
         background-color: white;
-        position: absolute;
+        position: fixed;
         bottom: 52px;
         left: calc(10% - 5px);
         width: 10px;
@@ -68,17 +63,18 @@
     }
 
     .PlayerBall {
-        position: absolute;
+        position: fixed;
         // 10% for tee - half of 32px for ball
         bottom: 62px;
         left: calc(10% - 16px);
         z-index: 10;
         pointer-events: none;
         transition: all 0.5s linear;
+        opacity: 0.99;
     }
 
     .FlagAndHole {
-        position: absolute;
+        position: fixed;
         bottom: calc(15px - 280px);
         right: calc(10% - 180px);
         width: 350px;

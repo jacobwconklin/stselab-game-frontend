@@ -258,7 +258,7 @@ const SessionResults = (props: {players: FinalResult[]}) => {
 
     const getPlacement = () => {
         let sortedPlayers = props.players.sort((a: FinalResult, b: FinalResult) => {
-            return sumScore(a.scores) - sumScore(b.scores);
+            return sumScore(b.scores) - sumScore(a.scores);
         });
 
         for (let i = 0; i < sortedPlayers.length; i++) {
