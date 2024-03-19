@@ -4,6 +4,8 @@ import { Button } from 'antd';
 // import { ProfessionalSolverCard } from '../../../ReusableComponents/SolverCards';
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import { animateBallIntoHole } from '../../../Utils/Utils';
+import TypedMessage from '../../../ReusableComponents/TypedMessage';
+import { useState } from 'react';
 
 // ProfessionalOnly
 // Have players play on h_arch with one professional to showcase the standard way problems are solved
@@ -12,6 +14,8 @@ const ProfessionalOnly = (props: {
     playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
     disablePlayRound: () => void
 }) => {
+
+    const [showTypedMessage, setShowTypedMessage] = useState(true)
 
     const playRoundCallback = () => {
         props.playRound("h", Solver.Professional)
@@ -42,10 +46,11 @@ const ProfessionalOnly = (props: {
                         Play Round
                     </Button>
                 </div>
-                {/* <div className='Solvers'>
-                    <ProfessionalSolverCard select={undefined} />
-                </div> */}
             </div>
+            {
+                showTypedMessage &&
+                <TypedMessage type={"golf"} confirm={() => setShowTypedMessage(false)} />
+            }
         </div>
     )
 }

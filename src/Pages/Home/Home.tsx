@@ -27,7 +27,7 @@ const Home = () => {
                         </h1>
                     </div>
                     <img className='Clickable' onClick={() => {
-                        window.scrollTo({top: window.innerHeight - 160, behavior: 'smooth'})
+                        window.scrollTo({top: window.innerHeight - 140, behavior: 'smooth'})
                     }} src={arrowGif} alt='Arrows Pointing Down' />
                 </div>
                 <div className='DialogCard'>

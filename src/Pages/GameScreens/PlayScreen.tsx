@@ -10,6 +10,7 @@ import AmateurOnly from './RoundScreens/AmateurOnly';
 import EntireHole from './RoundScreens/EntireHole';
 import { RoundNames, scoreRound } from '../../Utils/Utils';
 import { UserContextType } from '../../Utils/Types';
+import FactoryBackground from '../../ReusableComponents/FactoryBackground';
 
 // PlayScreen
 const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean>) => void, finishedRounds: Array<Boolean>}) => {
@@ -89,7 +90,12 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
 
     return (
         <div className='PlayScreen'>
-            <PlayGolfBackground playerColor={playerColor} />
+            {
+                props.round <= RoundNames.TournamentStage4 ?
+                <PlayGolfBackground playerColor={playerColor} />
+                :
+                <FactoryBackground />
+            }
             {
                 props.round === RoundNames.PracticeHArchPro &&
                 <ProfessionalOnly disablePlayRound={() => setPlayingRound(true)} round={props.round} playingRound={playingRound} playRound={playRound} />

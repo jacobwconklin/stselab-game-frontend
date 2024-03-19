@@ -1,5 +1,60 @@
 This can outline the major TODOs so they can be ordered 
 
+Improve mock Mechanical Arm screen:
+- Solver can make different choices for each Modules
+
+ - goal is to make a minimum mass mechanical arm for a NASA space station
+ - player IS NASA show some propaganda get them excited show how this is a real world example
+ - I said Mars, Rover, but looks like it is really for the ISS
+
+one function to one Solver
+
+solver is the only variable, 
+
+Architectures:
+
+    from paper:
+    4 decompositions on page 11
+
+    1. (entire arm)
+        SRA smart robotic arm = entrie arm
+
+    2. (arm and base)
+        SFA smart fine-positioning arm = arm
+        SAM smart attatchment mechanism = base
+
+    3. ()
+        SCA smart coarse-position arm = also arm ? 
+        SPAM smart positioning and attatchment mechanism = also base ?
+
+    4. ()
+        EMA electro-mechanical arm = mechanical system
+        CDPD command, data and power distribution system = power supply 
+        RASA robotic arm software architecture = Brain for basic actions (attatch, pan, tilt, stow) 
+        PSA positioning software architecture = Move arm to precise location avoiding ISS 
+
+
+    explanations of modules here:
+    https://data.mendeley.com/datasets/79xc6bkgjt/1
+    SAM = base
+
+    Probably won't do D5 
+
+Solvers:
+    - Expert (for each function)
+    - Novice (in the )
+
+Return values:
+    - Minimize mass 
+    - Cost (not included in code but should be based on solver choices)
+
+Additional 
+
+
+Mobile view does NOT work, need to add media tags and re-arrange play screens.
+
+change tournament stage to be more easily understandable, may show mini-golf course that matches architecture selected. 
+
 - ASK Professor: 
 1. What is 'size' in playShort and playPutt, is it the distance to accept making a whole ie should it always be 0.5?
 2. What is 'strategy' parameter (sometimes called with 0 and sometimes 1)
@@ -12,6 +67,10 @@ Make selector cards light up somehow so that they show which is selected
 Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
 round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.
 
-Make mock Mechanical Arm screen to replace golf game screen
+
 
 Add horizontal line at shots = 32 on tournament stage 2 to show players they have to get above
+
+Potential optimization:
+- websockets
+- image hosting (flickr)

@@ -86,3 +86,5 @@ export const AmateurSolverCard = (props: {select?: (solver: Solver) => void, onl
         </div>
     )
 }
+
+// TODO may add mechanical arm solver cards here

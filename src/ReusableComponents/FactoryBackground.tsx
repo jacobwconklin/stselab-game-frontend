@@ -1,5 +1,5 @@
 import './FactoryBackground.scss';
-import arm from '../../Assets/MechArm/orange-arm.png';
+import arm from '../Assets/MechArm/orange-arm.png';
 
 // Background for the Mechanical Arm game
 const FactoryBackground = () => {

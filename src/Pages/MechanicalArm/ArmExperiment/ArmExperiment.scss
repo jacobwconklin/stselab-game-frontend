@@ -1,0 +1,66 @@
+.ArmExperiment {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    height: fit-content;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 200px;
+
+    .Instructions {
+
+        .Architectures {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            // flex-wrap: wrap;
+            gap: 0px;
+        }
+
+        .Components {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+
+            .Component {
+                margin: 0px 5px 0px 5px;
+                width: 100px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .ComponentImage {
+                    margin-top: 10px;
+                    width: 48px;
+                    height: 48px;
+                }
+            }
+        }
+
+        .SelectionAndActions {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    }
+
+    .SolverCards {
+        display: flex;
+        flex-wrap: wrap;
+
+        .SolverCard {
+            padding: 10px;
+            width: 230px;
+        }
+    }
+
+    .SolverImage {
+        width: 50px;
+    }
+}
