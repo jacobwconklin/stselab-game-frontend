@@ -1,5 +1,9 @@
 .FactoryBackground {
-    position: absolute;
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
     width: 100%;
     min-height: calc(100vh - 60px);
     height: 100%;
