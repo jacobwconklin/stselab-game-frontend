@@ -11,43 +11,95 @@
 
     .Instructions {
 
-        .Architectures {
+        // Horizontal
+        .HorizontalSections {
+            display: flex;
             width: 100%;
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            // flex-wrap: wrap;
-            gap: 0px;
-        }
+            padding-bottom: 30px;
+            text-align: left;
 
-        .Components {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-evenly;
+            h1, p {
+                width: 100%;
+            }
 
-            .Component {
-                margin: 0px 5px 0px 5px;
-                width: 100px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+            .ant-btn {
+                width: 160px;
+                text-wrap: wrap;
+                height: fit-content;
+                margin-bottom: 10px;
+            }
 
-                .ComponentImage {
-                    margin-top: 10px;
-                    width: 48px;
-                    height: 48px;
+            .Architecture {
+
+            }
+
+            .Components {
+
+            }
+
+            .SolverSelection {
+                p {
+                    margin-top: 0px;
+                }
+
+                .SelectedSolverImage {
+                    width: 100px;
                 }
             }
         }
 
-        .SelectionAndActions {
-            width: 100%;
+        .HorizontalSections > * {
+            width: 30%;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
         }
+
+        .Actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+
+        // vertical:
+        // .Architectures {
+        //     width: 100%;
+        //     display: flex;
+        //     align-items: center;
+        //     flex-wrap: wrap;
+        //     gap: 0px;
+        // }
+
+        // .Components {
+        //     display: flex;
+        //     flex-wrap: wrap;
+        //     justify-content: space-evenly;
+
+        //     .Component {
+        //         margin: 0px 5px 0px 5px;
+        //         width: 100px;
+        //         display: flex;
+        //         flex-direction: column;
+        //         align-items: center;
+
+        //         .ComponentImage {
+        //             margin-top: 10px;
+        //             width: 48px;
+        //             height: 48px;
+        //         }
+        //     }
+        // }
+
+        // .SelectionAndActions {
+        //     width: 100%;
+        //     display: flex;
+        //     align-items: center;
+        //     gap: 20px;
+        //     justify-content: center;
+        //     margin-top: 20px;
+        // }
     }
 
     .SolverCards {

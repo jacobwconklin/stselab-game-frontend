@@ -50,9 +50,6 @@ Return values:
 
 Additional 
 
-
-Mobile view does NOT work, need to add media tags and re-arrange play screens.
-
 change tournament stage to be more easily understandable, may show mini-golf course that matches architecture selected. 
 
 - ASK Professor: 
