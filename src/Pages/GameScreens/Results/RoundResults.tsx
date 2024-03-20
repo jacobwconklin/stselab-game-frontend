@@ -18,6 +18,9 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
 
     return (
         <div className='RoundResults'>
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             {
                 isHost && props?.round >= RoundNames.TournamentStage4 &&
                 <div className='Instructions HostInstruction'>
@@ -133,7 +136,7 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
             <ResultGraphs players={props.players} round={props.round} />
 
             {
-                showVerificationModal && 
+                showVerificationModal &&
                 <VerificationModal
                     title="Not All Players Have Finished"
                     message="Not all players have finished this round. Are you sure you want to advance to the next round?"

@@ -5,7 +5,7 @@ Improve mock Mechanical Arm screen:
 
  - goal is to make a minimum mass mechanical arm for a NASA space station
  - player IS NASA show some propaganda get them excited show how this is a real world example
- - I said Mars, Rover, but looks like it is really for the ISS
+ - looks like it is really for the ISS
 
 one function to one Solver
 

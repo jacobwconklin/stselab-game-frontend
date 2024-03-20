@@ -12,9 +12,6 @@ const Router = () => {
 
     return (
         <div className='Router'>
-            <div className='StaticBackground'>
-                <div className='StaticBackgroundImages'></div>
-            </div>
             <Routes>
                 {/* example Route with query params <Route path="play/:type/:code?" element={<PlayScreen />} /> */}
                 <Route path="register/:playerType?/:joinCodeUrl?" element={<Register />} />

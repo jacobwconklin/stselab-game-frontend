@@ -140,7 +140,7 @@ export const animateBallIntoHole = (callBack: () => void) => {
     // const floatPointY = 0.45 * window.innerHeight;
     const hitDownPointX = 0.5 * window.innerWidth;
     const hitDownPointY = 62;
-    const inHoleX = 0.9 * window.innerWidth - 50;
+    const inHoleX = 0.9 * window.innerWidth - 38;
     const inHoleY = 30;
 
     // Use CSS transition: 

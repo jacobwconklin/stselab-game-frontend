@@ -7,6 +7,9 @@ const ResearchSurvey = () => {
 
     return (
         <div className="ResearchSurvey">
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             <h1>Research Survey</h1>
             <p>
                 Thank you for participating in our research. Please answer to the best of your ability.

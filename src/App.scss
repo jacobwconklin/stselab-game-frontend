@@ -213,3 +213,29 @@
   width: 32px;
   padding: 2px 0px 0px 3px;
 }
+
+
+// static golf background
+.StaticBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;    
+  z-index: -1;
+  background-color: rgb(138, 159, 164); 
+
+  .StaticBackgroundImages {
+      width: 100%;
+      height: 100%;    
+      // background-color: rgb(168, 188, 193); 
+      // background-color: black;
+      background-image: url("./Assets/Hero/pictogram-orange.jpg"), url("./Assets/Hero/pictogram-blue.jpg"),  url("./Assets/Hero/pictogram-pink.jpg"), url("./Assets/Hero/pictogram-green.jpg"),  ;
+      background-size: 25% auto, 25% auto, 28% auto, 25% auto; //;
+      background-repeat: repeat-y;
+      background-attachment: fixed;
+      background-position: 0%, 33%, 67%, 100%; // 50px; // 50px, 75px;
+      // background-blend-mode: luminosity;
+      opacity: 25%;
+  }
+}

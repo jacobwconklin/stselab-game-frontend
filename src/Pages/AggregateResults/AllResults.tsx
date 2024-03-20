@@ -208,6 +208,9 @@ const AllResults = () => {
 
     return (
         <div className='AllResults'>
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             <div className='Instructions'>
                 <h1>All Results</h1>
                 <h2>Display Data For: </h2>

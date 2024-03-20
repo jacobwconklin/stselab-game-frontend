@@ -1,15 +1,9 @@
 import { useState } from 'react';
-import FactoryBackground from '../../../ReusableComponents/FactoryBackground';
-import TypedMessage from '../../../ReusableComponents/TypedMessage';
 import './ArmExperiment.scss';
-import { Button } from 'antd';
-import mechArm from '../../../Assets/MechArm/orange-arm.png';
-import computerScientistIcon from '../../../Assets/MechArm/laptop-woman.svg';
-import industrialSystemsEngineerIcon from '../../../Assets/MechArm/web-developer.svg';
-import mechanicalEngineerIcon from '../../../Assets/MechArm/construction-worker.svg';
-import materialsScientistIcon from '../../../Assets/MechArm/chemist.svg';
 import ArmExperimentResults from './ArmExperimentResults';
 import ArmExperimentGame from './ArmExperimentGame';
+import { ArmSolver, armArchitectures, armSolverInformation, armSolverNames, runArmComponentSimulation } from '../../../Utils/ArmSimulation';
+import { ArmComponentResult } from '../../../Utils/Types';
 
 
 // Like free roam round of golf tournament, this allows players to try all breakdowns of the mechanical arm and all solvers
@@ -18,21 +12,34 @@ const ArmExperiment = () => {
 
     
     // TODO need new types for mechanical arm results, solvers, etc. 
-    const [allResults, setAllResults] = useState<any[]>([]);
+    const [allResults, setAllResults] = useState<ArmComponentResult[]>([]);
     const [showResults, setShowResults] = useState(false);
     const [latestResult, setLatestResult] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showTypedMessage, setShowTypedMessage] = useState(true);
 
-    const runSimulation = (component: any, solver: any) => {
+
+    const runSimulation = (component: string, solver: ArmSolver) => {
         setLoading(true);
-        const newResult = solver + ' built the ' + component + 'with a weight of ' + Math.floor(Math.random() * 100) + ' kg and a cost of ' + Math.floor(Math.random() * 100) + ' dollars';
+        const armComponentResult = runArmComponentSimulation(solver, component);
+        const newResult = armSolverNames[solver - 1] + ' built the ' + component + ' with a weight of ' + armComponentResult.weight + ' kg and a cost of ' + armComponentResult.cost + ' dollars';
         setLatestResult(newResult);
-        setAllResults([...allResults, newResult]);
+        setAllResults([...allResults, armComponentResult]);
         setLoading(false);
     }
 
     const simulateAll = () => {
         setLoading(true);
+        const newResults: ArmComponentResult[] = [];
+        armArchitectures.forEach(architecture => {
+            architecture.components.forEach(component => {
+                armSolverInformation.forEach(solverInformation => {
+                    const armComponentResult = runArmComponentSimulation(solverInformation.armSolver, component.component);
+                    newResults.push(armComponentResult);
+                });
+            });
+        });
+        setAllResults([...allResults, ...newResults]);
         setLatestResult('All components built by each solver. Click View Results to see how they performed.');
         setLoading(false);
     }
@@ -44,6 +51,8 @@ const ArmExperiment = () => {
                 <ArmExperimentResults 
                     results={allResults}
                     hideResults={() => setShowResults(false)}
+                    simulateAll={simulateAll}
+                    loading={loading}
                 />
                 :
                 <ArmExperimentGame
@@ -52,6 +61,8 @@ const ArmExperiment = () => {
                     simulateAll={simulateAll}
                     showResults={() => setShowResults(true)}
                     loading={loading}
+                    showTypedMessage={showTypedMessage}
+                    setShowTypedMessage={setShowTypedMessage}
                 />
             }
         </div>

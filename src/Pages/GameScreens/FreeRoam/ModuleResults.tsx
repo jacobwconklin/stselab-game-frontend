@@ -357,7 +357,7 @@ const ModuleResults = (props: {
             },
             title: {
                 display: true,
-                text: 'Average Distance Traveled per Solver for all Drive, Long, and Fairway',
+                text: 'Average Distance Traveled per Solver for Drive, Long, and Fairway',
             },
         },
         scales: {
@@ -489,6 +489,9 @@ const ModuleResults = (props: {
 
     return (
         <div className='ModuleResults'>
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             <div className='ResultInformation'>
                 <h1>Your experimental results</h1>
                 <p>

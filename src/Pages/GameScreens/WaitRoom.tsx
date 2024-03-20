@@ -106,6 +106,9 @@ const WaitRoom = () => {
 
     return (
         <div className='WaitRoom'>
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             {contextHolder}
             {
                 isHost ?

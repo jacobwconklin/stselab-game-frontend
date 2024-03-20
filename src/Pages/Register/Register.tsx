@@ -471,6 +471,9 @@ const Register = () => {
 
     return (
         <div className='Register'>
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             <div className='Login'>
                 <h1>{playerType === 'host' ? "Register to Create and Host a Session" : "Register to Join an Ongoing Session"}</h1>
                 {

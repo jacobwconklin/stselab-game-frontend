@@ -25,13 +25,16 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        max-width: 600px;
+        max-width: 700px;
         text-align: left;
+        // TODO may want a fun text for typewrighter messages.
 
         p {
             text-align: left;
             text-wrap: wrap;
             width: 400px;
+            font-family: 'typewriter';
+            font-size: large;
         }
 
         .ModalButtons {

@@ -22,9 +22,9 @@ import VerificationModal from '../../ReusableComponents/VerificationModal';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
-const SessionResults = (props: {players: FinalResult[]}) => {
+const SessionResults = (props: { players: FinalResult[] }) => {
 
-    
+
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     const [leaveTo, setLeaveTo] = useState('/');
     const navigate = useNavigate();
@@ -269,7 +269,7 @@ const SessionResults = (props: {players: FinalResult[]}) => {
                     return "You came in " + (i + 1) + "nd place!";
                 } else if (i === 2) {
                     return "You came in " + (i + 1) + "rd place!";
-                } else if (i === 3) {   
+                } else if (i === 3) {
                     return "You came in " + (i + 1) + "th place!";
                 }
             }
@@ -277,7 +277,7 @@ const SessionResults = (props: {players: FinalResult[]}) => {
 
         return "You came in 4th place!";
     }
-    
+
     const [isPrinting, setIsPrinting] = useState(false);
     const contentToPrint = useRef(null);
     const handlePrint = useReactToPrint({
@@ -309,6 +309,9 @@ const SessionResults = (props: {players: FinalResult[]}) => {
     return (
         <div className='SessionResults' ref={contentToPrint}>
 
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             <div className='Instructions'>
                 <h1>Tournament Results </h1>
                 <h2>{getPlacement()}</h2>
@@ -325,12 +328,12 @@ const SessionResults = (props: {players: FinalResult[]}) => {
                     <Button onClick={() => saveGraphs()}>Save Graphs</Button>
                 </div>
             </div>
-            
+
             <br></br>
 
             <div className='ResultTable'>
                 <Table
-                    pagination={isPrinting ? { pageSize: props.players.length, position: ['none', 'none']} : 
+                    pagination={isPrinting ? { pageSize: props.players.length, position: ['none', 'none'] } :
                         { pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
                     columns={tableColumns}
                     dataSource={tableData}
@@ -357,7 +360,7 @@ const SessionResults = (props: {players: FinalResult[]}) => {
             <br></br>
             <FullScreenConfetti />
             {
-                showVerificationModal && 
+                showVerificationModal &&
                 <VerificationModal
                     title="Are you sure you want to leave?"
                     message="Once you leave the session results page you can't come back."

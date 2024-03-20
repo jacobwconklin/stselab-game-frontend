@@ -15,6 +15,9 @@ const Home = () => {
 
     return (
         <div className='Home'>
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             <div className='Contents'>
                 <div className='Hero'>
                     <div className='PictogramBlue'></div>

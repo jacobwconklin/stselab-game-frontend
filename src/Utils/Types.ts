@@ -1,5 +1,6 @@
 // Temporary global types file to hold all types, will be further organized as data load increases.
 
+import { ArmSolver } from "./ArmSimulation";
 import { Solver } from "./Simulation";
 
 // Smaller structure to hold just information necessary to poll during the game
@@ -133,4 +134,27 @@ export interface UserContextType {
     setPlayerColor: (id: string) => void;
     customPerformanceWeight: number | null;
     setCustomPerformanceWeight: (id: number) => void;
+}
+
+
+// Mechanical Arm game types:
+export interface ArmRoundResult {
+    id: string;
+    architecture: string;
+    solverOne: ArmSolver;
+    solverTwo?: ArmSolver;
+    solverThree?: ArmSolver;
+    solverFour?: ArmSolver;
+    weight: number;
+    cost: number;
+    score: number;
+    round: number;
+}
+
+// Used for results from experimental round where a single component is run by a single solver
+export interface ArmComponentResult {
+    weight: number; 
+    cost: number; 
+    component: string; 
+    solver: ArmSolver;
 }

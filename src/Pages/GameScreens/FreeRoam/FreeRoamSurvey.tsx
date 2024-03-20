@@ -166,6 +166,9 @@ const FreeRoamSurvey = (props: {
 
     return (
         <div className='FreeRoamSurvey'>
+            <div className='StaticBackground'>
+                <div className='StaticBackgroundImages'></div>
+            </div>
             {
                 props.surveySuccesfullySubmitted ?
                     <div className='SuccessfullySubmittedMessage'>

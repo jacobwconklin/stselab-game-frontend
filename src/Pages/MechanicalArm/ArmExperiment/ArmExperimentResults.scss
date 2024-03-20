@@ -4,4 +4,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+
+    .Instructions {
+        min-width: 860px;
+
+        .ButtonRow {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+    }
+
+    .ant-table-wrapper  {
+        min-width: 900px;
+    }
+
+    .ChartJSCanvas {
+        min-width: 900px;
+    }
 }
