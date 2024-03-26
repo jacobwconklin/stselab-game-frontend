@@ -1,12 +1,28 @@
 # Front-End Demo Deployment to Azure
 Currently deployed and available at:
-https://stselab.azurewebsites.net/
+https://stselab-games.azurewebsites.net/
 
 Update build by running npm run build, 
 then compress all of the files int the build folder into a zip file,
-then navigating to https://stselab.scm.azurewebsites.net/DebugConsole,
+then navigating to https://stselab-games.scm.azurewebsites.net/DebugConsole,
 then navigate into site, and then wwwroot, and then drag and drop the zip file onto the screen where the message, unzip appears.
 Viola. 
+
+# Running project locally:
+
+To run locally for the first time you must have node installed. first run: 
+```
+npm i
+```
+
+Then you can run the following to run the server locally in development mode. All subsequent times that
+you would like to run the code you do not need to npm i again, you can simply run this command:
+```
+npm run start
+```
+
+You will NEED to run the backend locally as well, or go into Api.ts and change the value returned in the 
+function 'getBackendUrl' to be the hosted backend if you do not wish to run the backend locally too. 
 
 # Getting Started with Create React App
 

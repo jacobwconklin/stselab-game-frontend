@@ -1,132 +1,216 @@
 import './ArmGameScreen.scss';
-import arm from '../../Assets/MechArm/orange-arm.png';
-import { Button, Radio, Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
+import computerScientistIcon from '../../Assets/MechArm/laptop-woman.svg';
+import industrialSystemsEngineerIcon from '../../Assets/MechArm/web-developer.svg';
+import mechanicalEngineerIcon from '../../Assets/MechArm/construction-worker.svg';
+import materialsScientistIcon from '../../Assets/MechArm/chemist.svg';
 import FactoryBackground from '../../ReusableComponents/FactoryBackground';
+import { ArmSolver, armArchitectures, armSolverImages, armSolverNames } from '../../Utils/ArmSimulation';
+import { useState } from 'react';
 // The screen shown while playing the Mechanical Arm game
 const ArmGameScreen = () => {
 
-    const architectureDescriptions = [
-        {
-            name: 'SAR',
-            description: 'Select one solver type to play the entire hole',
-            architecture: 'h'
-        },
-        {
-            name: 'Long and Putt',
-            description: 'Select one solver type to play Long and another to Putt',
-            architecture: 'lp'
-        },
-        {
-            name: 'Drive and Short',
-            description: 'Select one solver type to Drive and another to play Short',
-            architecture: 'ds'
-        },
-        {
-            name: 'Drive, Fairway, and Putt',
-            description: 'Select one solver type to Drive, another to play the Fairway, and another to Putt',
-            architecture: 'dap'
-        }
-    ]
+    const [selectedSolvers, setSelectedSolvers] = useState<ArmSolver[]>([]);
+    const [currSelectedSolver, setCurrSelectedSolver] = useState<ArmSolver | null>(null);
+    const [selectedComponent, setSelectedComponent] = useState<string>("");
+    const [selectedArchitecture, setSelectedArchitecture] = useState<string>("");
+    const [loading, setLoading] = useState(false);
 
     const clearSelectedSolvers = () => {
-        // setSelectedDriveSolver(null);
-        // setSelectedLongSolver(null);
-        // setSelectedFairwaySolver(null);
-        // setSelectedShortSolver(null);
-        // setSelectedPuttSolver(null);
+        setSelectedSolvers([]);
+    }
+
+    const selectNewSolver = (solver: ArmSolver) => {
+        // get index for specific component
+        const index = armArchitectures.find(architecutre => architecutre.architecture === selectedArchitecture)?.components.findIndex(component => component.component === selectedComponent);
+        if (index !== undefined) {
+            const selectedSolversCopy = selectedSolvers;
+            selectedSolversCopy[index] = solver;
+            setSelectedSolvers(selectedSolversCopy);
+            setCurrSelectedSolver(solver);
+        }
+    }
+
+    const selectNewArchitecture = (architecture: string) => {
+        setSelectedArchitecture(architecture);
+        clearSelectedSolvers();
+        setCurrSelectedSolver(null);
+        setSelectedComponent("");
+    }
+
+    const selectNewComponent = (component: string) => {
+        setSelectedComponent(component);
+        // check if a solver has already been selected for this component
+        if (selectedSolvers.length > 0) {
+            const index = armArchitectures.find(architecutre => architecutre.architecture === selectedArchitecture)?.components.findIndex(comp => comp.component === component);
+            if (index !== undefined && selectedSolvers[index]) {
+                setCurrSelectedSolver(selectedSolvers[index]);
+            } else {
+                setCurrSelectedSolver(null);
+            }
+        }
+    }
+
+    // Ensure that an architecture is selected, and that a solver is selected for each component
+    const readyToPlay = () => {
+        if (!selectedArchitecture) {
+            return false;
+        }
+        if (selectedArchitecture) {
+            const numComponents = armArchitectures.find(architecutre => architecutre.architecture === selectedArchitecture)?.components.length;
+            if (!numComponents) {
+                return false;
+            }
+            // check that one solver is selected for each component
+            for (let i = 0; i < numComponents; i++) {
+                if (!selectedSolvers[i]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    const playRound = () => {
+        setLoading(true);
+        console.log("Playing round on architecture: ", selectedArchitecture, " with solvers: ", selectedSolvers);
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000);
     }
 
     return (
         <div className="ArmGameScreen">
             <FactoryBackground />
             <div className='Instructions'>
-                <h1>Build Your Mechanical Arm</h1>
-                <h3>Select One Architecture</h3>
-                <Radio.Group defaultValue='h' buttonStyle='solid'>
+                <div className='TitleAndIcons'>
+                    <h1>
+                        Round 1
+                    </h1>
                     {
-                        architectureDescriptions.map((arch) => (
-                            <Tooltip title={arch.description} key={arch.name}>
-                                <Radio.Button
-                                    onClick={() => {
-                                        // TODO decide if changing architecture should clear selections or not
-                                        clearSelectedSolvers();
-                                    }}
-                                    value={arch.architecture}
-                                >
-                                    {arch.name}
-                                    <svg width="18" height="18" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
-                                        <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
-                                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                                </Radio.Button>
-                            </Tooltip>
+                        selectedSolvers.map((solver, index) => (
+                            <img className='HeaderSolverIcon' src={armSolverImages[solver - 1]} alt='Solver Icon' key={index} />
                         ))
-                    }
-                </Radio.Group>
-                <h3>Select One Solver for each Component</h3>
-                <div className='Modules'>
-                    <div className='Module'>
-                        <Button>Base</Button>
-                        <p>Choose the best material for the base of the arm.</p>
+                    }    
+                </div>
+                <p>
+                    Objective: Build the lightest mechanical arm at any cost.
+                </p>
+                {/** Horizontal layout */}
+                <div className='HorizontalSections'>
+                    <div className='Architectures'>
+                        <h3>Pick An Architecture</h3>
+                        {
+                            // TODO add tooltip w/ descriptions
+                            armArchitectures.map((architecture, index) => (
+                                <Tooltip title={architecture.description} key={index} placement='right'>
+                                    <Button
+                                        onClick={() => selectNewArchitecture(architecture.architecture)}
+                                        type={selectedArchitecture === architecture.architecture ? "primary" : "default"}
+                                    >
+                                        {architecture.architecture}
+                                    </Button>
+                                </Tooltip>
+                            ))
+                        }
                     </div>
-                    <div className='Module'>
-                        <Button>Elbow</Button>
-                        <p>Choose the best material for the elbow of the arm.</p>
+
+                    <div className='Components'>
+                        <h3>Pick A Component</h3>
+                        {
+                            selectedArchitecture &&
+                            <>
+                            {
+                                armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
+                                    <Tooltip title={component.description} key={index} placement='left'>
+                                        <Button
+                                            onClick={() => selectNewComponent(component.component)}
+                                            type={selectedComponent === component.component ? "primary" : "default"}
+                                            className={selectedSolvers[index] ? "CompletedComponent" : ""}
+                                        >
+                                            {component.component}
+                                        </Button>
+                                    </Tooltip>
+                                ))
+                            }
+                            </>
+                        }
                     </div>
-                    <div className='Module'>
-                        <Button>Wrist</Button>
-                        <p>Choose the best material for the wrist of the arm.</p>
-                    </div>
-                    <div className='Module'>
-                        <Button>Hand</Button>
-                        <p>Choose the best material for the hand of the arm.</p>
-                    </div>
-                    <div className='Module'>
-                        <Button>Brain</Button>
-                        <p>Choose the best material for the hand of the arm.</p>
+
+                    <div className='SolverSelection'>
+                        <h3>Pick A Solver Below</h3>
+                        {
+                            currSelectedSolver && 
+                            <>
+                                <p>
+                                    You selected {armSolverNames[currSelectedSolver - 1]} 
+                                    {selectedComponent && ` to build the ${selectedComponent}`}
+                                </p>
+                                <img className='SelectedSolverImage' src={armSolverImages[currSelectedSolver - 1]} alt='Solver Selected to build component' />
+                            </>
+                        }
                     </div>
                 </div>
+
+                <div className='Actions'>
+                    <Button
+                        disabled={!readyToPlay() || loading}
+                        onClick={() => {
+                           playRound();
+                        }}
+                    >
+                        Play Round
+                    </Button>
+                </div>
             </div>
+
             <div className='SolverCards'>
                 <div className='SolverCard'>
-                    <h2>Electrical Engineer</h2>
-                    <img className='SolverImage' src={arm} alt='Electrical Engineer' />
+                    <h2>Mechanical Engineer</h2>
+                    <img className='SolverImage' src={mechanicalEngineerIcon} alt='Mechanical Engineer' />
                     <p>High voltage hero.</p>
                     <Button
-
+                        onClick={() => selectNewSolver(ArmSolver.MechanicalEngineer)}
+                        disabled={!selectedArchitecture || !selectedComponent}
+                        type={currSelectedSolver === ArmSolver.MechanicalEngineer ? "primary" : "default"}
                     >
                         Select
                     </Button>
                 </div>
                 <div className='SolverCard'>
                     <h2>Materials Scientist</h2>
-                    <img className='SolverImage' src={arm} alt='Electrical Engineer' />
+                    <img className='SolverImage' src={materialsScientistIcon} alt='Materials Scientist' />
                     <p>The stuff that matters.</p>
                     <Button
-
+                        onClick={() => selectNewSolver(ArmSolver.MaterialsScientist)}
+                        disabled={!selectedArchitecture || !selectedComponent}
+                        type={currSelectedSolver === ArmSolver.MaterialsScientist ? "primary" : "default"}
                     >
                         Select
                     </Button>
                 </div>
-                
+
                 <div className='SolverCard'>
                     <h2>Computer Scientist</h2>
-                    <img className='SolverImage' src={arm} alt='Electrical Engineer' />
+                    <img className='SolverImage' src={computerScientistIcon} alt='Computer Scientist' />
                     <p>Virtually an engineer.</p>
                     <Button
-
+                        onClick={() => selectNewSolver(ArmSolver.ComputerScientist)}
+                        disabled={!selectedArchitecture || !selectedComponent}
+                        type={currSelectedSolver === ArmSolver.ComputerScientist ? "primary" : "default"}
                     >
                         Select
                     </Button>
                 </div>
-                
+
                 <div className='SolverCard'>
                     <h2>Industrial Systems Engineer</h2>
-                    <img className='SolverImage' src={arm} alt='Electrical Engineer' />
+                    <img className='SolverImage' src={industrialSystemsEngineerIcon} alt='Industrial Systems Engineer' />
                     <p>Logistical legend.</p>
                     <Button
-
+                        onClick={() => selectNewSolver(ArmSolver.IndustrialSystemsEngineer)}
+                        disabled={!selectedArchitecture || !selectedComponent}
+                        type={currSelectedSolver === ArmSolver.IndustrialSystemsEngineer ? "primary" : "default"}
                     >
                         Select
                     </Button>

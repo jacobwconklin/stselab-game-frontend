@@ -15,9 +15,7 @@ const Home = () => {
 
     return (
         <div className='Home'>
-            <div className='StaticBackground'>
-                <div className='StaticBackgroundImages'></div>
-            </div>
+            <div className='StaticBackground'></div>
             <div className='Contents'>
                 <div className='Hero'>
                     <div className='PictogramBlue'></div>
@@ -26,7 +24,7 @@ const Home = () => {
                     <div className='PictogramOrange'></div>
                     <div className='WelcomeCard top-font'>
                         <h1>
-                            Welcome to STSELab's Golf Tournament
+                            Welcome to STSELab Games
                         </h1>
                     </div>
                     <img className='Clickable' onClick={() => {
@@ -35,7 +33,7 @@ const Home = () => {
                 </div>
                 <div className='DialogCard'>
                     <h2 className='CollapsableTitle' onClick={() => {setCollapseWhat(val => !val)}}>
-                        What is STSELab Golf
+                        What are STSELab Games?
                         {
                             collapseWhat ?
                             <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m240.971 130.524 194.343 194.343c9.373 9.373 9.373 24.569 0 33.941l-22.667 22.667c-9.357 9.357-24.522 9.375-33.901.04l-154.746-154.02-154.745 154.021c-9.379 9.335-24.544 9.317-33.901-.04l-22.667-22.667c-9.373-9.373-9.373-24.569 0-33.941l194.343-194.343c9.372-9.373 24.568-9.373 33.941-.001z"/></svg>                            
@@ -44,6 +42,7 @@ const Home = () => {
                         }    
                     </h2>
                     <div className='CollapsableSection' style={{maxHeight: collapseWhat? '0px': '1000px'}}>
+                        <h3>STSELab Golf:</h3>
                         <p>
                             STSELab Golf is a multiplayer game designed to introduce and teach Industrial Systems Engineering topics.
                             In this game rounds of golf represent Industrial Systems Engineering problems. The traditional method to solve
@@ -66,6 +65,7 @@ const Home = () => {
                             breaking problems down into smaller components and finding solutions that better fit each component can lead to
                             improved results.
                         </p>
+                        {/* <h3>Mechanical Arm Mission:</h3> */}
                     </div>
                 </div>
                 <div className='DialogCard'>
@@ -79,6 +79,7 @@ const Home = () => {
                         }    
                     </h2>
                     <div className='CollapsableSection' style={{maxHeight: collapseHow ? '0px' : '1000px'}}>
+                        <h3>STSELab Golf:</h3>
                         <p>
                             1) One player serves as the Host and and unlimited number of other users join the game.
                         </p><p>
@@ -93,6 +94,7 @@ const Home = () => {
 
                             5) The final results are shown, and the player who collected the most points wins the tournament.
                         </p>
+                        {/* <h3>Mechanical Arm Mission:</h3> */}
                     </div>
                 </div>
                 <div className='DialogCard'>

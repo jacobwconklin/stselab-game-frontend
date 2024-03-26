@@ -7,16 +7,28 @@
     width: 100%;
     height: 60px;
     align-items: center;
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    // background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(29, 29, 156) 50%, rgba(2,0,36,1) 100%);
+    // background-color: darkblue;
     box-shadow: inset 0px 0px 2px 4px rgba(0, 0, 0, 0.2);
     color: white;
-    min-width: 300px;
+    min-width: 330px;
     z-index: 20;
     // font-size: 40px;
+    text-wrap: nowrap;
 
-    .GolfBall {
-        display: inline-block;
-        transform: translate(0px, 3px);
+    .HeaderContainer {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+
+    .HeaderLogo {
+        margin-left: -35px;
+        margin-right: -50px;
+        width: 150px;
+        height: 150px;
     }
 }
 
@@ -29,7 +41,6 @@
     margin: 0px 0px 0px 0px;
     border-bottom: 3px solid transparent;
     &:hover {
-        cursor: pointer;
         border-bottom: 3px solid white;
     }
 }

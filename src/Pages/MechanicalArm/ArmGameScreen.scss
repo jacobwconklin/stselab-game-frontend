@@ -4,30 +4,119 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 250px;
 
-    .Modules {
-        display: flex;
-        gap: 10px;
+    .Instructions {
 
-        .Module {
+
+
+        .TitleAndIcons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            overflow: hidden;
+        
+
+            h1 {
+                margin: 5px 0px 5px 0px;
+            }
+
+            .HeaderSolverIcon {
+                width: 100px;
+                height: 100px;
+                margin: 0px -10px 0px -10px;
+            }
+        }
+
+        // Horizontal
+        .HorizontalSections {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            padding-bottom: 30px;
+            text-align: left;
+
+            h1, p {
+                width: 100%;
+            }
+
+            .ant-btn {
+                width: 162px;
+                text-wrap: wrap;
+                height: fit-content;
+                margin-bottom: 10px;
+            }
+
+            // .Architecture {
+
+            // }
+
+            .Components {
+                .CompletedComponent {
+                    background: green;
+                    color: white;
+                }
+
+                .ant-btn-primary.CompletedComponent {
+                    border: 1px solid blue;
+                }
+            }
+
+            .SolverSelection {
+                p {
+                    margin-top: 0px;
+                }
+
+                .SelectedSolverImage {
+                    width: 150px;
+                    height: 150px;
+                    margin-top: -40px;
+                }
+            }
+        }
+
+        .HorizontalSections > * {
+            width: 30%;
             display: flex;
             flex-direction: column;
+            align-items: center;
 
+            h3 {
+                height: 50px;
+            }
+        }
+
+        .Actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
     }
 
     .SolverCards {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
 
         .SolverCard {
             padding: 10px;
             width: 230px;
+            margin: 20px 35px 20px 35px;
+
+            h2 {
+                max-height: 50px;
+                min-height: 50px;
+                margin-bottom: 0px;
+            }
+
+            p {
+                margin-top: -5px;
+            }
         }
     }
 
     .SolverImage {
-        width: 50px;
+        width: 120px;
+        height: 120px;
     }
 }
