@@ -6,6 +6,7 @@ import GameController from './Pages/GameController/GameController';
 import AllResults from './Pages/AggregateResults/AllResults';
 import ArmGameScreen from './Pages/MechanicalArm/ArmGameScreen';
 import ArmExperiment from './Pages/MechanicalArm/ArmExperiment/ArmExperiment';
+import GameSimulator from './Pages/MechanicalArm/GameSimulator';
 
 // Router
 const Router = () => {
@@ -17,8 +18,12 @@ const Router = () => {
                 <Route path="register/:playerType?/:joinCodeUrl?" element={<Register />} />
                 <Route path="results" element={<AllResults />} />
                 <Route path="game" element={<GameController />} />
-                <Route path="armE" element={<ArmExperiment />} />
-                <Route path="arm" element={<ArmGameScreen />} />
+                <Route path="arm" element={<GameSimulator />} />
+                <Route path="armExp" element={<ArmExperiment advanceRound={() => {}} />} />
+                <Route path="armGame" element={<ArmGameScreen 
+                            finishedRounds={[false]} 
+                            setFinishedRound={(val: Array<Boolean>) => {}} 
+                            round={0} />} />
                 <Route path="*" element={<Home />} />
             </ Routes>
         </div>

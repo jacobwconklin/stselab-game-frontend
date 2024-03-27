@@ -1,15 +1,13 @@
 This can outline the major TODOs so they can be ordered 
 
+
+# 1: Change Azure SQL database plan, the 100,000 vCore seconds do not seem to be enough, just me playing through the game once with two players used 700, and most people would take longer to play and have more people playing
+
 Improve mock Mechanical Arm screen:
 - Solver can make different choices for each Modules
-
  - goal is to make a minimum mass mechanical arm for a NASA space station
  - player IS NASA show some propaganda get them excited show how this is a real world example
  - looks like it is really for the ISS
-
-one function to one Solver
-
-solver is the only variable, 
 
 Architectures:
 
@@ -64,9 +62,10 @@ Make selector cards light up somehow so that they show which is selected
 Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
 round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.
 
+Change Instructions panel for tournament stages and expiremental rounds in golf to look more like robotic arm ones, cleaner and simpler left to right rather than top down. 
 
-
-Add horizontal line at shots = 32 on tournament stage 2 to show players they have to get above
+Add horizontal line at shots = 35 on tournament stage 2 to show players they have to get above
+(May be easier to just split up results into two graphs, those who scored above the minimal threshold and those who didn't just for that round)
 
 Potential optimization:
 - websockets

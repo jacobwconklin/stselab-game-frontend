@@ -1,5 +1,4 @@
 .FreeRoam {
-
     width: 100%;
     min-height: calc(100vh - 60px);
     height: fit-content;
@@ -7,7 +6,7 @@
     position: relative;
 
     .FreeRoamExperiment {
-        width: 100% ;
+        width: 100%;
         min-height: calc(100vh - 60px);
         height: fit-content;
         overflow: hidden;
@@ -49,8 +48,8 @@
 
     .Fairway {
         bottom: 26px;
-        left: calc(10% + 12px);;
-        width: calc( 62% - 16px ) ;
+        left: calc(10% + 12px);
+        width: calc(62% - 16px);
         border: 3px solid rgba(0, 0, 0, 0);
     }
 
@@ -88,7 +87,7 @@
     //         height: 100px;
     //     }
     // }
-    
+
     .Controls {
         display: flex;
         flex-direction: column;
@@ -118,53 +117,40 @@
         .Modules {
             width: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
-
-            .ModuleButton {
-                width: 80px;
-            }
         }
 
         .InformationHorizontalSplit {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
             gap: 15px;
 
-            .SelectionsAndActions {
-                height: 150px;
-                min-width: 400px;
+            .ant-btn {
+                width: 100%;
+                max-width: 200px;
+                margin-bottom: 5px;
+            }
+
+            .PlayAndShowResults {
                 display: flex;
-                align-items: center;
-
-                .Selections {
-                    width: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    padding: 15px 0px 15px 0px;
-        
-                    h2 {
-                        width: 350px;
-                        text-align: left;
-                        margin-top: 0px;
-                        margin-bottom: 5px;
-                    }
-                }
-
-                .PlayAndShowResults {
-                    width: 100%;
-                    display: flex;
-                    justify-content: space-between;
-                    gap: 15px;
-                }
+                flex-direction: column;
+                justify-content: space-between;
+                gap: 15px;
             }
 
             .SolverIcons {
-                width: 100%;
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
         }
-        
+
+        .InformationHorizontalSplit > * {
+            width: 33%;
+        }
+
         .Solvers {
             width: 100%;
             display: flex;
@@ -191,7 +177,7 @@
         .ExplanationModalBody {
             width: 50%;
             min-width: 300px;
-            background-color: whitesmoke;        
+            background-color: whitesmoke;
             border: 3px solid black;
             border-radius: 10px;
             padding: 40px;

@@ -10,7 +10,7 @@
         align-items: center;
 
         .Instructions {
-            min-width: 210px;
+            min-width: 600px;
             width: calc(100% - 80px);
             max-width: 730px;
 
@@ -30,6 +30,62 @@
 
             .InfoContainer {
                 text-align: left;
+                width: 100%;
+
+                .HorizontalSplit {
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 10px;
+                }
+
+                .HorizontalSplit > * {
+                    width: 33%;
+                }
+
+
+                .SelectArchitecture, .SelectModule, .SolverSelection {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    h3 {
+                        width: 100%;
+                        margin-top: 10px;
+                        height: 50px;
+                        text-align: center;
+                    }
+
+                    p {
+                        width: 100%;
+
+                        text-align: left;
+                        margin-top: 0px;
+                        margin-bottom: 20px;
+                    }
+
+                    .ant-btn {
+                        width: 100%;
+                        max-width: 200px;
+                        margin-bottom: 5px;
+                    }
+                }
+
+                .CompletedSelection {
+                    background: green;
+                    color: white;
+                }
+
+                .ant-btn-primary.CompletedSelection {
+                    border: 1px solid blue;
+                }
+
+                .SelectedSolverImage {
+                    width: 50px;
+                    height: 50px;
+                }
+
+            
 
                 .DetermineObjective {
                     padding: 2px 25px 2px 35px;

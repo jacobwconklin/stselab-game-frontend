@@ -101,15 +101,14 @@ const FreeRoamGame = (props: {
                 result = await runPlayPutt(i);
                 simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Putt' });
             }
-            // For now do not save free roam results to database only for all 
-            // only save it for those in tournaments
-            if (playerId) {
-                await Promise.all(simulatedResults.map(async (result) => {
-                    await saveFreeRoamResult(result.shots, result.distance);
-                    return null;
-                }));
-            }
-            // saveFreeRoamResult(result.shots, result.distance);
+            // For now do not save free roam results to database to reduce workload on be and db,
+            // TODO if simulate all data is wanted it can be saved by uncommenting this below:
+            // if (playerId) {
+            //     await Promise.all(simulatedResults.map(async (result) => {
+            //         await saveFreeRoamResult(result.shots, result.distance);
+            //         return null;
+            //     }));
+            // }
             props.setAllResults([...props.allResults, ...simulatedResults]);
             setSimulatedAll(true);
             setLoading(false);
@@ -168,61 +167,32 @@ const FreeRoamGame = (props: {
                                 </svg>
                             </Button>
                         </h1>
-                        <div className='Modules'>
-                            {
-                                modules.map((module, index) => (
-                                    <div className='SelectableModule' key={module}>
-                                        <Tooltip title={moduleDescriptions[index]}>
-                                            <Button
-                                                type={selectedModule === module ? 'primary' : 'default'}
-                                                onClick={() => setSelectedModule(module)}
-                                                className='ModuleButton'
-                                            >
-                                                {module}
-                                                &nbsp;
-                                                <svg width="12" height="12" strokeWidth="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                                    <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                            </Button>
-                                        </Tooltip>
-                                    </div>
-                                ))
-                            }
-                        </div>
                         <div className='InformationHorizontalSplit'>
-                            <div className='SelectionsAndActions'>
-                                {/* <div className='Selections'>
-                                        <h2>
-                                            Selected Module: {selectedModule}
-                                        </h2>
-                                        <h2>
-                                            Selected Solver: {solverNames[selectedSolver - 1]}
-                                        </h2>
-                                </div> */}
-                                <br></br>
-                                <div className='PlayAndShowResults'>
-                                    <Button
-                                        onClick={() => playModule()}
-                                        disabled={loading}
-                                    >
-                                        Play {solverNames[selectedSolver - 1]} on {selectedModule}
-                                    </Button>
-                                    <Button
-                                        onClick={() => simulateAll()}
-                                        disabled={loading}
-                                    >
-                                        Simulate All
-                                    </Button>
-                                    <Button
-                                        onClick={() => { props.setShowModuleResults(true) }}
-                                        disabled={props.allResults.length === 0}
-                                    >
-                                        View Results
-                                    </Button>
-                                </div>
+                            <div className='Modules'>
+                                {
+                                    modules.map((module, index) => (
+                                        <div className='SelectableModule' key={module}>
+                                            <Tooltip title={moduleDescriptions[index]} placement='right'>
+                                                <Button
+                                                    type={selectedModule === module ? 'primary' : 'default'}
+                                                    onClick={() => setSelectedModule(module)}
+                                                    className='ModuleButton'
+                                                >
+                                                    {module}
+                                                    &nbsp;
+                                                    <svg width="12" height="12" strokeWidth="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                </Button>
+                                            </Tooltip>
+                                        </div>
+                                    ))
+                                }
                             </div>
+
+
                             <div className='SolverIcons'>
                                 {
                                     selectedSolver === Solver.Professional &&
@@ -246,6 +216,29 @@ const FreeRoamGame = (props: {
                                         }
                                     </div>
                                 }
+                            </div>
+
+
+
+                            <div className='PlayAndShowResults'>
+                                <Button
+                                    onClick={() => playModule()}
+                                    disabled={loading}
+                                >
+                                    Play {solverNames[selectedSolver - 1]} on {selectedModule}
+                                </Button>
+                                <Button
+                                    onClick={() => simulateAll()}
+                                    disabled={loading}
+                                >
+                                    Simulate All
+                                </Button>
+                                <Button
+                                    onClick={() => { props.setShowModuleResults(true) }}
+                                    disabled={props.allResults.length === 0}
+                                >
+                                    View Results
+                                </Button>
                             </div>
                         </div>
                         {
@@ -315,7 +308,7 @@ const FreeRoamGame = (props: {
                 }
             </div>
             {
-                showVerificationModal && 
+                showVerificationModal &&
                 <VerificationModal
                     title="Are you sure you end the Experimental Round?"
                     message="This will end the experiment for all players and begin a survey on their findings."

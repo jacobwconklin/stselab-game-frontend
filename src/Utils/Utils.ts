@@ -10,7 +10,13 @@ export enum RoundNames {
     TournamentStage2 = 7,
     TournamentStage3 = 8,
     TournamentStage4 = 9,
-    FinalResults = 10
+    FinalResults = 10,
+    ArmExperiment = 11,
+    ArmGame1 = 12,
+    ArmGame2 = 13,
+    ArmGame3 = 14,
+    ArmGame4 = 15,
+    ArmFinalResults = 16
 }
 
 

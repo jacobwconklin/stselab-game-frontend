@@ -1,0 +1,28 @@
+.ArmRoundResults {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 30px;
+
+    .Instructions {
+        min-width: 660px;
+        margin-bottom: 40px;
+    }
+
+    .ResultTable {
+        .ant-table-wrapper {
+            min-width: 700px;
+        }
+    }
+
+    .ResultGraphs {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .ScatterCanvas {
+            min-width: 700px;
+        }
+    }
+}

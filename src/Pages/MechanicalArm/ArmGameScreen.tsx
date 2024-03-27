@@ -8,7 +8,18 @@ import FactoryBackground from '../../ReusableComponents/FactoryBackground';
 import { ArmSolver, armArchitectures, armSolverImages, armSolverNames } from '../../Utils/ArmSimulation';
 import { useState } from 'react';
 // The screen shown while playing the Mechanical Arm game
-const ArmGameScreen = () => {
+const ArmGameScreen = (props: {
+    setFinishedRound: (val: Array<Boolean>) => void, 
+    finishedRounds: Array<Boolean>
+    round: number
+}) => {
+
+    const updateFinishedRounds = () => {
+        const copy = props.finishedRounds;
+        copy[props.round] = true;
+        props.setFinishedRound(copy);
+        console.log(copy);
+    }
 
     const [selectedSolvers, setSelectedSolvers] = useState<ArmSolver[]>([]);
     const [currSelectedSolver, setCurrSelectedSolver] = useState<ArmSolver | null>(null);
@@ -76,6 +87,7 @@ const ArmGameScreen = () => {
         console.log("Playing round on architecture: ", selectedArchitecture, " with solvers: ", selectedSolvers);
         setTimeout(() => {
             setLoading(false);
+            updateFinishedRounds();
         }, 2000);
     }
 
@@ -105,6 +117,7 @@ const ArmGameScreen = () => {
                             armArchitectures.map((architecture, index) => (
                                 <Tooltip title={architecture.description} key={index} placement='right'>
                                     <Button
+                                        className={readyToPlay() && selectedArchitecture === architecture.architecture ? "CompletedComponent" : ""}
                                         onClick={() => selectNewArchitecture(architecture.architecture)}
                                         type={selectedArchitecture === architecture.architecture ? "primary" : "default"}
                                     >
@@ -119,27 +132,36 @@ const ArmGameScreen = () => {
                         <h3>Pick A Component</h3>
                         {
                             selectedArchitecture &&
-                            <>
-                            {
-                                armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
-                                    <Tooltip title={component.description} key={index} placement='left'>
-                                        <Button
-                                            onClick={() => selectNewComponent(component.component)}
-                                            type={selectedComponent === component.component ? "primary" : "default"}
-                                            className={selectedSolvers[index] ? "CompletedComponent" : ""}
-                                        >
-                                            {component.component}
-                                        </Button>
-                                    </Tooltip>
-                                ))
-                            }
-                            </>
+                            armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
+                                <Tooltip title={component.description} key={index} placement='left'>
+                                    <Button
+                                        onClick={() => selectNewComponent(component.component)}
+                                        type={selectedComponent === component.component ? "primary" : "default"}
+                                        className={selectedSolvers[index] ? "CompletedComponent" : ""}
+                                    >
+                                        {component.component}
+                                    </Button>
+                                </Tooltip>
+                            ))
                         }
                     </div>
 
                     <div className='SolverSelection'>
-                        <h3>Pick A Solver Below</h3>
+                        <h3>Pick Solvers Below</h3>
                         {
+                            // selectedArchitecture && 
+                            // armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
+                            //     <p
+                            //         className='SelectedSolverNames'
+                            //     >
+                            //         {
+                            //             selectedSolvers[index] ? 
+                            //             armSolverNames[selectedSolvers[index] - 1]
+                            //             : 
+                            //             " "
+                            //         }
+                            //     </p>
+                            // ))
                             currSelectedSolver && 
                             <>
                                 <p>

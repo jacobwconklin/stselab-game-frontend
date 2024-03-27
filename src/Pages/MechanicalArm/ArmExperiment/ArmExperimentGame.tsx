@@ -20,6 +20,7 @@ const ArmExperimentGame = (props: {
     loading: boolean,
     showTypedMessage: boolean,
     setShowTypedMessage: (show: boolean) => void,
+    advanceRound: () => void
 }) => {
 
     const [selectedSolver, setSelectedSolver] = useState<ArmSolver | null>(null);
@@ -106,6 +107,12 @@ const ArmExperimentGame = (props: {
                         onClick={() => props.showResults()}
                     >
                         View Results
+                    </Button>
+                    <Button
+                        onClick={() => props.advanceRound()}
+                        type='primary'
+                    >
+                        End Experimental Round
                     </Button>
                 </div>
 

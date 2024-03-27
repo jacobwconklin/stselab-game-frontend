@@ -15,13 +15,18 @@ const Home = () => {
 
     return (
         <div className='Home'>
-            <div className='StaticBackground'></div>
+            <div className='StaticBackground'>
+
+            <div className='StaticImageParent GolfStaticParent'>
+                <div className='StaticImage GolfStatic'></div>
+            </div>
+            <div className='StaticImageParent ArmStaticParent'>
+                <div className='StaticImage ArmStatic'></div>
+            </div>
+
+            </div>
             <div className='Contents'>
                 <div className='Hero'>
-                    <div className='PictogramBlue'></div>
-                    <div className='PictogramGreen'></div>
-                    <div className='PictogramPink'></div>
-                    <div className='PictogramOrange'></div>
                     <div className='WelcomeCard top-font'>
                         <h1>
                             Welcome to STSELab Games
@@ -41,7 +46,7 @@ const Home = () => {
                             <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m207.029 381.476-194.343-194.344c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04l154.746 154.021 154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941l-194.342 194.344c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>                        
                         }    
                     </h2>
-                    <div className='CollapsableSection' style={{maxHeight: collapseWhat? '0px': '1000px'}}>
+                    <div className='CollapsableSection' style={{maxHeight: collapseWhat? '0px': '2500px'}}>
                         <h3>STSELab Golf:</h3>
                         <p>
                             STSELab Golf is a multiplayer game designed to introduce and teach Industrial Systems Engineering topics.
@@ -65,7 +70,10 @@ const Home = () => {
                             breaking problems down into smaller components and finding solutions that better fit each component can lead to
                             improved results.
                         </p>
-                        {/* <h3>Mechanical Arm Mission:</h3> */}
+                        <h3>Mechanical Arm Mission:</h3>
+                        <p>
+                            Coming Soon ...
+                        </p>
                     </div>
                 </div>
                 <div className='DialogCard'>
@@ -78,7 +86,7 @@ const Home = () => {
                             <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m207.029 381.476-194.343-194.344c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04l154.746 154.021 154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941l-194.342 194.344c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>                        
                         }    
                     </h2>
-                    <div className='CollapsableSection' style={{maxHeight: collapseHow ? '0px' : '1000px'}}>
+                    <div className='CollapsableSection' style={{maxHeight: collapseHow ? '0px' : '2500px'}}>
                         <h3>STSELab Golf:</h3>
                         <p>
                             1) One player serves as the Host and and unlimited number of other users join the game.
@@ -107,7 +115,7 @@ const Home = () => {
                             <svg className='ChevronIcon' viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="m207.029 381.476-194.343-194.344c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04l154.746 154.021 154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941l-194.342 194.344c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>                        
                         }
                     </h2>
-                    <div className='CollapsableSection' style={{maxHeight: collapseLearn ? '0px' : '1000px'}}>
+                    <div className='CollapsableSection' style={{maxHeight: collapseLearn ? '0px' : '2500px'}}>
                         <p>
                             The research on this subject, including use of the golf simulation, is found in the paper: "Towards a solver-aware systems 
                             architecting framework: leveraging experts, specialists and the crowd to design innovative complex systems" by 

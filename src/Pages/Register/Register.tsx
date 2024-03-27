@@ -438,7 +438,7 @@ const Register = () => {
                         setPlayerColor(color);
                         navigate('/game');
                     } else {
-                        alert("Failed to submit form.");
+                        alert("Failed to submit form. \n\nThe database or backend may be rebooting, please wait one minute and try again.");
                         console.error(submitResult)
                         setSubmitting(false);
                     }
@@ -455,7 +455,7 @@ const Register = () => {
                         alert("Cannot join session, it has already started.");
                         setSubmitting(false);
                     } else {
-                        alert("Failed to submit form.");
+                        alert("Failed to submit form. \n\nThe database or backend may be rebooting, please wait one minute and try again.");
                         console.error(submitResult)
                         setSubmitting(false);
                     }
@@ -464,7 +464,7 @@ const Register = () => {
                 setSubmitting(false);
             }
         } catch (error) {
-            alert("Unable to submit form received the following error: " + (error as Error).message);
+            alert("Unable to submit form received the following error: " + (error as Error).message + " \n\nThe database or backend may be rebooting, please wait one minute and try again.");
             setSubmitting(false);
         }
     }

@@ -8,7 +8,9 @@ import { ArmComponentResult } from '../../../Utils/Types';
 
 // Like free roam round of golf tournament, this allows players to try all breakdowns of the mechanical arm and all solvers
 // to see how they perform.
-const ArmExperiment = () => {
+const ArmExperiment = (props: {
+    advanceRound: () => void
+}) => {
 
     
     // TODO need new types for mechanical arm results, solvers, etc. 
@@ -63,6 +65,7 @@ const ArmExperiment = () => {
                     loading={loading}
                     showTypedMessage={showTypedMessage}
                     setShowTypedMessage={setShowTypedMessage}
+                    advanceRound={props.advanceRound}
                 />
             }
         </div>

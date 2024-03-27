@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import './TournamentStage.scss';
 import { Solver, solverNames } from '../../../Utils/Simulation';
-import { Button, Radio, Slider, Tooltip } from 'antd';
+import { Button, Slider } from 'antd';
 import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from '../../../ReusableComponents/SolverCards';
 import { UserContext } from '../../../App';
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
@@ -70,22 +70,26 @@ const TournamentStage = (props: {
         {
             name: 'Entire Hole',
             description: 'Select one solver type to play the entire hole',
-            architecture: 'h'
+            architecture: 'h',
+            modules: ['Entire Hole']
         },
         {
             name: 'Long and Putt',
             description: 'Select one solver type to play Long and another to Putt',
-            architecture: 'lp'
+            architecture: 'lp',
+            modules: ['Long', 'Putt']
         },
         {
             name: 'Drive and Short',
             description: 'Select one solver type to Drive and another to play Short',
-            architecture: 'ds'
+            architecture: 'ds',
+            modules: ['Drive', 'Short']
         },
         {
             name: 'Drive, Fairway, and Putt',
             description: 'Select one solver type to Drive, another to play the Fairway, and another to Putt',
-            architecture: 'dap'
+            architecture: 'dap',
+            modules: ['Drive', 'Fairway', 'Putt']
         }
     ]
 
@@ -155,64 +159,32 @@ const TournamentStage = (props: {
         }
     }
 
-    // return string to tell player what they are selecting a solver for
-    const getSelectForString = () => {
-        if (architecture === 'h') {
-            return "for the entire hole";
-        } else if (selectingDistance === 'Drive') {
-            return "to Drive";
+    const getSolverForSelectedModule = (): Solver | null => {
+        if (selectingDistance === 'Drive') {
+            return selectedDriveSolver;
         } else if (selectingDistance === 'Long') {
-            return "to play Long";
+            return selectedLongSolver;
         } else if (selectingDistance === 'Fairway') {
-            return "for the Fairway";
+            return selectedFairwaySolver;
         } else if (selectingDistance === 'Short') {
-            return "to play Short";
+            return selectedShortSolver;
         } else {
-            return "to Putt";
+            return selectedPuttSolver;
         }
     }
 
-    // Returns a string with the selected solvers
-    const getSelectionsString = () => {
-        if (architecture === 'h') {
-            return selectedDriveSolver ? `You Selected: ${solverNames[selectedDriveSolver - 1]}${selectedDriveSolver > 1 ? 's' : ''} to Play the Entire Hole` : "Select a Solver to Play the hole";
-        } else if (architecture === 'lp') {
-            if (selectedLongSolver || selectedPuttSolver) {
-                // partial or complete selection made
-                return `You Selected: ${selectedLongSolver ? solverNames[selectedLongSolver - 1] + (selectedLongSolver > 1 ? 's' : '') + " to play Long" : ''}
-                ${selectedLongSolver && selectedPuttSolver ? ' and ' : ''}
-                ${selectedPuttSolver ? solverNames[selectedPuttSolver - 1] + (selectedPuttSolver > 1 ? 's' : '') + ' to Putt' : ''}`
-            } else {
-                // No selection made yet
-                return "Select a Solver to play Long and to Putt"
-            }
-        } else if (architecture === 'ds') {
-            if (selectedDriveSolver || selectedShortSolver) {
-                // partial or complete selection made
-                return `You Selected: ${selectedDriveSolver ? solverNames[selectedDriveSolver - 1] + (selectedDriveSolver > 1 ? 's' : '') + " to Drive" : ''}
-                ${selectedDriveSolver && selectedShortSolver ? ' and ' : ''}
-                ${selectedShortSolver ? solverNames[selectedShortSolver - 1] + (selectedShortSolver > 1 ? 's' : '') + ' to play Short' : ''}`
-            } else {
-                // No selection made yet
-                return "Select a Solver to Drive and play Short"
-            }
+    const getSolverForModule = (module: string): Solver | null => {
+        if (module === 'Putt') {
+            return selectedPuttSolver;
+        } else if (module === 'Long') {
+            return selectedLongSolver;
+        } else if (module === 'Fairway') {
+            return selectedFairwaySolver;
+        } else if (module === 'Short') {
+            return selectedShortSolver;
         } else {
-            // dap
-            if (selectedDriveSolver || selectedFairwaySolver || selectedPuttSolver) {
-                // partial or complete selection made
-                return `You Selected: ${selectedDriveSolver ? solverNames[selectedDriveSolver - 1] + (selectedDriveSolver > 1 ? 's' : '') + " to Drive" : ''}
-                ${selectedDriveSolver && selectedFairwaySolver && !selectedPuttSolver ? ' and ' : ''}
-                ${selectedDriveSolver && selectedFairwaySolver && selectedPuttSolver ? ', ' : ''}
-                ${selectedFairwaySolver ? solverNames[selectedFairwaySolver - 1] + (selectedFairwaySolver > 1 ? 's' : '') + ' for the Fairway' : ''}
-                ${selectedDriveSolver && !selectedFairwaySolver && selectedPuttSolver ? ' and ' : ''}
-                ${!selectedDriveSolver && selectedFairwaySolver && selectedPuttSolver ? ' and ' : ''}
-                ${selectedDriveSolver && selectedFairwaySolver && selectedPuttSolver ? ', and' : ''}
-                ${selectedPuttSolver ? solverNames[selectedPuttSolver - 1] + (selectedPuttSolver > 1 ? 's' : '') + ' to Putt' : ''}
-                `
-            } else {
-                // No selection made yet
-                return "Select a Solver to Drive, play the Fairway, and to Putt"
-            }
+            // make drive default so entire hole also works
+            return selectedDriveSolver;
         }
     }
 
@@ -229,9 +201,9 @@ const TournamentStage = (props: {
             ></div>
             <div className='Controls'>
                 <div className='Instructions'>
-                    <h1> 
+                    <h1>
                         Tournament Round {'' + (props.round - RoundNames.TournamentStage1 + 1)}
-                        
+
                         <Button className='InfoButtonHolder' onClick={() => setShowTournamentBeginModal(true)}>
                             &nbsp;
                             <svg width="24" height="24" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -283,119 +255,79 @@ const TournamentStage = (props: {
                                 />
                             </div>
                         }
-                        <div className='SelectArchitecture'>
-                            <h3>Choose one Architecture</h3>
-                            <div className='Architectures'>
+                        <div className='HorizontalSplit'>
 
-                                <Radio.Group defaultValue='h' buttonStyle='solid'>
-                                    {
-                                        architectureDescriptions.map((arch) => (
-                                            <Tooltip title={arch.description} key={arch.name}>
-                                                <Radio.Button
-                                                    onClick={() => {
-                                                        // TODO decide if changing architecture should clear selections or not
-                                                        clearSelectedSolvers();
-                                                        // Set selecting distance to 'Drive' unless on lp then set it to long
-                                                        setSelectingDistance(arch.architecture === 'lp' ? 'Long' : 'Drive');
-                                                        setArchitecture(arch.architecture);
-                                                    }}
-                                                    value={arch.architecture}
-                                                >
-                                                    {arch.name}
-                                                </Radio.Button>
-                                            </Tooltip>
-                                        ))
-                                    }
-                                </Radio.Group>
+                            <div className='SelectArchitecture'>
+                                <h3>Choose one Architecture</h3>
+                                {
+                                    architectureDescriptions.map((arch) => (
+                                        <Button
+                                            key={arch.name}
+                                            onClick={() => {
+                                                // TODO decide if changing architecture should clear selections or not
+                                                clearSelectedSolvers();
+                                                // Set selecting distance to 'Drive' unless on lp then set it to long
+                                                setSelectingDistance(arch.architecture === 'lp' ? 'Long' : 'Drive');
+                                                setArchitecture(arch.architecture);
+                                            }}
+                                            type={arch.architecture === architecture ? 'primary' : 'default'}
+                                            className={readyToPlay() && arch.architecture === architecture ? 'CompletedSelection' : ''}
+                                        >
+                                            {arch.name}
+                                        </Button>
+                                    ))
+                                }
                             </div>
-                        </div>
-                        <div className='SelectDistance'>
-                            {
-                                architecture !== 'h' &&
+
+                            <div className='SelectModule'>
                                 <h3>
-                                    Select module
+                                    Select Modules
                                 </h3>
-                            }
-                            {
-                                architecture === 'lp' &&
-                                <Radio.Group value={selectingDistance} defaultValue='Long' buttonStyle='solid'>
-                                    <Radio.Button
-                                        onClick={() => setSelectingDistance('Long')}
-                                        value={'Long'}
-                                    >
-                                        Long
-                                    </Radio.Button>
-                                    <Radio.Button
-                                        onClick={() => setSelectingDistance('Putt')}
-                                        value={'Putt'}
-                                    >
-                                        Putt
-                                    </Radio.Button>
-                                </Radio.Group>
-                            }
-                            {
-                                architecture === 'ds' &&
-                                <Radio.Group value={selectingDistance} defaultValue='Drive' buttonStyle='solid'>
-                                    <Radio.Button
-                                        onClick={() => setSelectingDistance('Drive')}
-                                        value={'Drive'}
-                                    >
-                                        Drive
-                                    </Radio.Button>
-                                    <Radio.Button
-                                        onClick={() => setSelectingDistance('Short')}
-                                        value={'Short'}
-                                    >
-                                        Short
-                                    </Radio.Button>
-                                </Radio.Group>
-                            }
-                            {
-                                architecture === 'dap' &&
-                                <Radio.Group value={selectingDistance} defaultValue='Drive' buttonStyle='solid'>
-                                    <Radio.Button
-                                        onClick={() => setSelectingDistance('Drive')}
-                                        value={'Drive'}
-                                    >
-                                        Drive
-                                    </Radio.Button>
-                                    <Radio.Button
-                                        onClick={() => setSelectingDistance('Fairway')}
-                                        value={'Fairway'}
-                                    >
-                                        Fairway
-                                    </Radio.Button>
-                                    <Radio.Button
-                                        onClick={() => setSelectingDistance('Putt')}
-                                        value={'Putt'}
-                                    >
-                                        Putt
-                                    </Radio.Button>
-                                </Radio.Group>
-                            }
-                        </div>
-                        {
-                            !readyToPlay() &&
-                            <h3>Select a solver below {getSelectForString()}</h3>
-                        }
-                        <div className='Selections'>
-                            <p>
-                                {getSelectionsString()}
-                            </p>
+                                {
+                                    architectureDescriptions.find(arch => arch.architecture === architecture)?.modules.map((module) => (
+                                        <Button
+                                            key={module}
+                                            onClick={() => setSelectingDistance(module === 'Entire Hole' ? 'Drive' : module as 'Drive' | 'Long' | 'Fairway' | 'Short' | 'Putt')}
+                                            type={module === "Entire Hole" ? 'primary' :
+                                                (selectingDistance === module ? 'primary' : 'default')}
+                                            className={getSolverForModule(module) ? 'CompletedSelection' : ''}
+                                        >
+                                            {module}
+                                        </Button>
+                                    ))
+                                }
+                            </div>
+                            <div className='SolverSelection'>
+                                <h3>
+                                    Select Solvers Below
+                                </h3>
+                                {
+                                    getSolverForSelectedModule() ?
+                                        <>
+                                            <p>
+                                                You Selected {solverNames[getSolverForSelectedModule()! - 1]}
+                                                &nbsp;to Play {architecture === 'h' ? 'the Entire Hole' : selectingDistance}
+                                            </p>
+                                            <img className='SelectedSolverImage' src={solverIcons[getSolverForSelectedModule()! - 1]} alt="Solver Icon" />
+                                        </>
+                                        :
+                                        <p>
+                                            Select a Solver Below to Play {architecture === 'h' ? 'the Entire Hole' : selectingDistance}
+                                        </p>
+                                }
+                            </div>
+
                         </div>
                     </div>
-                    {
-                        readyToPlay() &&
-                        <Button
-                            onClick={() => {
-                                props.disablePlayRound();
-                                animateBallIntoHole(submitPlayRound)
-                            }}
-                            disabled={!!props.playingRound}
-                        >
-                            Play Round
-                        </Button>
-                    }
+                    <Button
+                        onClick={() => {
+                            props.disablePlayRound();
+                            animateBallIntoHole(submitPlayRound)
+                        }}
+                        disabled={!!props.playingRound || !readyToPlay()}
+                    >
+                        Play Round
+                    </Button>
                 </div>
                 <div className='Solvers'>
                     <ProfessionalSolverCard select={selectGolfer} />
@@ -403,16 +335,16 @@ const TournamentStage = (props: {
                     <AmateurSolverCard select={selectGolfer} />
                 </div>
             </div>
-            
+
             {
                 showTournamentBeginModal &&
                 <div className='TournamentBeginModal'
-                    // Can have click out here but they may not read
+                // Can have click out here but they may not read
                 >
                     <div className='TournamentBeginModalBody'>
                         <h2>The Tournament Has Begun!</h2>
                         <p>
-                            Here you will play four rounds each with a unique objective. In each round you may select any architecture and any solvers you would like. Points are awarded for acheiving the objectives. The winner will be the player with the most total points at the end of the tournament.
+                            Here you will play four rounds each with a unique objective. In each round you may select one architecture and any solver types you would like. Points are awarded for acheiving the objectives. The winner will be the player with the most total points at the end of the tournament.
                         </p>
                         <div className='ModalButtons'>
                             <Button onClick={() => setShowTournamentBeginModal(false)}>Begin</Button>

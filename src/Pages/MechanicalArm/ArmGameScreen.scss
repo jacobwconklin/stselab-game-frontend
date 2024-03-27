@@ -47,15 +47,16 @@
                 margin-bottom: 10px;
             }
 
+            .CompletedComponent {
+                background: green;
+                color: white;
+            }
+
             // .Architecture {
 
             // }
 
             .Components {
-                .CompletedComponent {
-                    background: green;
-                    color: white;
-                }
 
                 .ant-btn-primary.CompletedComponent {
                     border: 1px solid blue;
@@ -65,8 +66,10 @@
             .SolverSelection {
                 p {
                     margin-top: 0px;
+                    margin-bottom: 10px;
                 }
 
+            
                 .SelectedSolverImage {
                     width: 150px;
                     height: 150px;
@@ -97,6 +100,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        padding-bottom: 200px;
 
         .SolverCard {
             padding: 10px;

@@ -21,73 +21,48 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
             <div className='StaticBackground'>
                 <div className='StaticBackgroundImages'></div>
             </div>
-            {
-                isHost && props?.round >= RoundNames.TournamentStage4 &&
-                <div className='Instructions HostInstruction'>
-                    <h1>Results for Round {props?.round}</h1>
-                    {
-                        props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
-                            <h3>
-                                All Players are Finished
-                            </h3>
-                            :
-                            <h3>
-                                {props?.players?.filter((player: RoundResult) => !!player.shots).length} Player
-                                {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
-                            </h3>
-                    }
-                    {
-                        !!props?.players?.filter((player: RoundResult) => !player.shots).length &&
+            <div className='Instructions HostInstruction'>
+                <h1>
+                    Results for {props?.round >= RoundNames.TournamentStage1 ?
+                        "Tournament Stage " + (props?.round - RoundNames.TournamentStage1 + 1) : "Round " + props?.round}
+                </h1>
+                {
+                    props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
                         <h3>
-                            {props?.players?.filter((player: RoundResult) => !player.shots).length} Still Playing
+                            All Players are Finished
                         </h3>
-                    }
-                    <p>
-                        As Host you may end the tournament. This will take all players to a screen to view the final results across all four rounds of the tournament whether players
-                        have finished playing this round or not. You may also remove players from the tournament by clicking on their row.
-                    </p>
-                    <Button
-                        disabled={!!hostClickedButton}
-                        onClick={() => {
-                            // IF not everyone is finished skip modal
-                            if (props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length) {
-                                advanceSession(sessionId, setHostClickedButton);
-                            } else {
-                                // NOT ALL PLAYERS FINISHED ask host if they really want to continue
-                                setShowVerificationModal(true);
-                            }
-                        }}
-                        type='primary'
-                    >
-                        End Tournament
-                    </Button>
-                </div>
-            }
-            {
-                isHost && props?.round < RoundNames.TournamentStage4 &&
-                <div className='Instructions HostInstruction'>
-                    <h1>Results for Round {props?.round}</h1>
-                    {
-                        props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
-                            <h3>
-                                All Players are Finished
-                            </h3>
-                            :
-                            <h3>
-                                {props?.players?.filter((player: RoundResult) => !!player.shots).length} Player
-                                {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
-                            </h3>
-                    }
-                    {
-                        !!props?.players?.filter((player: RoundResult) => !player.shots).length &&
+                        :
                         <h3>
-                            {props?.players?.filter((player: RoundResult) => !player.shots).length} Still Playing
+                            {props?.players?.filter((player: RoundResult) => !!player.shots).length} Player
+                            {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
                         </h3>
-                    }
+                }
+                {
+                    !!props?.players?.filter((player: RoundResult) => !player.shots).length &&
+                    <h3>
+                        {props?.players?.filter((player: RoundResult) => !player.shots).length} Still Playing
+                    </h3>
+                }
+                {
+                    isHost && props?.round >= RoundNames.TournamentStage4 &&
                     <p>
-                        As Host you may advance to the next round. This will take all players to the game screen for the next round regardless of whether they have finished this round or not.
-                        You may also remove players from the tournament by clicking on their row.
+                        As Host you may end the tournament. This will take all players to a screen to view the final results across all four rounds of the tournament whether players have finished playing this round or not. You may also remove players from the tournament by clicking on their row.
                     </p>
+                }
+                {
+                    isHost && props?.round < RoundNames.TournamentStage4 &&
+                    <p>
+                        As Host you may advance to the next round. This will take all players to the game screen for the next round regardless of whether they have finished this round or not. You may also remove players from the tournament by clicking on their row.
+                    </p>
+                }
+                {
+                    !isHost &&
+                    <p>
+                        {props?.round < RoundNames.TournamentStage4 ? "Host must begin the next round" : "Host must end the tournament"}
+                    </p>
+                }
+                {
+                    isHost &&
                     <Button
                         disabled={!!hostClickedButton}
                         onClick={() => {
@@ -101,36 +76,10 @@ const RoundResults = (props: { round: number, players: Array<RoundResult> }) => 
                         }}
                         type='primary'
                     >
-                        Begin Next Round
+                        {props?.round < RoundNames.TournamentStage4 ? "Begin Next Round" : "End Tournament"}
                     </Button>
-                </div>
-            }
-            {
-                !isHost &&
-                <div className='Instructions HostInstruction'>
-                    <h1>Results for Round {props?.round}</h1>
-                    {
-                        props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
-                            <h3>
-                                All Players are Finished
-                            </h3>
-                            :
-                            <h3>
-                                {props?.players?.filter((player: RoundResult) => !!player.shots).length} Player
-                                {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
-                            </h3>
-                    }
-                    {
-                        !!props?.players?.filter((player: RoundResult) => !player.shots).length &&
-                        <h3>
-                            {props?.players?.filter((player: RoundResult) => !player.shots).length} Still Playing
-                        </h3>
-                    }
-                    <p>
-                        {props?.round < RoundNames.TournamentStage4 ? "Host must begin the next round" : "Host must end the tournament"}
-                    </p>
-                </div>
-            }
+                }
+            </div>
 
             <ResultTable players={props.players} round={props.round} />
             <ResultGraphs players={props.players} round={props.round} />

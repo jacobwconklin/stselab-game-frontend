@@ -119,7 +119,7 @@ const WaitRoom = () => {
                                 <span>Join Link: </span>
                                 <span style={{ color: 'blue' }}>
                                     {process.env.NODE_ENV === 'production' ?
-                                        "https://stselab.azurewebsites.net/register/join/" + sessionId :
+                                        "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
                                         "localhost:3000/register/join/" + sessionId}
                                 </span>
                             </h3>
@@ -129,7 +129,7 @@ const WaitRoom = () => {
                                     icon={<CopyOutlined />}
                                     onClick={() => {
                                         navigator.clipboard.writeText(process.env.NODE_ENV === 'production' ?
-                                            "https://stselab.azurewebsites.net/register/join/" + sessionId :
+                                            "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
                                             "localhost:3000/register/join/" + sessionId);
                                         messageApi.open({
                                             type: 'success',
@@ -163,7 +163,7 @@ const WaitRoom = () => {
                                 <span>Join Link: </span>
                                 <span style={{ color: 'blue' }}>
                                     {process.env.NODE_ENV === 'production' ?
-                                        "https://stselab.azurewebsites.net/register/join/" + sessionId :
+                                        "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
                                         "localhost:3000/register/join/" + sessionId}
                                 </span>
                             </h3>
@@ -173,7 +173,7 @@ const WaitRoom = () => {
                                     icon={<CopyOutlined />}
                                     onClick={() => {
                                         navigator.clipboard.writeText(process.env.NODE_ENV === 'production' ?
-                                            "https://stselab.azurewebsites.net/register/join/" + sessionId :
+                                            "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
                                             "localhost:3000/register/join/" + sessionId);
                                         messageApi.open({
                                             type: 'success',
