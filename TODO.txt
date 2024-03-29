@@ -4,6 +4,12 @@ This can outline the major TODOs so they can be ordered
 
 # 1 b: Set Azure SQL network access to accept my device's IP address and the backend's IP address and no more.
 
+# 2: write backend and db for Mechanical Arm Mission
+
+# 2 b: In a perfect world: conjoin RoundResult and ArmRoundResult table into one inclusive table that works, can rename shots / grams to be "performance" or something and have it accept 4 solvers always. Then remove the unneccessary endpoints and begin work of making only one version of front-end pages like roundResults that can work for both games to reduce duplicate code. May also require some extra inputs sent to backend so that the same endpoints can service both games. Wouldn't change functionality at all but would clean and simplify the code. 
+
+# 3 plug arm screens into main game controller to complete circuit. 
+
 Improve mock Mechanical Arm screen:
  - Solver can make different choices for each Modules
  - goal is to make a minimum mass mechanical arm for a NASA space station

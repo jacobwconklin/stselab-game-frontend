@@ -112,11 +112,39 @@ const ArmGameScreen = (props: {
         return true;
     }
 
-    const playRound = () => {
+    const playRound = async () => {
         setLoading(true);
         console.log("Playing round on architecture: ", selectedArchitecture, " with solvers: ", selectedSolvers);
-        updateFinishedRounds();
-        setLoading(false);
+        // get score for the round
+        // const result = runArmArchitectureSimulation("test", selectedArchitecture, selectedSolvers[0], selectedSolvers[1], selectedSolvers[2], selectedSolvers[3]);
+        // save scored results to the backend 
+        try {
+            // save score to database and record that player has completed the round
+            const response = {success: true};
+            
+            // await postRequest('player/armRoundResult', JSON.stringify({
+            //     playerId: "01A461BB-FD55-4C22-8A2B-E145C27BBB18", // TODO use playerID from context
+            //     weight: result.weight, // TODO figure out if I am storing grams and dividing by 1000 when results come back or what
+            //     cost: result.cost,
+            //     architecture: selectedArchitecture,
+            //     solverOne: selectedSolvers[0],
+            //     solverTwo: selectedSolvers[1],
+            //     solverThree: selectedSolvers[2],
+            //     solverFour: selectedSolvers[3],
+            //     round: props.round,
+            //     score: result.score !== null ? Math.floor( result.score * 100) : null
+            // }));
+            if (response.success) {
+                updateFinishedRounds();
+            } else {
+                alert("Error playing round, please try again");
+                console.error(response);
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error("Error playing round: ", error)
+            setLoading(false);
+        }
     }
 
     return (

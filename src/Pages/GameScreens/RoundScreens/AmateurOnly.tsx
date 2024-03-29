@@ -200,9 +200,6 @@ const AmateurOnly = (props: { round: Number }) => {
                                 </Button>
                             </div>
                         </div>
-                        {/* <div className='Solvers'>
-                            <AmateurSolverCard select={undefined} onlyOne={true} />
-                        </div> */}
                     </div>
             }
         </div>
