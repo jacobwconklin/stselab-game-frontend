@@ -1,42 +1,13 @@
 This can outline the major TODOs so they can be ordered 
 
-
 # 1: Change Azure SQL database plan, the 100,000 vCore seconds do not seem to be enough, just me playing through the game once with two players used 700, and most people would take longer to play and have more people playing
 
+# 1 b: Set Azure SQL network access to accept my device's IP address and the backend's IP address and no more.
+
 Improve mock Mechanical Arm screen:
-- Solver can make different choices for each Modules
+ - Solver can make different choices for each Modules
  - goal is to make a minimum mass mechanical arm for a NASA space station
- - player IS NASA show some propaganda get them excited show how this is a real world example
- - looks like it is really for the ISS
-
-Architectures:
-
-    from paper:
-    4 decompositions on page 11
-
-    1. (entire arm)
-        SRA smart robotic arm = entrie arm
-
-    2. (arm and base)
-        SFA smart fine-positioning arm = arm
-        SAM smart attatchment mechanism = base
-
-    3. ()
-        SCA smart coarse-position arm = also arm ? 
-        SPAM smart positioning and attatchment mechanism = also base ?
-
-    4. ()
-        EMA electro-mechanical arm = mechanical system
-        CDPD command, data and power distribution system = power supply 
-        RASA robotic arm software architecture = Brain for basic actions (attatch, pan, tilt, stow) 
-        PSA positioning software architecture = Move arm to precise location avoiding ISS 
-
-
-    explanations of modules here:
-    https://data.mendeley.com/datasets/79xc6bkgjt/1
-    SAM = base
-
-    Probably won't do D5 
+ - player IS NASA show some propaganda get them excited show how this is a real world example as if for the real ISS
 
 Solvers:
     - Expert (for each function)
@@ -45,10 +16,6 @@ Solvers:
 Return values:
     - Minimize mass 
     - Cost (not included in code but should be based on solver choices)
-
-Additional 
-
-change tournament stage to be more easily understandable, may show mini-golf course that matches architecture selected. 
 
 - ASK Professor: 
 1. What is 'size' in playShort and playPutt, is it the distance to accept making a whole ie should it always be 0.5?
@@ -62,10 +29,8 @@ Make selector cards light up somehow so that they show which is selected
 Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
 round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.
 
-Change Instructions panel for tournament stages and expiremental rounds in golf to look more like robotic arm ones, cleaner and simpler left to right rather than top down. 
-
 Add horizontal line at shots = 35 on tournament stage 2 to show players they have to get above
-(May be easier to just split up results into two graphs, those who scored above the minimal threshold and those who didn't just for that round)
+(May be easier to just split up results into two graphs, those who scored above the minimal threshold and those who didn't just for that round, or may be easier to append to data being graphed a bunch of red points at exactly shots = 35 and various costs)
 
 Potential optimization:
 - websockets

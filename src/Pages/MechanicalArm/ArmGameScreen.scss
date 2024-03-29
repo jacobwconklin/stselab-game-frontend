@@ -28,6 +28,11 @@
             }
         }
 
+        .DetermineObjective {
+            width: calc(100% - 45px);
+            padding: 2px 5px 2px 5px;
+        }
+
         // Horizontal
         .HorizontalSections {
             display: flex;
@@ -36,8 +41,12 @@
             padding-bottom: 30px;
             text-align: left;
 
-            h1, p {
+            h1, p, h3 {
                 width: 100%;
+            }
+
+            h3 {
+                padding-left: 8px;
             }
 
             .ant-btn {

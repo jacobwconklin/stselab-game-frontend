@@ -19,6 +19,33 @@ export enum RoundNames {
     ArmFinalResults = 16
 }
 
+// Gives the round # that should be displayed to the user
+export const getDisplayRound = (round: number) => {
+    if (round < RoundNames.TournamentStage1) {
+        return round;
+    } else if (round < RoundNames.FinalResults) {
+        return round - RoundNames.TournamentStage1 + 1;
+    } else { // if (round < RoundNames.ArmFinalResults) {
+        return round - RoundNames.ArmGame1 + 1;
+    }
+}
+
+// get suffix for ordinal numbers ie 1st 2nd 3rd 4th
+// credit: https://stackoverflow.com/a/13627586
+export const ordinal_suffix = (i: number) => {
+    let j = i % 10,
+        k = i % 100;
+    if (j === 1 && k !== 11) {
+        return i + "st";
+    }
+    if (j === 2 && k !== 12) {
+        return i + "nd";
+    }
+    if (j === 3 && k !== 13) {
+        return i + "rd";
+    }
+    return i + "th";
+}
 
 // Useful reusable functions
 export const getArchitectureCommonName = (architecture: string) => {

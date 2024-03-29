@@ -1,38 +1,41 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import './ArmRoundResults.scss';
-import { UserContext } from '../../../App';
 import { Button } from 'antd';
-import { advanceSession } from '../../../Utils/Api';
 import ResultTable from './ArmResultTable';
 import ResultGraphs from './ArmResultGraphs';
-import { ArmRoundResult, RoundResult, UserContextType } from '../../../Utils/Types';
-import { RoundNames } from '../../../Utils/Utils';
+import { ArmRoundResult, RoundResult } from '../../../Utils/Types';
+import { RoundNames, getDisplayRound } from '../../../Utils/Utils';
 import VerificationModal from '../../../ReusableComponents/VerificationModal';
+import SpaceBackground from '../../../ReusableComponents/SpaceBackground';
 // import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
-const ArmRoundResults = (props: { round: number, players: Array<RoundResult>, results: Array<ArmRoundResult> }) => {
-    const { isHost, sessionId } = useContext(UserContext) as UserContextType;
+const ArmRoundResults = (props: { 
+    round: number, 
+    players: Array<RoundResult>, 
+    results: Array<ArmRoundResult>, 
+    advanceRound: () => void
+}) => {
+    // const { isHost, sessionId } = useContext(UserContext) as UserContextType;
+    const isHost = true;
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
     const [showVerificationModal, setShowVerificationModal] = useState(false);
 
     return (
         <div className='ArmRoundResults'>
-            <div className='StaticBackground'>
-                <div className='StaticBackgroundImages'></div>
-            </div>
+            <SpaceBackground />
             <div className='Instructions HostInstruction'>
                 <h1>
-                    Results for {"Mechanical Arm Mission Round "  + (props?.round - RoundNames.ArmGame1 + 1) }
+                    Results for Mission Round {getDisplayRound(props?.round)}
                 </h1>
                 {
                     props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
                         <h3>
-                            All Players are Finished
+                            All Agents are Finished
                         </h3>
                         :
                         <h3>
-                            {props?.players?.filter((player: RoundResult) => !!player.shots).length} Player
+                            {props?.players?.filter((player: RoundResult) => !!player.shots).length} Agent
                             {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
                         </h3>
                 }
@@ -43,21 +46,21 @@ const ArmRoundResults = (props: { round: number, players: Array<RoundResult>, re
                     </h3>
                 }
                 {
-                    isHost && props?.round >= RoundNames.TournamentStage4 &&
+                    isHost && props?.round >= RoundNames.ArmGame4 &&
                     <p>
-                        As Host you may end the tournament. This will take all players to a screen to view the final results across all four rounds of the tournament whether players have finished playing this round or not. You may also remove players from the tournament by clicking on their row.
+                        As Host you may end the Mission. This will take all agents to a screen to view the final results across all four rounds of the Mission whether agents have finished playing this round or not. You may also remove agents from the Mission by clicking on their row.
                     </p>
                 }
                 {
-                    isHost && props?.round < RoundNames.TournamentStage4 &&
+                    isHost && props?.round < RoundNames.ArmGame4 &&
                     <p>
-                        As Host you may advance to the next round. This will take all players to the game screen for the next round regardless of whether they have finished this round or not. You may also remove players from the tournament by clicking on their row.
+                        As Host you may advance to the next round. This will take all agents to the game screen for the next round regardless of whether they have finished this round or not. You may also remove agents from the Mission by clicking on their row.
                     </p>
                 }
                 {
                     !isHost &&
                     <p>
-                        {props?.round < RoundNames.TournamentStage4 ? "Host must begin the next round" : "Host must end the tournament"}
+                        {props?.round < RoundNames.ArmGame4 ? "Host must begin the next round" : "Host must end the mission"}
                     </p>
                 }
                 {
@@ -67,7 +70,8 @@ const ArmRoundResults = (props: { round: number, players: Array<RoundResult>, re
                         onClick={() => {
                             // IF not everyone is finished pull up a modal
                             if (props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length) {
-                                advanceSession(sessionId, setHostClickedButton);
+                                // advanceSession(sessionId, setHostClickedButton);
+                                props.advanceRound();
                             } else {
                                 // NOT ALL PLAYERS FINISHED ask host if they really want to continue
                                 setShowVerificationModal(true);
@@ -75,20 +79,21 @@ const ArmRoundResults = (props: { round: number, players: Array<RoundResult>, re
                         }}
                         type='primary'
                     >
-                        {props?.round < RoundNames.TournamentStage4 ? "Begin Next Round" : "End Tournament"}
+                        {props?.round < RoundNames.ArmGame4 ? "Begin Next Round" : "End The Mission"}
                     </Button>
                 }
             </div>
 
-            <ResultTable players={props.players} round={props.round} />
-            <ResultGraphs players={props.players} round={props.round} />
+            <ResultTable players={props.players} round={props.round} results={props.results} />
+            <ResultGraphs players={props.players} round={props.round} results={props.results} />
 
             {
                 showVerificationModal &&
                 <VerificationModal
                     title="Not All Players Have Finished"
                     message="Not all players have finished this round. Are you sure you want to advance to the next round?"
-                    confirm={() => advanceSession(sessionId, setHostClickedButton)}
+                    // confirm={() => advanceSession(sessionId, setHostClickedButton)}
+                    confirm={() => { setHostClickedButton(true); props.advanceRound()}}
                     cancel={() => setShowVerificationModal(false)}
                 />
             }

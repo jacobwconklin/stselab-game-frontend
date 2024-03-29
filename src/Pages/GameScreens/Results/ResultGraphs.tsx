@@ -10,6 +10,7 @@ import {
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import { RoundResult } from '../../../Utils/Types';
+import { getDisplayRound } from '../../../Utils/Utils';
 
 const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
 
@@ -27,7 +28,7 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
         plugins: {
             title: {
                 display: true,
-                text: `Shots and Costs for Round ${props?.round}`
+                text: `Shots and Costs for Round ${getDisplayRound(props?.round)}`
             }
         },
         scales: {

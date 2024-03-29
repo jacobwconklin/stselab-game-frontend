@@ -46,24 +46,30 @@ export const armSolverInformation = [
 ]
 
 /*
-    Architectures and Components from research paper:
+    Architectures:
+
+    from paper:
+    4 decompositions on page 11
 
     1. (entire arm)
         SRA smart robotic arm = entrie arm
 
-    2. (smart arm and base)
-        SFA smart fine-positioning arm = arm
-        SAM smart attatchment mechanism = base
+    2. (manipulator and gripper)
+        SFA smart fine-positioning arm = manipulator
+        SAM smart attatchment mechanism = gripper
 
-    3. (arm and smart base)
-        SCA smart coarse-position arm = also arm ? 
-        SPAM smart positioning and attatchment mechanism = also base ?
+    3. (arm and base)
+        SCA smart coarse-position arm = arm above shoulder joint
+        SPAM smart positioning and attatchment mechanism = base below shoulder joint
 
-    4. (structure, power, and software)
+    4. ()
         EMA electro-mechanical arm = mechanical system
         CDPD command, data and power distribution system = power supply 
         RASA robotic arm software architecture = Brain for basic actions (attatch, pan, tilt, stow) 
         PSA positioning software architecture = Move arm to precise location avoiding ISS 
+
+    explanations of modules here:
+    https://data.mendeley.com/datasets/79xc6bkgjt/1
 */
 export const armArchitectures = [
     {
@@ -77,29 +83,29 @@ export const armArchitectures = [
         ]
     },
     {
-        architecture: "Smart Arm and Base",
-        description: "This breaks construction down into developing a smart arm component and a simple base component.",
+        architecture: "Gripper and Maniuplator",
+        description: "This breaks construction down into developing a positioning system and a grabbing mechanism.",
         components: [
             {
-                component: "Smart Arm",
-                description: "A functional arm capable of positioning itself and grabbing objects.",
+                component: "Manipulator",
+                description: "The base and extension for the mechanical arm. Gets the arm to the right location.",
             }, 
             {
-                component: "Base",
-                description: "A simple base that attatches the arm to the ISS on command.",
+                component: "Gripper",
+                description: "The hand for the mechanical arm. Handles grabbing and releasing on command.",
             }
         ]
     },
     {
-        architecture: "Arm and Smart Base",
+        architecture: "Arm and Base",
         description: "This breaks construction down into developing a smart base component and a simple arm component.",
         components: [
             {
                 component: "Arm",
-                description: "A simple arm that grabs and moves as it is instructed."
+                description: "Everything above the joint connecting the arm and base. An arm that grabs and moves as instructed."
             }, 
             {
-                component: "Smart Base",
+                component: "Base",
                 description: "A functional base capable of attatching the arm to the ISS and instructing the arm component."
             }
     ]
@@ -130,10 +136,10 @@ export const armArchitectures = [
 
 export const armComponents = [
     "Entire Arm",
-    "Smart Arm",
-    "Base",
+    "Manipulator",
+    "Gripper",
     "Arm",
-    "Smart Base",
+    "Base",
     "Mechanical System",
     "Power Supply",
     "Action Software",

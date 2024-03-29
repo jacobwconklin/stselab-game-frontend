@@ -3,7 +3,7 @@
 // Simulates the game controller and control flow between arm game screens and results
 import { useState } from 'react';
 import './GameSimulator.scss';
-import { ArmRoundResult } from '../../Utils/Types';
+import { ArmFinalResult, ArmRoundResult } from '../../Utils/Types';
 import { RoundNames } from '../../Utils/Utils';
 import ArmExperiment from './ArmExperiment/ArmExperiment';
 import ArmFinalResults from './ArmFinalResults';
@@ -19,24 +19,157 @@ import ArmGameScreen from './ArmGameScreen';
 // TODO may switch to web-socket connection with https://www.npmjs.com/package/react-use-websocket
 const GameController = () => {
 
+
+    const tempFakeFinalResults: ArmFinalResult[] = [
+        {
+            id: "1",
+            name: "Player 1",
+            color: 'blue',
+            scores: [
+                {
+                    round: 1,
+                    score: 45,
+                    weight: 50,
+                    cost: 70,
+                    solverOne: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Entire Arm"
+                },
+                {
+                    round: 2,
+                    score: 85,
+                    weight: 20,
+                    cost: 30,
+                    solverOne: ArmSolver.MechanicalEngineer,
+                    solverTwo: ArmSolver.ComputerScientist,
+                    solverThree: ArmSolver.MaterialsScientist,
+                    solverFour: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Structure, Power, and Software"
+                },
+                {
+                    round: 3,
+                    score: 45,
+                    weight: 50,
+                    cost: 70,
+                    solverOne: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Entire Arm"
+                },
+                {
+                    round: 4,
+                    score: 85,
+                    weight: 20,
+                    cost: 30,
+                    solverOne: ArmSolver.MechanicalEngineer,
+                    solverTwo: ArmSolver.ComputerScientist,
+                    solverThree: ArmSolver.MaterialsScientist,
+                    solverFour: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Structure, Power, and Software"
+                }
+            ]
+        },
+        {
+            id: "1",
+            name: "Player 2",
+            color: 'green',
+            scores: [
+                {
+                    round: 1,
+                    score: 47,
+                    weight: 57,
+                    cost: 77,
+                    solverOne: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Entire Arm"
+                },
+                {
+                    round: 2,
+                    score: 88,
+                    weight: 28,
+                    cost: 38,
+                    solverOne: ArmSolver.MechanicalEngineer,
+                    solverTwo: ArmSolver.ComputerScientist,
+                    solverThree: ArmSolver.MaterialsScientist,
+                    solverFour: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Structure, Power, and Software"
+                },
+                {
+                    round: 3,
+                    score: 49,
+                    weight: 59,
+                    cost: 79,
+                    solverOne: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Entire Arm"
+                },
+                {
+                    round: 4,
+                    score: 82,
+                    weight: 22,
+                    cost: 32,
+                    solverOne: ArmSolver.MechanicalEngineer,
+                    solverTwo: ArmSolver.ComputerScientist,
+                    solverThree: ArmSolver.MaterialsScientist,
+                    solverFour: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Structure, Power, and Software"
+                }
+            ]
+        },
+        {
+            id: "1",
+            name: "Player 3",
+            color: 'red',
+            scores: [
+                {
+                    round: 1,
+                    score: 12,
+                    weight: 98,
+                    cost: 76,
+                    solverOne: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Entire Arm"
+                },
+                {
+                    round: 2,
+                    score: 85,
+                    weight: 20,
+                    cost: 30,
+                    solverOne: ArmSolver.MechanicalEngineer,
+                    solverTwo: ArmSolver.ComputerScientist,
+                    solverThree: ArmSolver.MaterialsScientist,
+                    solverFour: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Structure, Power, and Software"
+                },
+                {
+                    round: 3,
+                    score: 45,
+                    weight: 50,
+                    cost: 70,
+                    solverOne: ArmSolver.IndustrialSystemsEngineer,
+                    architecture: "Entire Arm"
+                },
+            ]
+        },
+    ]
+
+
+
     // use to make sure user is in a valid session
 
     // TODO potentially move the calls for these results INTO the result components 
     // just as I moved playerlist out of sessionStatus and into waiting room call meaning only session round would have
     // to be polled here)
     const [currentResults, setCurrentResults] = useState<ArmRoundResult[]>([]);
-    const [finalResults, setFinalResults] = useState<ArmRoundResult[]>([]);
+    const [finalResults, setFinalResults] = useState<ArmFinalResult[]>(tempFakeFinalResults);
 
     // When player finishes the current round allow them to see scores for the round
     const [finishedRound, setFinishedRound] = useState<Array<Boolean>>(Array.apply(false, Array(20)).map(val => !!val));
+    const [didFinishRound, setDidFinishRound] = useState<Boolean>(false);
 
     const [currRound, setCurrRound] = useState<number>(RoundNames.ArmExperiment);
 
+
     const advanceRound = (): void => {
         setCurrRound(val => val + 1);
-        const randomResults: ArmRoundResult[] = [
+        const randomResults: any[] = [
             {
                 id: "1",
+                name: "Player 1",
                 architecture: "Entire Arm",
                 solverOne: ArmSolver.IndustrialSystemsEngineer,
                 weight: 50,
@@ -46,6 +179,8 @@ const GameController = () => {
             },
             {
                 id: "2",
+                name: "Lison Al Gaib",
+                color: '#a11222',
                 architecture: "Structure, Power, and Software",
                 solverOne: ArmSolver.MechanicalEngineer,
                 solverTwo: ArmSolver.ComputerScientist,
@@ -56,9 +191,20 @@ const GameController = () => {
                 score: 85,
                 round: currRound
             },
-        ] 
+            {
+                id: "1",
+                name: "Not Done Yet",
+                round: currRound
+            },
+        ]
         setCurrentResults(randomResults);
-        setFinalResults(randomResults);
+        setFinalResults(tempFakeFinalResults);
+        setDidFinishRound(false);
+    }
+
+    const applyFinishedRound = (rounds: Array<Boolean>): void => {
+        setFinishedRound(rounds);
+        setDidFinishRound(true);
     }
 
     // start on experimental round
@@ -71,27 +217,28 @@ const GameController = () => {
     }
     // then have player play 4 game rounds
     else if (currRound > RoundNames.ArmExperiment && currRound < RoundNames.ArmFinalResults) {
-            if (!finishedRound[currRound]) {
-                return (
-                    <div className='GameController'>
-                        <ArmGameScreen 
-                            finishedRounds={finishedRound} 
-                            setFinishedRound={setFinishedRound} 
-                            round={currRound}
-                        />                    
-                    </div>
-                )
-            } else {
-                return (
-                    <div className='GameController'>
-                        <ArmRoundResults 
-                            round={currRound} 
-                            players={[]} 
-                            results={currentResults}
-                        />
-                    </div>
-                )
-            }
+        if (!didFinishRound) {
+            return (
+                <div className='GameController'>
+                    <ArmGameScreen
+                        finishedRounds={finishedRound}
+                        setFinishedRound={applyFinishedRound}
+                        round={currRound}
+                    />
+                </div>
+            )
+        } else {
+            return (
+                <div className='GameController'>
+                    <ArmRoundResults
+                        round={currRound}
+                        players={[]}
+                        results={currentResults}
+                        advanceRound={advanceRound}
+                    />
+                </div>
+            )
+        }
     }
     // then show final results
     else {

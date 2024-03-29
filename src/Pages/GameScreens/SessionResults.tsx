@@ -308,10 +308,12 @@ const SessionResults = (props: { players: FinalResult[] }) => {
 
     return (
         <div className='SessionResults' ref={contentToPrint}>
-
-            <div className='StaticBackground'>
-                <div className='StaticBackgroundImages'></div>
-            </div>
+            {
+                !isPrinting &&
+                <div className='StaticBackground'>
+                    <div className='StaticBackgroundImages'></div>
+                </div>
+            }
             <div className='Instructions'>
                 <h1>Tournament Results </h1>
                 <h2>{getPlacement()}</h2>

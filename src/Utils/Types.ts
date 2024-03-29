@@ -140,6 +140,8 @@ export interface UserContextType {
 // Mechanical Arm game types:
 export interface ArmRoundResult {
     id: string;
+    name?: string;
+    color?: string;
     architecture: string;
     solverOne: ArmSolver;
     solverTwo?: ArmSolver;
@@ -157,4 +159,31 @@ export interface ArmComponentResult {
     cost: number; 
     component: string; 
     solver: ArmSolver;
+}
+
+export interface ArmScore {
+    key?: string;
+    round: number;
+    score: number;
+    weight: number;
+    cost: number;
+    solverOne: ArmSolver;
+    solverTwo?: ArmSolver;
+    solverThree?: ArmSolver;
+    solverFour?: ArmSolver
+    architecture: string;
+}
+
+// export interface ArmDisplayScore {
+//     key: string;
+//     score: number | string;
+//     weight: number | string;
+//     cost: number | string;
+// }
+
+export interface ArmFinalResult {
+    id: string;
+    name: string;
+    color: string;
+    scores: ArmScore[];
 }

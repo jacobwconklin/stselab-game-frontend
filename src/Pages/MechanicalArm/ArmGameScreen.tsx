@@ -1,18 +1,25 @@
 import './ArmGameScreen.scss';
-import { Button, Tooltip } from "antd";
+import { Button, Slider, Tooltip } from "antd";
 import computerScientistIcon from '../../Assets/MechArm/laptop-woman.svg';
 import industrialSystemsEngineerIcon from '../../Assets/MechArm/web-developer.svg';
 import mechanicalEngineerIcon from '../../Assets/MechArm/construction-worker.svg';
 import materialsScientistIcon from '../../Assets/MechArm/chemist.svg';
 import FactoryBackground from '../../ReusableComponents/FactoryBackground';
 import { ArmSolver, armArchitectures, armSolverImages, armSolverNames } from '../../Utils/ArmSimulation';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { RoundNames, getDisplayRound } from '../../Utils/Utils';
+import { UserContextType } from '../../Utils/Types';
+import { UserContext } from '../../App';
 // The screen shown while playing the Mechanical Arm game
 const ArmGameScreen = (props: {
-    setFinishedRound: (val: Array<Boolean>) => void, 
+    setFinishedRound: (val: Array<Boolean>) => void,
     finishedRounds: Array<Boolean>
     round: number
 }) => {
+
+    
+    // Context to save user's slider choice for custom performance weight
+    const { setCustomPerformanceWeight } = useContext(UserContext) as UserContextType;
 
     const updateFinishedRounds = () => {
         const copy = props.finishedRounds;
@@ -26,6 +33,29 @@ const ArmGameScreen = (props: {
     const [selectedComponent, setSelectedComponent] = useState<string>("");
     const [selectedArchitecture, setSelectedArchitecture] = useState<string>("");
     const [loading, setLoading] = useState(false);
+    const [customPerformance, setCustomPerformance] = useState<number>(0.5);
+
+    // Use effect to populate context with custom performance weight if user never touches slider
+    useEffect(() => {
+        setCustomPerformanceWeight(customPerformance);
+    }, [setCustomPerformanceWeight, customPerformance])
+
+    const updateCustomPerformance = (value: number) => {
+        // convert value to percentage
+        setCustomPerformance((100 - value) / 100);
+        setCustomPerformanceWeight((100 - value) / 100);
+    }
+
+    const tooltipFormatter = (value?: number) => {
+        return !value || isNaN(value) ? 'Error' : (100 - value) + '% Weight, ' + value + '% Cost';
+    }
+
+    const roundObjectives = [
+        "Lightest weight arm no matter the cost",
+        "Minimize cost with a weight of at most 65 kg",
+        "Minimize cost and weight valued equally",
+        "You choose the balance of weight versus cost for scoring"
+    ];
 
     const clearSelectedSolvers = () => {
         setSelectedSolvers([]);
@@ -85,10 +115,8 @@ const ArmGameScreen = (props: {
     const playRound = () => {
         setLoading(true);
         console.log("Playing round on architecture: ", selectedArchitecture, " with solvers: ", selectedSolvers);
-        setTimeout(() => {
-            setLoading(false);
-            updateFinishedRounds();
-        }, 2000);
+        updateFinishedRounds();
+        setLoading(false);
     }
 
     return (
@@ -97,21 +125,39 @@ const ArmGameScreen = (props: {
             <div className='Instructions'>
                 <div className='TitleAndIcons'>
                     <h1>
-                        Round 1
+                        Round {props.round - RoundNames.ArmGame1 + 1}
                     </h1>
                     {
                         selectedSolvers.map((solver, index) => (
                             <img className='HeaderSolverIcon' src={armSolverImages[solver - 1]} alt='Solver Icon' key={index} />
                         ))
-                    }    
+                    }
                 </div>
-                <p>
-                    Objective: Build the lightest mechanical arm at any cost.
-                </p>
+                <h2>
+                    Round Objective: {roundObjectives[getDisplayRound(props.round) - 1]}
+                </h2>
+                {
+                    props.round === RoundNames.ArmGame4 &&
+                    <div className='DetermineObjective'>
+                        <Slider
+                            tooltip={{
+                                formatter: tooltipFormatter
+                            }}
+                            defaultValue={50}
+                            min={20}
+                            max={80}
+                            step={5}
+                            marks={{ 20: 'Weight', 80: { label: <div>Cost</div> } }}
+                            onChange={e => {
+                                updateCustomPerformance(e);
+                            }}
+                        />
+                    </div>
+                }
                 {/** Horizontal layout */}
                 <div className='HorizontalSections'>
                     <div className='Architectures'>
-                        <h3>Pick An Architecture</h3>
+                        <h3>Choose One Architecture</h3>
                         {
                             // TODO add tooltip w/ descriptions
                             armArchitectures.map((architecture, index) => (
@@ -129,7 +175,7 @@ const ArmGameScreen = (props: {
                     </div>
 
                     <div className='Components'>
-                        <h3>Pick A Component</h3>
+                        <h3>Select Components</h3>
                         {
                             selectedArchitecture &&
                             armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
@@ -147,7 +193,7 @@ const ArmGameScreen = (props: {
                     </div>
 
                     <div className='SolverSelection'>
-                        <h3>Pick Solvers Below</h3>
+                        <h3>Select Solvers Below</h3>
                         {
                             // selectedArchitecture && 
                             // armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
@@ -162,10 +208,10 @@ const ArmGameScreen = (props: {
                             //         }
                             //     </p>
                             // ))
-                            currSelectedSolver && 
+                            currSelectedSolver &&
                             <>
                                 <p>
-                                    You selected {armSolverNames[currSelectedSolver - 1]} 
+                                    You selected {armSolverNames[currSelectedSolver - 1]}
                                     {selectedComponent && ` to build the ${selectedComponent}`}
                                 </p>
                                 <img className='SelectedSolverImage' src={armSolverImages[currSelectedSolver - 1]} alt='Solver Selected to build component' />
@@ -178,7 +224,7 @@ const ArmGameScreen = (props: {
                     <Button
                         disabled={!readyToPlay() || loading}
                         onClick={() => {
-                           playRound();
+                            playRound();
                         }}
                     >
                         Play Round

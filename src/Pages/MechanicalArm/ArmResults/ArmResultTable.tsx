@@ -1,16 +1,15 @@
 import { Table } from "antd";
-import GolfBall from "../../../ReusableComponents/GolfBall";
-import { Solver, solverNames } from "../../../Utils/Simulation";
-import { DisplayRoundResult, RoundResult, UserContextType } from "../../../Utils/Types";
-import { RoundNames, getArchitectureCommonName } from "../../../Utils/Utils";
+import { ArmRoundResult, RoundResult, UserContextType } from "../../../Utils/Types";
 import { UserContext } from "../../../App";
 import { useContext, useState } from "react";
 import { postRequest } from "../../../Utils/Api";
 import VerificationModal from "../../../ReusableComponents/VerificationModal";
+import { ArmSolver, armArchitectures, armSolverNames } from "../../../Utils/ArmSimulation";
 
 
 // Creates a table to display results for a round or session
-const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
+const ResultTable = (props: { players: Array<RoundResult>, round: number,
+    results: Array<ArmRoundResult>,  }) => {
 
     const { isHost, playerId } = useContext(UserContext) as UserContextType;
 
@@ -38,42 +37,61 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
         setShowModal(false);
     }
 
-    // Want name, golf ball, shots, cost, solvers, architecture
-    const baseColumns = [
+    // Want name, score, weight, cost, components (from architecture), solvers 
+    // TODO May add mechanical arm colored icon like golf ball ... 
+    const columns = [
+        {
+            title: 'Score',
+            dataIndex: 'score',
+            key: 'score',
+            defaultSortOrder: 'descend' as any,
+            sorter: (a: ArmRoundResult, b: ArmRoundResult) => {
+                const scoreA = Number(a.score);
+                const scoreB = Number(b.score);
+                if (isNaN(scoreA) && !isNaN(scoreB)) {
+                    return -1;
+                } else if (!isNaN(scoreA) && isNaN(scoreB)) {
+                    return 1;
+                } else if (isNaN(scoreA) && isNaN(scoreB)) {
+                    return 0;
+                } else {
+                    return scoreA - scoreB;
+                }
+            }
+        },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
         },
+        // {
+        //     title: 'Mechanical Arm',
+        //     dataIndex: 'color',
+        //     key: 'color',
+        //     render: (color: string) => <MechArmIcon color={color} ></MechArmIcon>
+        // },
         {
-            title: 'Golf Ball',
-            dataIndex: 'color',
-            key: 'color',
-            render: (color: string) => <GolfBall color={color} ></GolfBall>
-        },
-        {
-            title: 'Shots',
-            dataIndex: 'shots',
-            key: 'shots',
-            defaultSortOrder: props.round < RoundNames.TournamentStage1 ? 'ascend' as any : null,
-            sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
-                const shotsA = Number(a.shots);
-                const shotsB = Number(b.shots);
-                if (isNaN(shotsA) || isNaN(shotsB)) {
+            title: 'Weight',
+            dataIndex: 'weight',
+            key: 'weight',
+            sorter: (a: ArmRoundResult, b: ArmRoundResult) => {
+                const weightA = Number(a.weight);
+                const weightB = Number(b.weight);
+                if (isNaN(weightA) || isNaN(weightB)) {
                     return 0;
-                }else if (!isNaN(shotsA) && isNaN(shotsB)) {
+                }else if (!isNaN(weightA) && isNaN(weightB)) {
                     return 1;
-                } else if (isNaN(shotsA) && !isNaN(shotsB)) {
+                } else if (isNaN(weightA) && !isNaN(weightB)) {
                     return -1;
                 }
-                return shotsA - shotsB;
+                return weightA - weightB;
             }
         },
         {
             title: 'Cost',
             key: 'cost',
             dataIndex: 'cost',
-            sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
+            sorter: (a: ArmRoundResult, b: ArmRoundResult) => {
                 const costA = Number(a.cost);
                 const costB = Number(b.cost);
                 if (isNaN(costA) || isNaN(costB)) {
@@ -87,10 +105,35 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             }
         },
         {
+            title: 'Components',
+            key: 'architecture',
+            dataIndex: 'architecture',
+            render: (architecture: string) => (
+                !!armArchitectures.find(architectureDef => architectureDef.architecture === architecture) ?
+                    <div className="SolversHolder">
+                        {
+                            armArchitectures.find(architectureDef => architectureDef.architecture === architecture)!
+                            .components.map((componentDef, index) => (
+                                <p
+                                    key={index}
+                                    style={{ margin: '0px 0px 4px 0px' }}
+                                >
+                                    {componentDef.component}
+                                </p>
+                            ))
+                        }
+                    </div>
+                    :
+                    <div>
+                        waiting ...
+                    </div>
+            ),
+        },
+        {
             title: 'Solvers',
             key: 'solvers',
             dataIndex: 'solvers',
-            render: (solvers: [Solver]) => (
+            render: (solvers: [ArmSolver]) => (
                 solvers.length > 0 ?
                     <div className="SolversHolder">
                         {
@@ -98,7 +141,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                                 <p
                                     key={index}
                                     style={{ margin: '0px 0px 4px 0px' }}
-                                >{solverNames[solver - 1]}</p>
+                                >{armSolverNames[solver - 1]}</p>
                             ))
                         }
                     </div>
@@ -110,62 +153,20 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
         },
     ];
 
-    const getExtendedColumns = () => {
-        const scorePrefix: any = [
+    const getData: () => ArmRoundResult[] = () => {
+        return props?.results?.map((player, index) => (
             {
-                title: 'Score',
-                dataIndex: 'score',
-                key: 'score',
-                defaultSortOrder: 'descend' as any,
-                sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
-                    const scoreA = Number(a.score);
-                    const scoreB = Number(b.score);
-                    if (isNaN(scoreA) && !isNaN(scoreB)) {
-                        return -1;
-                    } else if (!isNaN(scoreA) && isNaN(scoreB)) {
-                        return 1;
-                    } else if (isNaN(scoreA) && isNaN(scoreB)) {
-                        return 0;
-                    } else {
-                        return scoreA - scoreB;
-                    }
-                }
-            }
-        ]
-        const baseAndArchitectureSuffix = baseColumns.concat([
-            {
-                title: 'Architecture',
-                dataIndex: 'architecture',
-                key: 'architecture',
-            }
-        ]);
-        return scorePrefix.concat(baseAndArchitectureSuffix);
-    }
-
-    const getBaseData: () => DisplayRoundResult[] = () => {
-        return props?.players?.map((player, index) => (
-            {
-                key: player.id,
+                id: '' + index, // TODO Change to player.id when back in context
                 name: player.name,
                 color: player.color,
-                shots: player.shots ? player.shots : '...',
-                cost: player.cost ? (player.cost / 100).toFixed(2) : '...',
-                solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver)
-            }
-        ))
-    }
-
-    const getExtendedData: () => DisplayRoundResult[] = () => {
-        return props?.players?.map((player, index) => (
-            {
-                key: player.id,
-                score: player.score ? (player.score / 100).toFixed(2) : '...',
-                name: player.name,
-                color: player.color,
-                shots: player.shots ? player.shots : '...',
-                cost: player.cost ? (player.cost / 100).toFixed(2) : '...',
-                solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver),
-                architecture: player.architecture ? getArchitectureCommonName(player.architecture) : 'waiting...',
+                score: player.score,
+                weight: player.weight,
+                cost: player.cost,
+                architecture: player.architecture,
+                solvers: [player.solverOne, player.solverTwo, player.solverThree, player.solverFour].filter((solver) => !!solver),
+                // Here for type compliance
+                solverOne: player.solverOne,
+                round: 0
             }
         ))
     }
@@ -174,13 +175,13 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
         <div className="ResultTable">
             <Table
                 pagination={{ pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
-                columns={props.round < RoundNames.TournamentStage1 ? baseColumns : getExtendedColumns()}
-                dataSource={props.round < RoundNames.TournamentStage1 ? getBaseData() : getExtendedData()}
-                rowKey={(record) => record.key}
+                columns={columns}
+                dataSource={getData()}
+                rowKey={(record) => record.id}
                 rowClassName={(record, index) => {
-                    if (playerId && isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
+                    if (playerId && isHost && record.id.toLowerCase() !== playerId.toLowerCase()) {
                         return 'Clickable';
-                    } else if (playerId && record.key.toLowerCase() === playerId.toLowerCase()) {
+                    } else if (playerId && record.id.toLowerCase() === playerId.toLowerCase()) {
                         return 'MatchingPlayer';
                     } else {
                         return 'HighlightRow'
@@ -189,10 +190,10 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: event => {
-                            if (playerId && isHost && record.key.toLowerCase() !== playerId.toLowerCase()) {
-                                setPlayerIdToRemove(record.key);
+                            if (playerId && isHost && record.id.toLowerCase() !== playerId.toLowerCase()) {
+                                setPlayerIdToRemove(record.id);
                                 setModalTitle('Are you sure you want to remove: ' + record.name + '?');
-                                setModalMessage('The player will be removed from the Tournament including all of their information');
+                                setModalMessage('The player will be removed from the Mission including all of their information');
                                 setShowModal(true);
                             }
                         },
