@@ -8,9 +8,13 @@ import PlayScreen from '../GameScreens/PlayScreen';
 import RoundResults from '../GameScreens/Results/RoundResults';
 import SessionResults from '../GameScreens/SessionResults';
 import FreeRoam from '../GameScreens/FreeRoam/FreeRoam';
-import { FinalResult, RoundResult, UserContextType } from '../../Utils/Types';
+import { ArmFinalResult, ArmRoundResult, FinalResult, RoundResult, UserContextType } from '../../Utils/Types';
 import { RoundNames } from '../../Utils/Utils';
 import React from 'react';
+import ArmFinalResults from '../MechanicalArm/ArmFinalResults';
+import ArmExperiment from '../MechanicalArm/ArmExperiment/ArmExperiment';
+import ArmGameScreen from '../MechanicalArm/ArmGameScreen';
+import ArmRoundResults from '../MechanicalArm/ArmResults/ArmRoundResults';
 
 // Controls flow of game based on status of the player's session. If the session has not been started, it 
 // displays the session screen showing all of the players in a the tournament. Once started, it will 
@@ -19,6 +23,9 @@ import React from 'react';
 // there users can save the results and / or view total aggregate results of everyone who has played the game. 
 // TODO may switch to web-socket connection with https://www.npmjs.com/package/react-use-websocket
 const GameController = () => {
+
+    // Developer tool! flip this bool to jump straight to mechaical arm game from wait room
+    const [jumpToMechanicalArm, setJumpToMechanicalArmMission] = useState<Boolean>(false);
 
     // use to make sure user is in a valid session
     const [inValidSession, setInValidSession] = useState(true);
@@ -33,8 +40,12 @@ const GameController = () => {
     const [currentResults, setCurrentResults] = useState<RoundResult[]>([]);
     const [finalResults, setFinalResults] = useState<FinalResult[]>([]);
 
+    // Results for Arm Rounds and Arm Final Results pulled and stored here
+    const [currentArmResults, setCurrentArmResults] = useState<ArmRoundResult[]>([]);
+    const [finalArmResults, setFinalArmResults] = useState<ArmFinalResult[]>([]);
+
     // When player finishes the current round allow them to see scores for the round
-    const [finishedRound, setFinishedRound] = useState<Array<Boolean>>(Array.apply(false, Array(10)).map(val => !!val));
+    const [finishedRound, setFinishedRound] = useState<Array<Boolean>>(Array.apply(false, Array(20)).map(val => !!val));
 
     useEffect(() => {
         // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
@@ -42,7 +53,6 @@ const GameController = () => {
         const interval = setInterval(async () => {
             try {
                 const response = await postRequest('session/status', JSON.stringify({ sessionId, playerId }));
-                // console.log(response); // -> WIll log all statuses received
                 // sessionId must exist to fetch session status. If there is no sessionId or
                 // if response tells us that session is invalid then redirect to home page
                 if (!sessionId || response.error === "Session not found") {
@@ -56,9 +66,9 @@ const GameController = () => {
                     // TODO may need to attempt to exit player from session they are in then redirect them home?
                     alert("Error getting session: " + response.error);
                 } else if (response?.session?.endDate && response?.session?.endDate !== "None") {
-                    // on receiving a session with an end date we know we are on the final results page and 
+                    // on receiving a session with an end date we know we are on the final results page of Mechanical Arm Mission and 
                     // no longer need to poll the BE for updates to round number)
-                    setCurrRound(RoundNames.FinalResults);
+                    setCurrRound(RoundNames.ArmFinalResults);
                     // pull results once then clear interval
                     const resultsResponse = await postRequest('/session/finalresults', JSON.stringify({
                         sessionId
@@ -74,46 +84,75 @@ const GameController = () => {
                 } else {
                     // if we changed rounds reset currentResults
                     if (currRound !== response?.session?.round) {
-                        setCurrentResults([]);
+                        setCurrentResults([]);                    
+                        // Allows jumping to mechanical arm game, remove in prod
+                        if (jumpToMechanicalArm) {
+                            setCurrRound(RoundNames.ArmExperiment + response?.session?.round - 1);
+                        } else {
+                            setCurrRound(response?.session?.round);
+                        }
                     }
-                    setCurrRound(response?.session?.round);
                 }
                 // Rounds where OTHER player results want to be seen will pull round results and include:
                 // 1, 3, 6, 7, 8, 9, 10 (but 10 requires results from entire tournament)
-                const currentRound = response?.session?.round;
-                if (currentRound === RoundNames.PracticeHArchPro || currentRound === RoundNames.PracticeHArchAll || (currentRound >= RoundNames.TournamentStage1 && currentRound < RoundNames.FinalResults)) {
+                // pull current results only when round is finished
+                if (finishedRound[currRound] && (currRound === RoundNames.PracticeHArchPro || currRound === RoundNames.PracticeHArchAll || (currRound >= RoundNames.TournamentStage1 && currRound < RoundNames.FinalResults))) {
+                    // Pull current results here for golf game
                     const resultsResponse = await postRequest('/session/roundresults', JSON.stringify({
-                        sessionId, round: currentRound
+                        sessionId, round: currRound
                     }));
                     if (resultsResponse.success) {
-                        // Only update state if the length of results changed (new player info came)
+                        // TODO could Only update state if the length of results changed (new player info came)
                         setCurrentResults(resultsResponse.results);
                     }
                     else {
-                        console.error(`Error fetching results for round${currentRound} received: `, resultsResponse);
+                        console.error(`Error fetching results for round${currRound} received: `, resultsResponse);
                     }
-                } else if (currentRound === RoundNames.FinalResults) {
+                } else if (currRound === RoundNames.FinalResults && finalResults.length === 0) {
+                    // Pull final results here for golf game
                     const resultsResponse = await postRequest('/session/finalresults', JSON.stringify({
                         sessionId
                     }));
                     if (resultsResponse.success) {
-                        // Only update state if the length of results changed (new player info came)
+                        // TODO could Only update state if the length of results changed (new player info came)
                         setFinalResults(resultsResponse.results);
                     }
                     else {
                         console.error(`Error fetching results for final round received: `, resultsResponse);
                     }
+                } else if (finishedRound[currRound] && currRound > RoundNames.ArmExperiment && currRound < RoundNames.ArmFinalResults) {
+                    // Pull current results here for Mechanical Arm game
+                    const resultsResponse = await postRequest('/session/armroundresults', JSON.stringify({
+                        sessionId, round: currRound
+                    }));
+                    if (resultsResponse.success) {
+                        setCurrentArmResults(resultsResponse.results);
+                    }
+                    else {
+                        console.error(`Error fetching results for round${currRound} received: `, resultsResponse);
+                    }
+                } else if (currRound === RoundNames.ArmFinalResults && finalArmResults.length === 0) {
+                    // Pull final results here for Mechanical Arm game
+                    const resultsResponse = await postRequest('/session/armfinalresults', JSON.stringify({
+                        sessionId
+                    }));
+                    if (resultsResponse.success) {
+                        setFinalArmResults(resultsResponse.results);
+                    }
+                    else {
+                        console.error(`Error fetching results for final Mechical Arm Round received: `, resultsResponse);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching session status: ", error);
             }
-        }, 2000); // This is the frequency of the polling in milliseconds.
+        }, 2500); // This is the frequency of the polling in milliseconds.
 
         // clear interval when component unmounts
         return () => {
             clearInterval(interval);
         }
-    }, [sessionId, playerId, setCurrentResults, setFinalResults, currentResults.length, finalResults.length, currRound]);
+    }, [sessionId, playerId, setCurrentResults, setFinalResults, currentResults.length, finalResults.length, finishedRound, jumpToMechanicalArm, currRound, finalArmResults.length]);
 
 
     useBeforeUnload(
@@ -148,12 +187,12 @@ const GameController = () => {
     else if (currRound === RoundNames.WaitRoom) {
         return (
             <div className='GameController'>
-                <WaitRoom />
+                <WaitRoom setJumpToMechanicalArmMission={setJumpToMechanicalArmMission}/>
             </div>
         )
     }
     // show practice rounds (some with results) or Tournament Stages
-    else if (currRound < RoundNames.Experimental || (currRound > RoundNames.ExperimentalSurvey && 
+    else if (currRound < RoundNames.Experimental || (currRound > RoundNames.ExperimentalSurvey &&
         currRound < RoundNames.FinalResults)) {
         if (!finishedRound[currRound]) {
             return (
@@ -177,12 +216,47 @@ const GameController = () => {
             </div>
         )
     }
-    else
+    else if (currRound === RoundNames.FinalResults) {
         return (
             <div className='GameController'>
                 <SessionResults players={finalResults} />
             </div>
         )
+    } else if (currRound === RoundNames.ArmExperiment) {
+        return (
+            <div className='GameController'>
+                <ArmExperiment />
+            </div>
+        )
+    } else if (currRound < RoundNames.ArmFinalResults) {
+        if (!finishedRound[currRound]) {
+            return (
+                <div className='GameController'>
+                    <ArmGameScreen
+                        finishedRounds={finishedRound}
+                        setFinishedRound={setFinishedRound}
+                        round={currRound}
+                    />
+                </div>
+            )
+        } else {
+            return (
+                <div className='GameController'>
+                    <ArmRoundResults
+                        round={currRound}
+                        results={currentArmResults}
+                    />
+                </div>
+            )
+        }
+    } else {
+        return (
+            <div className='GameController'>
+                <ArmFinalResults results={finalArmResults} />
+            </div>
+        )
+    }
+
 }
 
 export default GameController;

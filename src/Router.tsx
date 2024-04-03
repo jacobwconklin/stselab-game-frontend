@@ -19,7 +19,7 @@ const Router = () => {
                 <Route path="results" element={<AllResults />} />
                 <Route path="game" element={<GameController />} />
                 <Route path="arm" element={<GameSimulator />} />
-                <Route path="armExp" element={<ArmExperiment advanceRound={() => {}} />} />
+                <Route path="armExp" element={<ArmExperiment/>} />
                 <Route path="armGame" element={<ArmGameScreen 
                             finishedRounds={[false]} 
                             setFinishedRound={(val: Array<Boolean>) => {}} 

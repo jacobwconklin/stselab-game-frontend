@@ -9,11 +9,13 @@ import {
     Title
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
-import { ArmRoundResult, RoundResult } from '../../../Utils/Types';
+import { ArmRoundResult } from '../../../Utils/Types';
 import { getDisplayRound } from '../../../Utils/Utils';
 
-const ResultGraphs = (props: {players: Array<RoundResult>, round: number
-    results: Array<ArmRoundResult>, }) => {
+const ArmResultGraphs = (props: {
+    round: number
+    results: Array<ArmRoundResult>, 
+}) => {
 
     // set up chart js
     ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Title);
@@ -83,5 +85,5 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number
 
 }
 
-export default ResultGraphs;
+export default ArmResultGraphs;
 

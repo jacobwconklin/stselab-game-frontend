@@ -4,7 +4,7 @@ import { FullScreenConfetti } from "../../ReusableComponents/Confetti";
 import VerificationModal from "../../ReusableComponents/VerificationModal";
 import { ArmFinalResult, ArmScore, UserContextType } from "../../Utils/Types";
 import './ArmFinalResults.scss';
-import { useState, useContext, useRef } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { UserContext } from "../../App";
@@ -18,6 +18,7 @@ import {
     Legend,
     Title
 } from 'chart.js';
+import { postRequest } from "../../Utils/Api";
 
 
 const ArmFinalResults = (props: {
@@ -32,7 +33,17 @@ const ArmFinalResults = (props: {
         navigate(leaveTo);
     }
 
-    const { playerId } = useContext(UserContext) as UserContextType;
+    const { playerId, sessionId } = useContext(UserContext) as UserContextType;
+
+    // call "session/end" endpoint to end the session since the final results page has been reached,
+    // this will allow players to stop querying the server and store the time that the session ended.
+    useEffect(() => {
+        try {
+            postRequest("session/end", JSON.stringify({sessionId}));
+        } catch (error) {
+            console.error("Error ending session: ", error);
+        }
+    }, [sessionId])
 
     const sumWeights = (scores: ArmScore[]) => {
         let total = 0;
@@ -288,9 +299,7 @@ const ArmFinalResults = (props: {
     const saveGraphs = () => {
         const canvases = document.querySelectorAll('canvas');
         canvases.forEach((canvas: any) => {
-            console.log(canvas);
             if (canvas.role === 'img') {
-                console.log("seen");
                 const link = document.createElement('a');
                 link.download = 'STSELab-Mechanical-Mission-Results.png';
                 link.href = canvas.toDataURL('image/png');

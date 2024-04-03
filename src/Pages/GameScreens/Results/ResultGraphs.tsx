@@ -10,7 +10,7 @@ import {
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import { RoundResult } from '../../../Utils/Types';
-import { getDisplayRound } from '../../../Utils/Utils';
+import { RoundNames, getDisplayRound } from '../../../Utils/Utils';
 
 const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
 
@@ -29,6 +29,9 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
             title: {
                 display: true,
                 text: `Shots and Costs for Round ${getDisplayRound(props?.round)}`
+            },
+            legend: {
+                display: props?.round === RoundNames.TournamentStage2 ? false : true,
             }
         },
         scales: {
@@ -44,6 +47,8 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
             x: {
                 beginAtZero: true,
                 reverse: true,
+                min: 0,
+                max: 150,
                 title: {
                     display: true,
                     text: 'Cost'
@@ -62,7 +67,30 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
     };
 
     const data = {
-        datasets: props?.players?.filter((result: RoundResult) => result.shots).map((result: RoundResult) => {
+        datasets: props?.round === RoundNames.TournamentStage2 ? 
+        props?.players?.filter((result: RoundResult) => result.shots).map((result: RoundResult) => {
+            return {
+                label: result.name,
+                data: [{
+                    x: result.cost / 100,
+                    y: result.shots
+                }],
+                backgroundColor: result.color,
+            }
+        }).concat(
+            Array.from({length: 150}, (value, index) => {
+                return {
+                    label: `Maximum Acceptable Shots`,
+                    data: [{
+                        x: index + 1,
+                        y: 35
+                    }],
+                    backgroundColor: 'red'
+                }
+            })
+        )
+        :
+        props?.players?.filter((result: RoundResult) => result.shots).map((result: RoundResult) => {
             return {
                 label: result.name,
                 data: [{

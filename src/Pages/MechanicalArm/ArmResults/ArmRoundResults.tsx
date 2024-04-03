@@ -1,23 +1,22 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import './ArmRoundResults.scss';
 import { Button } from 'antd';
-import ResultTable from './ArmResultTable';
-import ResultGraphs from './ArmResultGraphs';
-import { ArmRoundResult, RoundResult } from '../../../Utils/Types';
+import ArmResultTable from './ArmResultTable';
+import ArmResultGraphs from './ArmResultGraphs';
+import { ArmRoundResult, UserContextType } from '../../../Utils/Types';
 import { RoundNames, getDisplayRound } from '../../../Utils/Utils';
 import VerificationModal from '../../../ReusableComponents/VerificationModal';
 import SpaceBackground from '../../../ReusableComponents/SpaceBackground';
+import { advanceSession } from '../../../Utils/Api';
+import { UserContext } from '../../../App';
 // import golfBallSvg from '../../Assets/golfBall.svg';
 
 // RoundResults
 const ArmRoundResults = (props: { 
     round: number, 
-    players: Array<RoundResult>, 
-    results: Array<ArmRoundResult>, 
-    advanceRound: () => void
+    results: Array<ArmRoundResult>
 }) => {
-    // const { isHost, sessionId } = useContext(UserContext) as UserContextType;
-    const isHost = true;
+    const { isHost, sessionId } = useContext(UserContext) as UserContextType;
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
     const [showVerificationModal, setShowVerificationModal] = useState(false);
 
@@ -29,20 +28,20 @@ const ArmRoundResults = (props: {
                     Results for Mission Round {getDisplayRound(props?.round)}
                 </h1>
                 {
-                    props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length ?
+                    props?.results?.filter((player: ArmRoundResult) => !!player.weight).length === props?.results?.length ?
                         <h3>
                             All Agents are Finished
                         </h3>
                         :
                         <h3>
-                            {props?.players?.filter((player: RoundResult) => !!player.shots).length} Agent
-                            {props?.players?.filter((player: RoundResult) => !!player.shots).length > 1 ? 's' : ''} Finished
+                            {props?.results?.filter((player: ArmRoundResult) => !!player.weight).length} Agent
+                            {props?.results?.filter((player: ArmRoundResult) => !!player.weight).length > 1 ? 's' : ''} Finished
                         </h3>
                 }
                 {
-                    !!props?.players?.filter((player: RoundResult) => !player.shots).length &&
+                    !!props?.results?.filter((player: ArmRoundResult) => !player.weight).length &&
                     <h3>
-                        {props?.players?.filter((player: RoundResult) => !player.shots).length} Still Playing
+                        {props?.results?.filter((player: ArmRoundResult) => !player.weight).length} Still Playing
                     </h3>
                 }
                 {
@@ -69,9 +68,9 @@ const ArmRoundResults = (props: {
                         disabled={!!hostClickedButton}
                         onClick={() => {
                             // IF not everyone is finished pull up a modal
-                            if (props?.players?.filter((player: RoundResult) => !!player.shots).length === props?.players?.length) {
+                            if (props?.results?.filter((player: ArmRoundResult) => !!player.weight).length === props?.results?.length) {
                                 // advanceSession(sessionId, setHostClickedButton);
-                                props.advanceRound();
+                                advanceSession(sessionId, setHostClickedButton);
                             } else {
                                 // NOT ALL PLAYERS FINISHED ask host if they really want to continue
                                 setShowVerificationModal(true);
@@ -84,8 +83,8 @@ const ArmRoundResults = (props: {
                 }
             </div>
 
-            <ResultTable players={props.players} round={props.round} results={props.results} />
-            <ResultGraphs players={props.players} round={props.round} results={props.results} />
+            <ArmResultTable round={props.round} results={props.results} />
+            <ArmResultGraphs round={props.round} results={props.results} />
 
             {
                 showVerificationModal &&
@@ -93,7 +92,7 @@ const ArmRoundResults = (props: {
                     title="Not All Players Have Finished"
                     message="Not all players have finished this round. Are you sure you want to advance to the next round?"
                     // confirm={() => advanceSession(sessionId, setHostClickedButton)}
-                    confirm={() => { setHostClickedButton(true); props.advanceRound()}}
+                    confirm={() => { advanceSession(sessionId, setHostClickedButton) }}
                     cancel={() => setShowVerificationModal(false)}
                 />
             }

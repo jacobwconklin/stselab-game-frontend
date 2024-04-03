@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import FactoryBackground from '../../../ReusableComponents/FactoryBackground';
 import TypedMessage from '../../../ReusableComponents/TypedMessage';
 import './ArmExperimentGame.scss';
@@ -8,6 +8,9 @@ import industrialSystemsEngineerIcon from '../../../Assets/MechArm/web-developer
 import mechanicalEngineerIcon from '../../../Assets/MechArm/construction-worker.svg';
 import materialsScientistIcon from '../../../Assets/MechArm/chemist.svg';
 import { ArmSolver, armArchitectures, armSolverImages, armSolverNames } from '../../../Utils/ArmSimulation';
+import { UserContext } from '../../../App';
+import { UserContextType } from '../../../Utils/Types';
+import { advanceSession } from '../../../Utils/Api';
 
 
 // Like free roam round of golf tournament, this allows players to try all breakdowns of the mechanical arm and all solvers
@@ -20,12 +23,14 @@ const ArmExperimentGame = (props: {
     loading: boolean,
     showTypedMessage: boolean,
     setShowTypedMessage: (show: boolean) => void,
-    advanceRound: () => void
 }) => {
+
+    const {isHost, sessionId} = useContext(UserContext) as UserContextType;
 
     const [selectedSolver, setSelectedSolver] = useState<ArmSolver | null>(null);
     const [selectedComponent, setSelectedComponent] = useState<string>("");
     const [selectedArchitecture, setSelectedArchitecture] = useState<string>("");
+    const [hostClickedAdvanceSession, setHostClickedAdvanceSession] = useState<Boolean>(false);
 
     return (
         <div className="ArmExperimentGame">
@@ -117,12 +122,18 @@ const ArmExperimentGame = (props: {
                     >
                         View Results
                     </Button>
-                    <Button
-                        onClick={() => props.advanceRound()}
-                        type='primary'
-                    >
-                        End Experimental Round
-                    </Button>
+                    {
+                        isHost &&
+                        <Button
+                            disabled={!!hostClickedAdvanceSession}
+                            onClick={() => {
+                                advanceSession(sessionId, setHostClickedAdvanceSession);
+                            }}
+                            type='primary'
+                        >
+                            End Experimental Round
+                        </Button>
+                    }
                 </div>
 
                 {

@@ -80,7 +80,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         // This one may need to not be linear
         // Minimum cost ~ (3 specialists 60 - 90), (3 amateurs = 25), (3 professional ~ 50), 
         // Say Minimum cost is 10 = score of 100
-        // Maximum cost is (1 pro, 2 spec got over 100)
+        // Maximum cost is 150 (1 pro, 2 spec got over 100)
         // say Maximum cost is 150 = score of 0
         if (cost > 150) {
             return 0;

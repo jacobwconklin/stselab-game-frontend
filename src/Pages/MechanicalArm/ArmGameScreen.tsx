@@ -5,11 +5,12 @@ import industrialSystemsEngineerIcon from '../../Assets/MechArm/web-developer.sv
 import mechanicalEngineerIcon from '../../Assets/MechArm/construction-worker.svg';
 import materialsScientistIcon from '../../Assets/MechArm/chemist.svg';
 import FactoryBackground from '../../ReusableComponents/FactoryBackground';
-import { ArmSolver, armArchitectures, armSolverImages, armSolverNames } from '../../Utils/ArmSimulation';
+import { ArmSolver, armArchitectures, armSolverImages, armSolverNames, runArmArchitectureSimulation } from '../../Utils/ArmSimulation';
 import { useContext, useEffect, useState } from 'react';
 import { RoundNames, getDisplayRound } from '../../Utils/Utils';
 import { UserContextType } from '../../Utils/Types';
 import { UserContext } from '../../App';
+import { postRequest } from '../../Utils/Api';
 // The screen shown while playing the Mechanical Arm game
 const ArmGameScreen = (props: {
     setFinishedRound: (val: Array<Boolean>) => void,
@@ -19,13 +20,12 @@ const ArmGameScreen = (props: {
 
     
     // Context to save user's slider choice for custom performance weight
-    const { setCustomPerformanceWeight } = useContext(UserContext) as UserContextType;
+    const { setCustomPerformanceWeight, playerId } = useContext(UserContext) as UserContextType;
 
     const updateFinishedRounds = () => {
         const copy = props.finishedRounds;
         copy[props.round] = true;
         props.setFinishedRound(copy);
-        console.log(copy);
     }
 
     const [selectedSolvers, setSelectedSolvers] = useState<ArmSolver[]>([]);
@@ -114,26 +114,24 @@ const ArmGameScreen = (props: {
 
     const playRound = async () => {
         setLoading(true);
-        console.log("Playing round on architecture: ", selectedArchitecture, " with solvers: ", selectedSolvers);
         // get score for the round
-        // const result = runArmArchitectureSimulation("test", selectedArchitecture, selectedSolvers[0], selectedSolvers[1], selectedSolvers[2], selectedSolvers[3]);
         // save scored results to the backend 
-        try {
+        try {        
+            const result = runArmArchitectureSimulation(playerId!, selectedArchitecture, selectedSolvers[0], selectedSolvers[1],        
+                selectedSolvers[2], selectedSolvers[3]);
             // save score to database and record that player has completed the round
-            const response = {success: true};
-            
-            // await postRequest('player/armRoundResult', JSON.stringify({
-            //     playerId: "01A461BB-FD55-4C22-8A2B-E145C27BBB18", // TODO use playerID from context
-            //     weight: result.weight, // TODO figure out if I am storing grams and dividing by 1000 when results come back or what
-            //     cost: result.cost,
-            //     architecture: selectedArchitecture,
-            //     solverOne: selectedSolvers[0],
-            //     solverTwo: selectedSolvers[1],
-            //     solverThree: selectedSolvers[2],
-            //     solverFour: selectedSolvers[3],
-            //     round: props.round,
-            //     score: result.score !== null ? Math.floor( result.score * 100) : null
-            // }));
+            const response = await postRequest('player/armRoundResult', JSON.stringify({
+                playerId,
+                weight: result.weight, // TODO figure out if I am storing grams and dividing by 1000 when results come back or what
+                cost: result.cost,
+                architecture: selectedArchitecture,
+                solverOne: selectedSolvers[0],
+                solverTwo: selectedSolvers[1],
+                solverThree: selectedSolvers[2],
+                solverFour: selectedSolvers[3],
+                round: props.round,
+                score: result.score !== null ? Math.floor( result.score * 100) : null
+            }));
             if (response.success) {
                 updateFinishedRounds();
             } else {

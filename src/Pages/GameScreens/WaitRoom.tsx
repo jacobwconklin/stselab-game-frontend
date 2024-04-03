@@ -12,7 +12,7 @@ import { CopyOutlined } from '@ant-design/icons';
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
 // can invite players to join their session.
-const WaitRoom = () => {
+const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void}) => {
 
     // check host status and session id / join code from context
     const { isHost, sessionId, playerId } = useContext(UserContext) as UserContextType;
@@ -152,7 +152,17 @@ const WaitRoom = () => {
                             onClick={() => advanceSession(sessionId, setBeginningTournament)}
                             type='primary'
                         >
-                            Begin Tournament
+                            Begin STSELab Golf
+                        </Button>
+                        <br></br>
+                        <Button
+                            disabled={!!beginningTournament}
+                            onClick={() => {
+                                props.setJumpToMechanicalArmMission(true);
+                                advanceSession(sessionId, setBeginningTournament)}
+                            }
+                        >
+                            Jump To Mechanical Arm Mission
                         </Button>
                     </div>
                     :

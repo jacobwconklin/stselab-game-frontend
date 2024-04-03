@@ -175,11 +175,6 @@ const Home = () => {
                     <Button onClick={() => navigate('/results')}>View All Results</Button>
                     <div style={{ height: '30px' }}></div>
                     <br></br>
-                    <p>Try the Mechanical Arm Mission: </p>
-                    <p> --- still under development --- </p>
-                    <Button onClick={() => navigate('/arm')}>Mechanical Arm Mission</Button>
-                    <br></br>
-                    <br></br>
                 </div>
                 <br></br>
             </div>

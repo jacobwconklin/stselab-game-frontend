@@ -1,14 +1,20 @@
 This can outline the major TODOs so they can be ordered 
 
-# 1: Change Azure SQL database plan, the 100,000 vCore seconds do not seem to be enough, just me playing through the game once with two players used 700, and most people would take longer to play and have more people playing
+# 1: Maybe Change Azure SQL database plan? the 100,000 vCore seconds do not seem to be enough, just me playing through the game once with two players used 700, and most people would take longer to play and have more people playing. I don't know about 5DTU might be too little, and honestly pay as you go might be worth it for app that is rarely used. 
 
 # 1 b: Set Azure SQL network access to accept my device's IP address and the backend's IP address and no more.
 
-# 2: write backend and db for Mechanical Arm Mission
+# 1 c: potentially establish system with professor where db and backend stay OFF until he turns them off (IE other professors wanting to use the tool simply contact him first and he turns them on at that time? This would suggest using stateless backend (may overcomplicate)) REALLY would just require hitting "STOP" on stselab-games-backend and that is all. Looks like backend CAN'T be serverless, so this would only help to prevent db from costing anything... ? May not be worthwhile.
 
-# 2 b: In a perfect world: conjoin RoundResult and ArmRoundResult table into one inclusive table that works, can rename shots / grams to be "performance" or something and have it accept 4 solvers always. Then remove the unneccessary endpoints and begin work of making only one version of front-end pages like roundResults that can work for both games to reduce duplicate code. May also require some extra inputs sent to backend so that the same endpoints can service both games. Wouldn't change functionality at all but would clean and simplify the code. 
+# 2: continue to write backend and db for Mechanical Arm Mission: In a perfect world: conjoin RoundResult and ArmRoundResult table into one inclusive table that works, can rename shots / grams to be "performance" or something and have it accept 4 solvers always. Then remove the unneccessary endpoints and begin work of making only one version of front-end pages like roundResults that can work for both games to reduce duplicate code. May also require some extra inputs sent to backend so that the same endpoints can service both games. Wouldn't change functionality at all but would clean and simplify the code. 
 
-# 3 plug arm screens into main game controller to complete circuit. 
+# 2 b: Major refactor could be: Folder for all core components that work for each game. Mechanical Arm folder with specific items, Golf folder with specific items. (rather than just default being golf)
+
+# 3 plug arm screens into main game controller to complete circuit. Also fix units of weight, score, and cost to be consistent IE stored in db and displayed correctly. Also create ficticious scoring function so scores are slightly more deterministic for now. On end of golf tournament screen either remove player ability to go home and look at results (save that for end of mech arm mission) or make sure if player navigates away that they leave the session (I think already handled by game controller usebeforeunload but good to check), don't want players to quit if it is NOT the end.
+
+# 3 b: Can add mechanical arm mission results to "All Results" page and have players choose between seeing golf and mechanical arm results
+
+# 3 c: Add colored icon to mechanical arm mission results page that uses players color from golf game.
 
 Improve mock Mechanical Arm screen:
  - Solver can make different choices for each Modules

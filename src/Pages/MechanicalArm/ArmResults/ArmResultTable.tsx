@@ -1,5 +1,5 @@
 import { Table } from "antd";
-import { ArmRoundResult, RoundResult, UserContextType } from "../../../Utils/Types";
+import { ArmRoundResult, UserContextType } from "../../../Utils/Types";
 import { UserContext } from "../../../App";
 import { useContext, useState } from "react";
 import { postRequest } from "../../../Utils/Api";
@@ -8,8 +8,10 @@ import { ArmSolver, armArchitectures, armSolverNames } from "../../../Utils/ArmS
 
 
 // Creates a table to display results for a round or session
-const ResultTable = (props: { players: Array<RoundResult>, round: number,
-    results: Array<ArmRoundResult>,  }) => {
+const ArmResultTable = (props: { 
+    round: number,
+    results: Array<ArmRoundResult>,  
+}) => {
 
     const { isHost, playerId } = useContext(UserContext) as UserContextType;
 
@@ -156,7 +158,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number,
     const getData: () => ArmRoundResult[] = () => {
         return props?.results?.map((player, index) => (
             {
-                id: '' + index, // TODO Change to player.id when back in context
+                id: player.id,
                 name: player.name,
                 color: player.color,
                 score: player.score,
@@ -174,7 +176,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number,
     return (
         <div className="ResultTable">
             <Table
-                pagination={{ pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
+                pagination={{ pageSize: 5, position: ['none', props.results.length > 5 ? 'bottomCenter' : "none"] }}
                 columns={columns}
                 dataSource={getData()}
                 rowKey={(record) => record.id}
@@ -214,4 +216,4 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number,
     )
 }
 
-export default ResultTable;
+export default ArmResultTable;

@@ -59,14 +59,15 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
                 const shotsA = Number(a.shots);
                 const shotsB = Number(b.shots);
-                if (isNaN(shotsA) || isNaN(shotsB)) {
-                    return 0;
-                }else if (!isNaN(shotsA) && isNaN(shotsB)) {
-                    return 1;
-                } else if (isNaN(shotsA) && !isNaN(shotsB)) {
+                if (isNaN(shotsA) && !isNaN(shotsB)) {
                     return -1;
+                } else if (!isNaN(shotsA) && isNaN(shotsB)) {
+                    return 1;
+                } else if (isNaN(shotsA) && isNaN(shotsB)) {
+                    return 0;
+                } else {
+                    return shotsB - shotsA;
                 }
-                return shotsA - shotsB;
             }
         },
         {
@@ -76,14 +77,15 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
                 const costA = Number(a.cost);
                 const costB = Number(b.cost);
-                if (isNaN(costA) || isNaN(costB)) {
-                    return 0;
+                if (isNaN(costA) && !isNaN(costB)) {
+                    return -1;
                 } else if (!isNaN(costA) && isNaN(costB)) {
                     return 1;
-                } else if (isNaN(costA) && !isNaN(costB)) {
-                    return -1;
+                } else if (isNaN(costA) && isNaN(costB)) {
+                    return 0;
+                } else {
+                    return costB - costA;
                 }
-                return costA - costB;
             }
         },
         {

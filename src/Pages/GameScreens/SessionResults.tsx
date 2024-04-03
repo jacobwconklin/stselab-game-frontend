@@ -19,6 +19,7 @@ import { useReactToPrint } from 'react-to-print';
 import { FullScreenConfetti } from '../../ReusableComponents/Confetti';
 import { RoundNames } from '../../Utils/Utils';
 import VerificationModal from '../../ReusableComponents/VerificationModal';
+import { advanceSession } from '../../Utils/Api';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
@@ -26,6 +27,7 @@ const SessionResults = (props: { players: FinalResult[] }) => {
 
 
     const [showVerificationModal, setShowVerificationModal] = useState(false);
+    const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false)
     const [leaveTo, setLeaveTo] = useState('/');
     const navigate = useNavigate();
 
@@ -33,7 +35,7 @@ const SessionResults = (props: { players: FinalResult[] }) => {
         navigate(leaveTo);
     }
 
-    const { playerId } = useContext(UserContext) as UserContextType;
+    const { playerId, isHost, sessionId } = useContext(UserContext) as UserContextType;
 
     const sumShots = (scores: Score[]) => {
         let total = 0;
@@ -295,9 +297,7 @@ const SessionResults = (props: { players: FinalResult[] }) => {
     const saveGraphs = () => {
         const canvases = document.querySelectorAll('canvas');
         canvases.forEach((canvas: any) => {
-            console.log(canvas);
             if (canvas.role === 'img') {
-                console.log("seen");
                 const link = document.createElement('a');
                 link.download = 'STSELab-Tournament-Results.png';
                 link.href = canvas.toDataURL('image/png');
@@ -360,6 +360,28 @@ const SessionResults = (props: { players: FinalResult[] }) => {
                 <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
             }
             <br></br>
+
+            <br></br>
+            <br></br>
+            <br></br>
+
+            <div className='Instructions'>
+                    <h1>Play Mechanical Arm Mission</h1>
+                    <p>--- still under development ---</p>
+                    {
+                        isHost ?
+                        <Button
+                            disabled={!!hostClickedButton}
+                            onClick={(() => {
+                                advanceSession(sessionId, setHostClickedButton)
+                            })}
+                        >
+                            Play Mission
+                        </Button>
+                        :
+                        <p>Host must begin the game</p>
+                    }
+            </div>
             <FullScreenConfetti />
             {
                 showVerificationModal &&

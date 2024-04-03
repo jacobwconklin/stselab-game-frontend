@@ -1,7 +1,7 @@
 
 
 // Simulates the game controller and control flow between arm game screens and results
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './GameSimulator.scss';
 import { ArmFinalResult, ArmRoundResult } from '../../Utils/Types';
 import { RoundNames } from '../../Utils/Utils';
@@ -163,6 +163,12 @@ const GameController = () => {
 
     const [currRound, setCurrRound] = useState<number>(RoundNames.ArmExperiment);
 
+    // use effect that gets "current" round and adds RoundNames.ArmExperiment to skip to mechanical arm game for preview
+    // it also sets the playerId, sessionId and isHost in context
+    useEffect(() => {
+
+    })
+
 
     const advanceRound = (): void => {
         setCurrRound(val => val + 1);
@@ -202,6 +208,9 @@ const GameController = () => {
         setDidFinishRound(false);
     }
 
+    // TODO just eliminating warnings with this, may delete this whole file soon unless prof wants mechanical arm game to be able to run separately
+    advanceRound();
+
     const applyFinishedRound = (rounds: Array<Boolean>): void => {
         setFinishedRound(rounds);
         setDidFinishRound(true);
@@ -211,7 +220,7 @@ const GameController = () => {
     if (currRound <= RoundNames.ArmExperiment) {
         return (
             <div className='GameController'>
-                <ArmExperiment advanceRound={advanceRound} />
+                <ArmExperiment />
             </div>
         )
     }
@@ -232,9 +241,7 @@ const GameController = () => {
                 <div className='GameController'>
                     <ArmRoundResults
                         round={currRound}
-                        players={[]}
                         results={currentResults}
-                        advanceRound={advanceRound}
                     />
                 </div>
             )
