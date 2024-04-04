@@ -17,9 +17,10 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
 
     // prevent players from clicking play round multiple times
     const [playingRound, setPlayingRound] = useState(false);
+    const [customPerformanceWeight, setCustomPerformanceWeight] = useState<number>(0.5);
 
     // pull playerId from Context
-    const { playerId, playerColor, customPerformanceWeight } = useContext(UserContext) as UserContextType;
+    const { playerId, playerColor } = useContext(UserContext) as UserContextType;
 
     const updateFinishedRounds = () => {
         const copy = props.finishedRounds;
@@ -98,7 +99,12 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
             }
             {
                 props.round === RoundNames.PracticeHArchPro &&
-                <ProfessionalOnly disablePlayRound={() => setPlayingRound(true)} round={props.round} playingRound={playingRound} playRound={playRound} />
+                <ProfessionalOnly 
+                    disablePlayRound={() => setPlayingRound(true)} 
+                    round={props.round} 
+                    playingRound={playingRound} 
+                    playRound={playRound} 
+                />
             }
             {
                 props.round === RoundNames.PracticeHArchAmateur &&
@@ -106,11 +112,23 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
             }
             {
                 props.round === RoundNames.PracticeHArchAll &&
-                <EntireHole disablePlayRound={() => setPlayingRound(true)} round={props.round} playingRound={playingRound} playRound={playRound} />
+                <EntireHole 
+                    disablePlayRound={() => setPlayingRound(true)} 
+                    round={props.round} 
+                    playingRound={playingRound}  
+                    playRound={playRound} 
+                />
             }
             {
                 props.round >= RoundNames.TournamentStage1 &&
-                <TournamentStage disablePlayRound={() => setPlayingRound(true)} round={props.round} playingRound={playingRound} playRound={playRound} />
+                <TournamentStage 
+                    disablePlayRound={() => setPlayingRound(true)} 
+                    round={props.round} 
+                    playingRound={playingRound} 
+                    playRound={playRound} 
+                    setCustomPerformanceWeight={setCustomPerformanceWeight} 
+                    customPerformanceWeight={customPerformanceWeight} 
+                />
             }
         </div>
     )

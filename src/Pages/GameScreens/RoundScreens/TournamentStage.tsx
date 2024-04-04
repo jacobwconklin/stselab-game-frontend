@@ -1,14 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
+import { useState } from 'react';
 import './TournamentStage.scss';
 import { Solver, solverNames } from '../../../Utils/Simulation';
 import { Button, Slider } from 'antd';
 import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from '../../../ReusableComponents/SolverCards';
-import { UserContext } from '../../../App';
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
 import { RoundNames, animateBallIntoHole } from '../../../Utils/Utils';
-import { UserContextType } from '../../../Utils/Types';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
@@ -16,13 +14,13 @@ import { UserContextType } from '../../../Utils/Types';
 const TournamentStage = (props: {
     playingRound: Boolean, round: number,
     playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
-    disablePlayRound: () => void
+    disablePlayRound: () => void,
+    customPerformanceWeight: number,
+    setCustomPerformanceWeight: (weight: number) => void
 }) => {
 
-    // Context to save user's slider choice for custom performance weight
-    const { setCustomPerformanceWeight } = useContext(UserContext) as UserContextType;
-
-    const [showTournamentBeginModal, setShowTournamentBeginModal] = useState(props?.round === 6 ? true : false);
+    const [showTournamentBeginModal, setShowTournamentBeginModal] = 
+        useState(props?.round === RoundNames.TournamentStage1 ? true : false);
 
     // value of architecture chosen (on changing architecture remove all chosen solvers)
     const [architecture, setArchitecture] = useState<string>('h'); // 'h' | 'lp' | 'ds' | 'dap'
@@ -42,17 +40,12 @@ const TournamentStage = (props: {
     const [selectedFairwaySolver, setSelectedFairwaySolver] = useState<Solver | null>(null);
     const [selectedShortSolver, setSelectedShortSolver] = useState<Solver | null>(null);
     const [selectedPuttSolver, setSelectedPuttSolver] = useState<Solver | null>(null);
-    const [customPerformance, setCustomPerformance] = useState<number>(0.5);
 
     // Use effect to populate context with custom performance weight if user never touches slider
-    useEffect(() => {
-        setCustomPerformanceWeight(customPerformance);
-    }, [setCustomPerformanceWeight, customPerformance])
 
     const updateCustomPerformance = (value: number) => {
         // convert value to percentage
-        setCustomPerformance((100 - value) / 100);
-        setCustomPerformanceWeight((100 - value) / 100);
+        props.setCustomPerformanceWeight((100 - value) / 100);
     }
 
     const tooltipFormatter = (value?: number) => {
@@ -335,13 +328,12 @@ const TournamentStage = (props: {
                     <AmateurSolverCard select={selectGolfer} />
                 </div>
             </div>
-
             {
                 showTournamentBeginModal &&
-                <div className='TournamentBeginModal'
+                <div className='Modal'
                 // Can have click out here but they may not read
                 >
-                    <div className='TournamentBeginModalBody'>
+                    <div className='ModalBody'>
                         <h2>The Tournament Has Begun!</h2>
                         <p>
                             Here you will play four rounds each with a unique objective. In each round you may select one architecture and any solver types you would like. Points are awarded for acheiving the objectives. The winner will be the player with the most total points at the end of the tournament.

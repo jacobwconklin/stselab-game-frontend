@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import { postRequest } from "../../../Utils/Api";
 import VerificationModal from "../../../ReusableComponents/VerificationModal";
 import { ArmSolver, armArchitectures, armSolverNames } from "../../../Utils/ArmSimulation";
+import MechanicalArmIcon from "../../../ReusableComponents/MechanicalArmIcon";
 
 
 // Creates a table to display results for a round or session
@@ -66,12 +67,12 @@ const ArmResultTable = (props: {
             dataIndex: 'name',
             key: 'name',
         },
-        // {
-        //     title: 'Mechanical Arm',
-        //     dataIndex: 'color',
-        //     key: 'color',
-        //     render: (color: string) => <MechArmIcon color={color} ></MechArmIcon>
-        // },
+        {
+            title: 'Arm',
+            dataIndex: 'color',
+            key: 'color',
+            render: (color: string) => <MechanicalArmIcon color={color} ></MechanicalArmIcon>
+        },
         {
             title: 'Weight',
             dataIndex: 'weight',

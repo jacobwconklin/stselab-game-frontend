@@ -58,7 +58,7 @@ const ArmFinalResults = (props: {
         scores.forEach((score: ArmScore) => {
             total += score.cost;
         });
-        return total / 100;
+        return total; // / 100;
     }
 
     const sumScore = (scores: ArmScore[]) => {
@@ -116,7 +116,7 @@ const ArmFinalResults = (props: {
                 label: result.name,
                 data: result.scores.map((round: ArmScore) => {
                     return {
-                        x: round.cost / 100,
+                        x: round.cost , // / 100,
                         y: round.weight
                     }
                 }),

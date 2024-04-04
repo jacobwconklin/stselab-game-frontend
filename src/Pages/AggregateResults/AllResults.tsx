@@ -1,4 +1,4 @@
-import { Button, Checkbox, Table } from 'antd';
+import { Button, Checkbox, Spin, Table } from 'antd';
 import './AllResults.scss';
 import { DisplayRoundResult, RoundResult } from '../../Utils/Types';
 import { useEffect, useState } from 'react';
@@ -22,7 +22,7 @@ const AllResults = () => {
         window.scrollTo(0, 0);
         const pullAllPlayerResults = async () => {
             try {
-                const response = await getRequest('/player/allResults');
+                const response = await getRequest('player/allResults');
                 // Shouldn't need to filter any values missing shots, score, etc (as they shouldn't be in the DB)
                 setAllResults(response.results);
                 setFilteredResults(response.results);
@@ -78,12 +78,12 @@ const AllResults = () => {
     const [selectedRound, setSelectedRound] =
         useState<string[]>(['1', '2', '3', '4']);
 
-    
+
     // When user changes what architecture and rounds they want to see, re-filter the results
     useEffect(() => {
         setFilteredResults(allResults.filter((result) => {
-            return selectedArchitecture.includes(result.architecture) && 
-            selectedRound.includes((result.round - RoundNames.TournamentStage1 + 1).toString());
+            return selectedArchitecture.includes(result.architecture) &&
+                selectedRound.includes((result.round - RoundNames.TournamentStage1 + 1).toString());
         }));
     }, [selectedArchitecture, selectedRound, allResults]);
 
@@ -191,7 +191,7 @@ const AllResults = () => {
         }
     ];
 
-    const tableData: DisplayRoundResult[] = filteredResults.map((player: RoundResult, index: number) => ( 
+    const tableData: DisplayRoundResult[] = filteredResults.map((player: RoundResult, index: number) => (
         {
             key: player.id,
             score: player.score / 100,
@@ -238,21 +238,30 @@ const AllResults = () => {
                 <Button onClick={() => navigate('/')}>Return Home</Button>
             </div>
 
-            <div className='ResultTable'>
-                <Table
-                    pagination={{ pageSize: 5, position: ['bottomCenter'] }}
-                    columns={tableColumns}
-                    dataSource={tableData}
-                    rowClassName={() => "HighlightRow"}
-                    rowKey={(record) => record.key + "-" + record.round}
-                />
-            </div>
+            {
+                filteredResults.length === 0 ?
+                    <div className='Instructions'>
+                        <h1>Loading Results ...</h1>
+                        <Spin size='large' />
+                    </div>
+                    :
+                    <>
+                        <div className='ResultTable'>
+                            <Table
+                                pagination={{ pageSize: 5, position: ['bottomCenter'] }}
+                                columns={tableColumns}
+                                dataSource={tableData}
+                                rowClassName={() => "HighlightRow"}
+                                rowKey={(record) => record.key + "-" + record.round}
+                            />
+                        </div>
 
-            {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
-            <AggregateResultGraphs
-                results={filteredResults}
-            />
-
+                        {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
+                        <AggregateResultGraphs
+                            results={filteredResults}
+                        />
+                    </>
+            }
             <br></br>
         </div>
     )

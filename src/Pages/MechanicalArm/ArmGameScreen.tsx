@@ -6,7 +6,7 @@ import mechanicalEngineerIcon from '../../Assets/MechArm/construction-worker.svg
 import materialsScientistIcon from '../../Assets/MechArm/chemist.svg';
 import FactoryBackground from '../../ReusableComponents/FactoryBackground';
 import { ArmSolver, armArchitectures, armSolverImages, armSolverNames, runArmArchitectureSimulation } from '../../Utils/ArmSimulation';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { RoundNames, getDisplayRound } from '../../Utils/Utils';
 import { UserContextType } from '../../Utils/Types';
 import { UserContext } from '../../App';
@@ -20,7 +20,7 @@ const ArmGameScreen = (props: {
 
     
     // Context to save user's slider choice for custom performance weight
-    const { setCustomPerformanceWeight, playerId } = useContext(UserContext) as UserContextType;
+    const { playerId } = useContext(UserContext) as UserContextType;
 
     const updateFinishedRounds = () => {
         const copy = props.finishedRounds;
@@ -28,6 +28,7 @@ const ArmGameScreen = (props: {
         props.setFinishedRound(copy);
     }
 
+    const [showMissionBeginModal, setShowMissionBeginModal] = useState(props?.round === RoundNames.ArmGame1 ? true : false);
     const [selectedSolvers, setSelectedSolvers] = useState<ArmSolver[]>([]);
     const [currSelectedSolver, setCurrSelectedSolver] = useState<ArmSolver | null>(null);
     const [selectedComponent, setSelectedComponent] = useState<string>("");
@@ -35,15 +36,9 @@ const ArmGameScreen = (props: {
     const [loading, setLoading] = useState(false);
     const [customPerformance, setCustomPerformance] = useState<number>(0.5);
 
-    // Use effect to populate context with custom performance weight if user never touches slider
-    useEffect(() => {
-        setCustomPerformanceWeight(customPerformance);
-    }, [setCustomPerformanceWeight, customPerformance])
-
     const updateCustomPerformance = (value: number) => {
         // convert value to percentage
         setCustomPerformance((100 - value) / 100);
-        setCustomPerformanceWeight((100 - value) / 100);
     }
 
     const tooltipFormatter = (value?: number) => {
@@ -52,7 +47,7 @@ const ArmGameScreen = (props: {
 
     const roundObjectives = [
         "Lightest weight arm no matter the cost",
-        "Minimize cost with a weight of at most 65 kg",
+        "Minimize cost with a weight of at most 40 kg",
         "Minimize cost and weight valued equally",
         "You choose the balance of weight versus cost for scoring"
     ];
@@ -70,13 +65,20 @@ const ArmGameScreen = (props: {
             setSelectedSolvers(selectedSolversCopy);
             setCurrSelectedSolver(solver);
         }
+        // move selected component to "next" component (back to first if on last or only component)
+        const componentIndex = armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.findIndex(comp => comp.component === selectedComponent);
+        if (componentIndex !== undefined) {
+            const nextComponentIndex = (componentIndex + 1) % armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.length!;
+            setSelectedComponent(armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components[nextComponentIndex].component!);
+        }
     }
 
     const selectNewArchitecture = (architecture: string) => {
         setSelectedArchitecture(architecture);
         clearSelectedSolvers();
         setCurrSelectedSolver(null);
-        setSelectedComponent("");
+        // set selected component as the first component in the architecture
+        setSelectedComponent(armArchitectures.find(arch => arch.architecture === architecture)?.components[0].component!);
     }
 
     const selectNewComponent = (component: string) => {
@@ -117,8 +119,7 @@ const ArmGameScreen = (props: {
         // get score for the round
         // save scored results to the backend 
         try {        
-            const result = runArmArchitectureSimulation(playerId!, selectedArchitecture, selectedSolvers[0], selectedSolvers[1],        
-                selectedSolvers[2], selectedSolvers[3]);
+            const result = runArmArchitectureSimulation(playerId!, selectedArchitecture, props.round, selectedSolvers[0], selectedSolvers[1], selectedSolvers[2], selectedSolvers[3], customPerformance);
             // save score to database and record that player has completed the round
             const response = await postRequest('player/armRoundResult', JSON.stringify({
                 playerId,
@@ -152,6 +153,14 @@ const ArmGameScreen = (props: {
                 <div className='TitleAndIcons'>
                     <h1>
                         Round {props.round - RoundNames.ArmGame1 + 1}
+                        <Button className='InfoButtonHolder' onClick={() => setShowMissionBeginModal(true)}>
+                            &nbsp;
+                            <svg width="24" height="24" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </Button>
                     </h1>
                     {
                         selectedSolvers.map((solver, index) => (
@@ -310,6 +319,22 @@ const ArmGameScreen = (props: {
                     </Button>
                 </div>
             </div>
+            {
+                showMissionBeginModal &&
+                <div className='Modal'
+                // Can have click out here but they may not read
+                >
+                    <div className='ModalBody'>
+                        <h2>The Mission Has Begun!</h2>
+                        <p>
+                            Here you will complete four rounds each with a unique objective. In each round you may select one architecture and any solver types you would like. Points are awarded for acheiving the objectives. The winner will be the agent with the most total points at the end of the mission.
+                        </p>
+                        <div className='ModalButtons'>
+                            <Button onClick={() => setShowMissionBeginModal(false)}>Begin</Button>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     );
 }

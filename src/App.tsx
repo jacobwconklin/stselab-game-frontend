@@ -12,7 +12,6 @@ function App() {
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [playerColor, setPlayerColor] = useState<string | null>(null);
-  const [customPerformanceWeight, setCustomPerformanceWeight] = useState<number | null>(null);
 
   return (
     <div className="App">
@@ -23,7 +22,6 @@ function App() {
             sessionId, setSessionId,
             playerId, setPlayerId,
             playerColor, setPlayerColor,
-            customPerformanceWeight, setCustomPerformanceWeight
           }}
         >
           <Router />
@@ -44,9 +42,7 @@ export const UserContext = createContext<UserContextType>({
   playerId: null,
   setPlayerId: (id: string) => { },
   playerColor: null,
-  setPlayerColor: (id: string) => { },
-  customPerformanceWeight: null,
-  setCustomPerformanceWeight: (id: number) => { },
+  setPlayerColor: (id: string) => { }
 });
 
 export default App;

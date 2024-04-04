@@ -5,6 +5,7 @@ import industrialSystemsEngineerIcon from '../Assets/MechArm/web-developer.svg';
 import mechanicalEngineerIcon from '../Assets/MechArm/construction-worker.svg';
 import materialsScientistIcon from '../Assets/MechArm/chemist.svg';
 import { ArmComponentResult, ArmRoundResult } from './Types';
+import { RoundNames } from './Utils';
 
 export enum ArmSolver {
     MechanicalEngineer = 1,
@@ -146,12 +147,181 @@ export const armComponents = [
     "Positioning Software"
 ]
 
+// used for deterministic-ish evaluation, will be replaced by python simulation from Athul
+// Lower is better
+const solverComponentWeights = [
+    // solver 1 mechanical engineer
+    {
+        "Entire Arm": {base: 30, range: 10},
+        "Manipulator": {base: 22, range: 8},
+        "Gripper": {base: 7, range: 6},
+        "Arm": {base: 15, range: 8},
+        "Base": {base: 15, range: 8},
+        "Mechanical System": {base: 20, range: 9},
+        "Power Supply": {base: 5, range: 2},
+        "Action Software": {base: 2, range: 2},
+        "Positioning Software": {base: 2, range: 2}
+    },
+    // materials scientist
+    {
+        "Entire Arm": {base: 20, range: 15},
+        "Manipulator": {base: 15, range: 10},
+        "Gripper": {base: 5, range: 5},
+        "Arm": {base: 10, range: 10},
+        "Base": {base: 10, range: 10},
+        "Mechanical System": {base: 15, range: 10},
+        "Power Supply": {base: 2, range: 3},
+        "Action Software": {base: 2, range: 2},
+        "Positioning Software": {base: 2, range: 2}
+    },
+    // computer scientist
+    {
+        "Entire Arm": {base: 40, range: 15},
+        "Manipulator": {base: 25, range: 10},
+        "Gripper": {base: 15, range: 5},
+        "Arm": {base: 20, range: 10},
+        "Base": {base: 20, range: 10},
+        "Mechanical System": {base: 25, range: 10},
+        "Power Supply": {base: 4, range: 1},
+        "Action Software": {base: 1, range: 1},
+        "Positioning Software": {base: 1, range: 1}
+    },
+    // Industrial Systems Engineer
+    {
+        "Entire Arm": {base: 25, range: 10},
+        "Manipulator": {base: 5, range: 10},
+        "Gripper": {base: 15, range: 5},
+        "Arm": {base: 15, range: 10},
+        "Base": {base: 5, range: 10},
+        "Mechanical System": {base: 35, range: 10},
+        "Power Supply": {base: 6, range: 4},
+        "Action Software": {base: 5, range: 2},
+        "Positioning Software": {base: 5, range: 2}
+    }
+]
+
+const solverComponentCosts = [
+    // solver 1 mechanical engineer
+    {
+        "Entire Arm": {base: 35, range: 10},
+        "Manipulator": {base: 15, range: 10},
+        "Gripper": {base: 25, range: 10},
+        "Arm": {base: 20, range: 10},
+        "Base": {base: 20, range: 10},
+        "Mechanical System": {base: 15, range: 10},
+        "Power Supply": {base: 10, range: 10},
+        "Action Software": {base: 10, range: 10},
+        "Positioning Software": {base: 10, range: 10}
+    },
+    // materials scientist
+    {
+        "Entire Arm": {base: 50, range: 10},
+        "Manipulator": {base: 30, range: 10},
+        "Gripper": {base: 10, range: 10},
+        "Arm": {base: 30, range: 10},
+        "Base": {base: 10, range: 10},
+        "Mechanical System": {base: 30, range: 10},
+        "Power Supply": {base: 10, range: 10},
+        "Action Software": {base: 10, range: 10},
+        "Positioning Software": {base: 10, range: 10}
+    },
+    // computer scientist
+    {
+        "Entire Arm": {base: 45, range: 10},
+        "Manipulator": {base: 35, range: 10},
+        "Gripper": {base: 25, range: 10},
+        "Arm": {base: 30, range: 10},
+        "Base": {base: 30, range: 10},
+        "Mechanical System": {base: 30, range: 10},
+        "Power Supply": {base: 10, range: 10},
+        "Action Software": {base: 5, range: 10},
+        "Positioning Software": {base: 5, range: 10}
+    },
+    // Industrial Systems Engineer
+    {
+        "Entire Arm": {base: 30, range: 10},
+        "Manipulator": {base: 25, range: 10},
+        "Gripper": {base: 15, range: 10},
+        "Arm": {base: 20, range: 10},
+        "Base": {base: 20, range: 10},
+        "Mechanical System": {base: 20, range: 10},
+        "Power Supply": {base: 10, range: 10},
+        "Action Software": {base: 10, range: 10},
+        "Positioning Software": {base: 10, range: 10}
+    }
+]
+
+// Functions used to ficticiously evaluate and then score arm mission (but at least in a more sensible way than randomly to make the game feel more deterministic for now)
+const evaluateArmRound = (
+    architecture: string,
+    solverOne: ArmSolver, 
+    solverTwo?: ArmSolver, 
+    solverThree?: ArmSolver, 
+    solverFour?: ArmSolver ): {weight: number, cost: number} => {
+        const chosenSolvers: any[] = [solverOne, solverTwo, solverThree, solverFour]
+        let weight = 0;
+        let cost = 0;
+        armArchitectures.find((arch) => arch.architecture === architecture)?.components.forEach((component: any, index) => {
+            const solverIndex = chosenSolvers[index] - 1;
+            const componentWeight = (solverComponentWeights as any[])[solverIndex][component.component].base;
+            const componentWeightRange = (solverComponentWeights as any[])[solverIndex][component.component].range;
+            weight += componentWeight + Math.floor(Math.random() * componentWeightRange);
+
+            const componentCost = (solverComponentCosts as any[])[solverIndex][component.component].base;
+            const componentRange = (solverComponentCosts as any[])[solverIndex][component.component].range;
+            cost += componentCost + Math.floor(Math.random() * componentRange);
+        })
+        return {weight, cost}
+    }
+
+const scoreArmRound = (round: number, weight: number, cost: number, customPerformance?: number): number => {
+    if (round === RoundNames.ArmGame1) {
+        // On round 1 best performance is rewarded no matter the cost
+        // 0 weight is perfect (and impossible) = score of 100
+        // 100 weight is overly bad = score of 0 
+        return (100 - weight);
+    } else if (round === RoundNames.ArmGame2) {
+        // On round 7 minimum cost is rewarded as long as the performance is <= 40 kg
+        // minimum cost is 0 = score of 100
+        // maximum cost is 100 = score of 0
+        const score = 100 - cost;
+        if (weight > 40) {
+            // divide score by amount as penalty
+            return Math.floor(score / 10);
+        } else {
+            return score;
+        }
+    } else if (round === RoundNames.ArmGame3) {
+        // use reward function to balance cost and shots
+        // for now use 50 50 split
+        const weightScore = 100 - weight;
+        const costScore = 100 - cost;
+        return (weightScore + costScore) / 2;
+    } else if (round === RoundNames.ArmGame4 && customPerformance ) {
+        // let users define custom reward function
+        const weightScore = (100 - weight) * customPerformance;
+        const costScore = (100 - cost) * (1 - customPerformance);
+        return weightScore + costScore;
+    } 
+    console.error("Error scoring arm round");
+    return -1;
+}
+
 
 // Run simulation on a specific component with a specific solver
 export const runArmComponentSimulation = (solver: ArmSolver, component: string): ArmComponentResult => {
+
+    const componentWeight = (solverComponentWeights as any[])[solver - 1][component].base;
+    const componentWeightRange = (solverComponentWeights as any[])[solver - 1][component].range;
+    const weight = componentWeight + Math.floor(Math.random() * componentWeightRange);
+
+    const componentCost = (solverComponentCosts as any[])[solver - 1][component].base;
+    const componentCostRange = (solverComponentCosts as any[])[solver - 1][component].range;
+    const cost = componentCost + Math.floor(Math.random() * componentCostRange);
+
     return {
-        weight: Math.floor(Math.random() * 80) + 20,
-        cost: Math.floor(Math.random() * 80) + 20,
+        weight,
+        cost,
         component,
         solver
     }
@@ -161,22 +331,26 @@ export const runArmComponentSimulation = (solver: ArmSolver, component: string):
 export const runArmArchitectureSimulation = (
     playerId: string, 
     architecture: string,
+    round: number,
     solverOne: ArmSolver, 
     solverTwo?: ArmSolver, 
     solverThree?: ArmSolver, 
     solverFour?: ArmSolver, 
+    customPerformance?: number
 ): ArmRoundResult => {
-    // TODO get score based on round being played:
+    // Gets weight and cost from evaluateArmRound method (TODO will come from simulation),
+    const {weight, cost} = evaluateArmRound(architecture, solverOne, solverTwo, solverThree, solverFour);
+    // then gets score based on round being played from scoreArmRound method.
     return {
         id: playerId,
         architecture,
+        round,
         solverOne,
         solverTwo, // optional
         solverThree, // optional
         solverFour, // optional
-        weight: Math.floor(Math.random() * 80) + 20,
-        cost: Math.floor(Math.random() * 80) + 20,
-        score: Math.floor(Math.random() * 80) + 20,
-        round: 1
+        weight,
+        cost,
+        score: scoreArmRound(round, weight, cost, customPerformance),
     }
 }

@@ -239,3 +239,41 @@
       opacity: 25%;
   }
 }
+
+// For Tournament and Mission begin modals at the start of their respective games.
+.Modal {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 100vw;
+  height: 100%;
+  min-height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 11;
+  display: flex;
+  justify-content: center;
+
+  .ModalBody {
+      margin-top: 100px;
+      width: 50%;
+      height: fit-content;
+      background-color: whitesmoke;        
+      border: 3px solid black;
+      border-radius: 10px;
+      padding: 40px;
+      z-index: 12;
+
+      h2 {
+          text-align: center;
+      }
+
+      .ModalButtons {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 20px;
+      }
+  }
+}

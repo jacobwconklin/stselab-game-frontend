@@ -11,6 +11,7 @@ import { ArmSolver, armArchitectures, armSolverImages, armSolverNames } from '..
 import { UserContext } from '../../../App';
 import { UserContextType } from '../../../Utils/Types';
 import { advanceSession } from '../../../Utils/Api';
+import VerificationModal from '../../../ReusableComponents/VerificationModal';
 
 
 // Like free roam round of golf tournament, this allows players to try all breakdowns of the mechanical arm and all solvers
@@ -31,6 +32,7 @@ const ArmExperimentGame = (props: {
     const [selectedComponent, setSelectedComponent] = useState<string>("");
     const [selectedArchitecture, setSelectedArchitecture] = useState<string>("");
     const [hostClickedAdvanceSession, setHostClickedAdvanceSession] = useState<Boolean>(false);
+    const [showVerificationModal, setShowVerificationModal] = useState(false);
 
     return (
         <div className="ArmExperimentGame">
@@ -126,9 +128,7 @@ const ArmExperimentGame = (props: {
                         isHost &&
                         <Button
                             disabled={!!hostClickedAdvanceSession}
-                            onClick={() => {
-                                advanceSession(sessionId, setHostClickedAdvanceSession);
-                            }}
+                            onClick={() => setShowVerificationModal(true)}
                             type='primary'
                         >
                             End Experimental Round
@@ -190,10 +190,18 @@ const ArmExperimentGame = (props: {
                     </Button>
                 </div>
             </div>
-
             {
                 props.showTypedMessage &&
                 <TypedMessage type={"arm"} confirm={() => props.setShowTypedMessage(false)} />
+            }
+            {
+                showVerificationModal &&
+                <VerificationModal
+                    title="Are you sure you end the Experimental Round?"
+                    message="This will end the experiment for all players and begin the Mission."
+                    confirm={() => advanceSession(sessionId, setHostClickedAdvanceSession)}
+                    cancel={() => setShowVerificationModal(false)}
+                />
             }
         </div>
     )

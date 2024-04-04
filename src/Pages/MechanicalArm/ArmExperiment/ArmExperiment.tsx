@@ -39,6 +39,7 @@ const ArmExperiment = () => {
                 });
             });
         });
+        // Does NOT save results to db
         setAllResults([...allResults, ...newResults]);
         setLatestResult('All components built by each solver. Click View Results to see how they performed.');
         setLoading(false);

@@ -157,8 +157,10 @@ const GameController = () => {
 
     useBeforeUnload(
         React.useCallback(() => {
-            // TODO remove player if they navigate away from game
+            // removes player if they navigate away from game
             if (playerId) postRequest("player/remove", JSON.stringify({ playerId }));
+            // TODO SPECIFICALLY if host leaves, could "end" the session for everyone. For now they just have to leave themselves
+            // as they get stuck without a host. 
         }, [playerId])
     );
 

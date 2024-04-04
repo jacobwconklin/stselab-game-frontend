@@ -132,8 +132,6 @@ export interface UserContextType {
     setPlayerId: (id: string) => void;
     playerColor: string | null;
     setPlayerColor: (id: string) => void;
-    customPerformanceWeight: number | null;
-    setCustomPerformanceWeight: (id: number) => void;
 }
 
 

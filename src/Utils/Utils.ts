@@ -65,7 +65,7 @@ export const getArchitectureCommonName = (architecture: string) => {
 // @param customPerfomance is a percent (between 0 and 1) of the score that is associated with shots.
 // 1 - customPerformance is the percent associated with cost
 export const scoreRound = (round: number, shots: number, cost: number, customPerformance?: number | null) => {
-    if (round === 6) {
+    if (round === RoundNames.TournamentStage1) {
         // On round 6 best performance is rewarded no matter the cost
         // 5 shots is perfect (and impossible) = score of 100
         // 50 shots is overly bad = score of 0 (highest I got was 41)
@@ -75,7 +75,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         } else {
             return (45 - shots - 5) * (100 / 45);
         }
-    } else if (round === 7) {
+    } else if (round === RoundNames.TournamentStage2) {
         // On round 7 minimum cost is rewarded as long as the performance is <= 35 strokes (TODO settle on stroke number)
         // This one may need to not be linear
         // Minimum cost ~ (3 specialists 60 - 90), (3 amateurs = 25), (3 professional ~ 50), 
@@ -93,7 +93,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         } else {
             return score;
         }
-    } else if (round === 8) {
+    } else if (round === RoundNames.TournamentStage3) {
         // use reward function to balance cost and shots
         // (will be given )
         // for now use 50 50 split
@@ -106,7 +106,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
             const costScore = (140 - cost - 10) * (100 / 140);
             return (shotScore + costScore) / 2;
         }
-    } else if (round === 9 && customPerformance ) {
+    } else if (round === RoundNames.TournamentStage4 && customPerformance ) {
         // let users define custom reward function
         if (shots > 50) {
             return ((140 - cost - 10) * (100 / 140)) * (1 - customPerformance);
