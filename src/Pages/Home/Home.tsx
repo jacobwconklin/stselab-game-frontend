@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HeroConfetti } from '../../ReusableComponents/Confetti';
 import arrowGif from '../../Assets/down-arrow-gif.gif';
+// import { H_Arch, PlayPutt, PlayDrive, PlayFairway, PlayLong, PlayShort } from '../../Utils/GolfSimulation';
 
 // Home
 const Home = () => {
@@ -175,6 +176,31 @@ const Home = () => {
                     <Button onClick={() => navigate('/results')}>View All Results</Button>
                     <div style={{ height: '30px' }}></div>
                     <br></br>
+                    {/* <br></br>
+                    <Button
+                        onClick={() => {
+                            const result = PlayPutt(15, 1, 1, 0.5);
+                            console.log(result);
+                        }}
+                    >
+                        Play Putt
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            const result = H_Arch(700, 1, 1, 1)
+                            console.log(result);
+                        }}
+                    >
+                        Play h arch
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            const result = PlayShort(700, 1, 1, 0.5)
+                            console.log(result);
+                        }}
+                    >
+                        Play Short
+                    </Button> */}
                 </div>
                 <br></br>
             </div>

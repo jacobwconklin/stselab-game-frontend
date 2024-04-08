@@ -7,8 +7,6 @@
 
     .Instructions {
 
-
-
         .TitleAndIcons {
             display: flex;
             align-items: center;
@@ -54,6 +52,9 @@
                 text-wrap: wrap;
                 height: fit-content;
                 margin-bottom: 10px;
+                span {
+                    text-wrap: wrap;
+                }
             }
 
             .CompletedComponent {

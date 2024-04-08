@@ -210,8 +210,8 @@ const FreeRoamGame = (props: {
                                     selectedSolver === Solver.Amateur &&
                                     <div className='AmateurIcons'>
                                         {
-                                            Array.apply(null, Array(25)).map(() => (
-                                                <img className='AmateurIconImage' src={amateurIcon} alt="Amateur Solver Icon" />
+                                            Array.apply(null, Array(25)).map((val, index) => (
+                                                <img className='AmateurIconImage' key={index} src={amateurIcon} alt="Amateur Solver Icon" />
                                             ))
                                         }
                                     </div>

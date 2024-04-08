@@ -73,7 +73,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
          if (shots > 50) {
             return 0;
         } else {
-            return (45 - shots - 5) * (100 / 45);
+            return (55 - shots - 5) * (100 / 55);
         }
     } else if (round === RoundNames.TournamentStage2) {
         // On round 7 minimum cost is rewarded as long as the performance is <= 35 strokes (TODO settle on stroke number)
@@ -86,7 +86,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
             return 0;
         }
 
-        const score = (140 - cost - 10) * (100 / 140); 
+        const score = (160 - cost - 10) * (100 / 160); 
         if (shots > 35) {
             // divide score by amount as penalty
             return Math.floor(score / 10);
@@ -98,23 +98,24 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         // (will be given )
         // for now use 50 50 split
         if (shots > 50) {
-            return ((140 - cost - 10) * (100 / 140)) / 2;
+            return ((160 - cost - 10) * (100 / 160)) / 2;
         } else if (cost > 150) {
-            return ((45 - shots - 5) * (100 / 45)) / 2;
+            return ((55 - shots - 5) * (100 / 55)) / 2;
         } else {
-            const shotScore = (45 - shots - 5) * (100 / 45);
-            const costScore = (140 - cost - 10) * (100 / 140);
+            const shotScore = (55 - shots - 5) * (100 / 55);
+            const costScore = (160 - cost - 10) * (100 / 160);
             return (shotScore + costScore) / 2;
         }
     } else if (round === RoundNames.TournamentStage4 && customPerformance ) {
         // let users define custom reward function
         if (shots > 50) {
-            return ((140 - cost - 10) * (100 / 140)) * (1 - customPerformance);
+            return ((160 - cost - 10) * (100 / 160)) * (1 - customPerformance);
         } else if (cost > 150) {
-            return ((45 - shots - 5) * (100 / 45)) * customPerformance;
+            return ((55 - shots - 5) * (100 / 45)) * customPerformance;
         } else {
-            const shotScore = ((45 - shots - 5) * (100 / 45)) * customPerformance;
+            const shotScore = ((55 - shots - 5) * (100 / 55)) * customPerformance;
             const costScore = ((140 - cost - 10) * (100 / 140)) * (1 - customPerformance);
+            console.log("Scores: ", shotScore, costScore);
             return (shotScore + costScore);
         }
     } else {

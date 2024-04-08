@@ -493,7 +493,7 @@ const ModuleResults = (props: {
                 <div className='StaticBackgroundImages'></div>
             </div>
             <div className='ResultInformation'>
-                <h1>Your experimental results</h1>
+                <h1>Your Experimental Results</h1>
                 <p>
                     Shots refers to the number of shots taken to finish the module. Drives are always exactly one shot. Distance refers to the distance traveled towards the hole after the module is finished from where the module begins. Short Putt modules always finish with a distance of 450 and Putt modules always finish with a distance of 15 as the ball is put in the hole. Other modules may have instances with a distance of 0 meaning a lucky
                     shot put the ball in the hole.

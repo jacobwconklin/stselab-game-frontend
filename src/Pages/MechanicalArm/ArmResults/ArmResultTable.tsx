@@ -162,7 +162,7 @@ const ArmResultTable = (props: {
                 id: player.id,
                 name: player.name,
                 color: player.color,
-                score: player.score,
+                score: player.score / 100,
                 weight: player.weight,
                 cost: player.cost,
                 architecture: player.architecture,
