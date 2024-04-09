@@ -19,6 +19,7 @@ import {
     Title
 } from 'chart.js';
 import { postRequest } from "../../Utils/Api";
+import DiceSelectGame from "../DiceSelectGame/DiceSelectGame";
 
 
 const ArmFinalResults = (props: {
@@ -28,6 +29,9 @@ const ArmFinalResults = (props: {
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     const [leaveTo, setLeaveTo] = useState('/');
     const navigate = useNavigate();
+
+    // make user play dice offboarding game before they can view the final results
+    const [finishedDiceGame, setFinishedDiceGame] = useState(false);
 
     const leavePage = () => {
         navigate(leaveTo);
@@ -39,7 +43,7 @@ const ArmFinalResults = (props: {
     // this will allow players to stop querying the server and store the time that the session ended.
     useEffect(() => {
         try {
-            postRequest("session/end", JSON.stringify({sessionId}));
+            postRequest("session/end", JSON.stringify({ sessionId }));
         } catch (error) {
             console.error("Error ending session: ", error);
         }
@@ -116,7 +120,7 @@ const ArmFinalResults = (props: {
                 label: result.name,
                 data: result.scores.map((round: ArmScore) => {
                     return {
-                        x: round.cost , // / 100,
+                        x: round.cost, // / 100,
                         y: round.weight
                     }
                 }),
@@ -310,64 +314,71 @@ const ArmFinalResults = (props: {
 
 
     return (
-        <div className="ArmFinalResults" ref={contentToPrint}>
-            <div className='Instructions'>
-                <h1>Final Results of the Mechanical Arm Mission:</h1>
-                <h2>{getPlacement()}</h2>
-                <div className='EndTournamentButtons'>
-                    <Button onClick={() => {
-                        setLeaveTo('/');
-                        setShowVerificationModal(true);
-                    }}>Return Home</Button>
-                    <Button onClick={() => {
-                        setLeaveTo('/results');
-                        setShowVerificationModal(true);
-                    }}>View Historical Results</Button>
-                    <Button onClick={() => handlePrint(null, () => contentToPrint.current)}>Save Results</Button>
-                    <Button onClick={() => saveGraphs()}>Save Graphs</Button>
-                </div>
-            </div>
+        <>
+            {
+                !finishedDiceGame ?
+                    <DiceSelectGame isOnboarding={false} finished={() => setFinishedDiceGame(true)} />
+                    :
+                    <div className="ArmFinalResults" ref={contentToPrint}>
+                        <div className='Instructions'>
+                            <h1>Final Results of the Mechanical Arm Mission:</h1>
+                            <h2>{getPlacement()}</h2>
+                            <div className='EndTournamentButtons'>
+                                <Button onClick={() => {
+                                    setLeaveTo('/');
+                                    setShowVerificationModal(true);
+                                }}>Return Home</Button>
+                                <Button onClick={() => {
+                                    setLeaveTo('/results');
+                                    setShowVerificationModal(true);
+                                }}>View Historical Results</Button>
+                                <Button onClick={() => handlePrint(null, () => contentToPrint.current)}>Save Results</Button>
+                                <Button onClick={() => saveGraphs()}>Save Graphs</Button>
+                            </div>
+                        </div>
 
-            <br></br>
+                        <br></br>
 
-            <div className='ResultTable'>
-                <Table
-                    pagination={isPrinting ? { pageSize: props.results.length, position: ['none', 'none'] } :
-                        { pageSize: 5, position: ['none', props.results.length > 5 ? 'bottomCenter' : "none"] }}
-                    columns={tableColumns}
-                    dataSource={tableData}
-                    rowKey={(record) => record.key ? record.key : record.score}
-                    rowClassName={(record, index) => {
-                        if (playerId && record.key && record.key.toLowerCase() === playerId.toLowerCase()) {
-                            return 'MatchingPlayer';
-                        } else {
-                            return 'HighlightRow'
+                        <div className='ResultTable'>
+                            <Table
+                                pagination={isPrinting ? { pageSize: props.results.length, position: ['none', 'none'] } :
+                                    { pageSize: 5, position: ['none', props.results.length > 5 ? 'bottomCenter' : "none"] }}
+                                columns={tableColumns}
+                                dataSource={tableData}
+                                rowKey={(record) => record.key ? record.key : record.score}
+                                rowClassName={(record, index) => {
+                                    if (playerId && record.key && record.key.toLowerCase() === playerId.toLowerCase()) {
+                                        return 'MatchingPlayer';
+                                    } else {
+                                        return 'HighlightRow'
+                                    }
+                                }}
+                            />
+                        </div>
+
+                        {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
+                        {
+                            !isPrinting &&
+                            <Scatter className='ScatterCanvas' options={shotsCostOptions} data={shotsCostData} />
                         }
-                    }}
-                />
-            </div>
-
-            {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
-            {
-                !isPrinting &&
-                <Scatter className='ScatterCanvas' options={shotsCostOptions} data={shotsCostData} />
+                        {
+                            !isPrinting &&
+                            <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
+                        }
+                        <br></br>
+                        <FullScreenConfetti />
+                        {
+                            showVerificationModal &&
+                            <VerificationModal
+                                title="Are you sure you want to leave?"
+                                message="Once you leave the session results page you can't come back."
+                                confirm={() => leavePage()}
+                                cancel={() => setShowVerificationModal(false)}
+                            />
+                        }
+                    </div>
             }
-            {
-                !isPrinting &&
-                <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
-            }
-            <br></br>
-            <FullScreenConfetti />
-            {
-                showVerificationModal &&
-                <VerificationModal
-                    title="Are you sure you want to leave?"
-                    message="Once you leave the session results page you can't come back."
-                    confirm={() => leavePage()}
-                    cancel={() => setShowVerificationModal(false)}
-                />
-            }
-        </div>
+        </>
     )
 }
 

@@ -4,9 +4,7 @@ import './Router.scss';
 import Register from './Pages/Register/Register';
 import GameController from './Pages/GameController/GameController';
 import AllResults from './Pages/AggregateResults/AllResults';
-import ArmGameScreen from './Pages/MechanicalArm/ArmGameScreen';
-import ArmExperiment from './Pages/MechanicalArm/ArmExperiment/ArmExperiment';
-import GameSimulator from './Pages/MechanicalArm/GameSimulator';
+import DiceSelectGame from './Pages/DiceSelectGame/DiceSelectGame';
 
 // Router
 const Router = () => {
@@ -18,12 +16,7 @@ const Router = () => {
                 <Route path="register/:playerType?/:joinCodeUrl?" element={<Register />} />
                 <Route path="results" element={<AllResults />} />
                 <Route path="game" element={<GameController />} />
-                <Route path="arm" element={<GameSimulator />} />
-                <Route path="armExp" element={<ArmExperiment/>} />
-                <Route path="armGame" element={<ArmGameScreen 
-                            finishedRounds={[false]} 
-                            setFinishedRound={(val: Array<Boolean>) => {}} 
-                            round={0} />} />
+                <Route path="dice" element={<DiceSelectGame isOnboarding={false} finished={()=>{alert("ROLLED")}} />} />
                 <Route path="*" element={<Home />} />
             </ Routes>
         </div>

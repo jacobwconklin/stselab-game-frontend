@@ -172,8 +172,11 @@ const Home = () => {
                             Join a Tournament
                         </Button>
                     </div>
-                    <p>Want to see old results?</p>
-                    <Button onClick={() => navigate('/results')}>View All Results</Button>
+
+                    {/* <p>Want to see old results?</p>
+                    <Button onClick={() => navigate('/results')}>View All Results</Button> */}
+
+
                     <div style={{ height: '30px' }}></div>
                     <br></br>
                     {/* <br></br>

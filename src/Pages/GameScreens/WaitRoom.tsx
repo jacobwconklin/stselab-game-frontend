@@ -8,11 +8,15 @@ import VerificationModal from '../../ReusableComponents/VerificationModal';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import { PlayerBrief, UserContextType } from '../../Utils/Types';
 import { CopyOutlined } from '@ant-design/icons';
+import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
 
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
 // can invite players to join their session.
-const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void}) => {
+const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void }) => {
+
+    // make user play dice onboarding game before they can join the session
+    const [finishedDiceGame, setFinishedDiceGame] = useState(false);
 
     // check host status and session id / join code from context
     const { isHost, sessionId, playerId } = useContext(UserContext) as UserContextType;
@@ -105,156 +109,163 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
 
 
     return (
-        <div className='WaitRoom'>
-            <div className='StaticBackground'>
-                <div className='StaticBackgroundImages'></div>
-            </div>
-            {contextHolder}
+        <>
             {
-                isHost ?
-                    <div className='Instructions'>
-                        <h1>Join Code: {sessionId}</h1>
-                        <div className='JoinLinkContainer'>
-                            <h3>
-                                <span>Join Link: </span>
-                                <span style={{ color: 'blue' }}>
-                                    {process.env.NODE_ENV === 'production' ?
-                                        "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
-                                        "localhost:3000/register/join/" + sessionId}
-                                </span>
-                            </h3>
-                            <Tooltip title="Copy Join Link" placement="top">
-                                <FloatButton
-                                    className='CopyJoinLinkButton'
-                                    icon={<CopyOutlined />}
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(process.env.NODE_ENV === 'production' ?
-                                            "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
-                                            "localhost:3000/register/join/" + sessionId);
-                                        messageApi.open({
-                                            type: 'success',
-                                            content: 'Join Link Copied',
-                                        });
-                                    }}
-                                >
-                                    Copy Join Link
-                                </FloatButton>
-                            </Tooltip>
-                        </div>
-                        <p>
-                            As host you control when the tournament starts and each round ends. After starting the tournament players can no
-                            longer join. You must share the join code or join link with other players so that they may enter the tournament. You can remove players from the tournament by clicking on their row.
-                        </p>
-
-                        <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>
-                        <Button
-                            disabled={!!beginningTournament}
-                            onClick={() => advanceSession(sessionId, setBeginningTournament)}
-                            type='primary'
-                        >
-                            Begin STSELab Golf
-                        </Button>
-                        <br></br>
-                        <Button
-                            disabled={!!beginningTournament}
-                            onClick={() => {
-                                props.setJumpToMechanicalArmMission(true);
-                                advanceSession(sessionId, setBeginningTournament)}
-                            }
-                        >
-                            Jump To Mechanical Arm Mission
-                        </Button>
-                    </div>
+                !finishedDiceGame ?
+                    <DiceSelectGame isOnboarding={true} finished={() => setFinishedDiceGame(true)} />
                     :
-                    <div className='Instructions'>
-                        <h1>Join Code: {sessionId}</h1>
-                        <div className='JoinLinkContainer'>
-                            <h3>
-                                <span>Join Link: </span>
-                                <span style={{ color: 'blue' }}>
-                                    {process.env.NODE_ENV === 'production' ?
-                                        "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
-                                        "localhost:3000/register/join/" + sessionId}
-                                </span>
-                            </h3>
-                            <Tooltip title="Copy Join Link" placement="top">
-                                <FloatButton
-                                    className='CopyJoinLinkButton'
-                                    icon={<CopyOutlined />}
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(process.env.NODE_ENV === 'production' ?
-                                            "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
-                                            "localhost:3000/register/join/" + sessionId);
-                                        messageApi.open({
-                                            type: 'success',
-                                            content: 'Join Link Copied',
-                                        });
-                                    }}
-                                >
-                                    Copy Join Link
-                                </FloatButton>
-                            </Tooltip>
+                    <div className='WaitRoom'>
+                        <div className='StaticBackground'>
+                            <div className='StaticBackgroundImages'></div>
                         </div>
-                        <p>
-                            The host controls when the tournament starts and each round ends. You will automatically move to the next screen
-                            as soon as the game begins. if you wish to exit the session you may click
-                            below. You can also click the title in the header to return to the landing page at any time.
-                            Share the join code or join link to help other players join the tournament.
-                        </p>
-                        <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>
-                        <Button
-                            onClick={() => {
-                                setPlayerIdToRemove(playerId ? playerId : '');
-                                setModalTitle('Are you sure you want to exit the tournament?');
-                                setModalMessage('You will leave the tournament.');
-                                setShowModal(true);
-                            }}
-                        >
-                            Exit Tournament
-                        </Button>
+                        {contextHolder}
+                        {
+                            isHost ?
+                                <div className='Instructions'>
+                                    <h1>Join Code: {sessionId}</h1>
+                                    <div className='JoinLinkContainer'>
+                                        <h3>
+                                            <span>Join Link: </span>
+                                            <span style={{ color: 'blue' }}>
+                                                {process.env.NODE_ENV === 'production' ?
+                                                    "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
+                                                    "localhost:3000/register/join/" + sessionId}
+                                            </span>
+                                        </h3>
+                                        <Tooltip title="Copy Join Link" placement="top">
+                                            <FloatButton
+                                                className='CopyJoinLinkButton'
+                                                icon={<CopyOutlined />}
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(process.env.NODE_ENV === 'production' ?
+                                                        "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
+                                                        "localhost:3000/register/join/" + sessionId);
+                                                    messageApi.open({
+                                                        type: 'success',
+                                                        content: 'Join Link Copied',
+                                                    });
+                                                }}
+                                            >
+                                                Copy Join Link
+                                            </FloatButton>
+                                        </Tooltip>
+                                    </div>
+                                    <p>
+                                        As host you control when the tournament starts and each round ends. After starting the tournament players can no
+                                        longer join. You must share the join code or join link with other players so that they may enter the tournament. You can remove players from the tournament by clicking on their row.
+                                    </p>
+
+                                    <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>
+                                    <Button
+                                        disabled={!!beginningTournament}
+                                        onClick={() => advanceSession(sessionId, setBeginningTournament)}
+                                        type='primary'
+                                    >
+                                        Begin STSELab Golf
+                                    </Button>
+                                    <br></br>
+                                    {/* <Button
+                                        disabled={!!beginningTournament}
+                                        onClick={() => {
+                                            props.setJumpToMechanicalArmMission(true);
+                                            advanceSession(sessionId, setBeginningTournament)
+                                        }
+                                        }
+                                    >
+                                        Jump To Mechanical Arm Mission
+                                    </Button> */}
+                                </div>
+                                :
+                                <div className='Instructions'>
+                                    <h1>Join Code: {sessionId}</h1>
+                                    <div className='JoinLinkContainer'>
+                                        <h3>
+                                            <span>Join Link: </span>
+                                            <span style={{ color: 'blue' }}>
+                                                {process.env.NODE_ENV === 'production' ?
+                                                    "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
+                                                    "localhost:3000/register/join/" + sessionId}
+                                            </span>
+                                        </h3>
+                                        <Tooltip title="Copy Join Link" placement="top">
+                                            <FloatButton
+                                                className='CopyJoinLinkButton'
+                                                icon={<CopyOutlined />}
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(process.env.NODE_ENV === 'production' ?
+                                                        "https://stselab-games.azurewebsites.net/register/join/" + sessionId :
+                                                        "localhost:3000/register/join/" + sessionId);
+                                                    messageApi.open({
+                                                        type: 'success',
+                                                        content: 'Join Link Copied',
+                                                    });
+                                                }}
+                                            >
+                                                Copy Join Link
+                                            </FloatButton>
+                                        </Tooltip>
+                                    </div>
+                                    <p>
+                                        The host controls when the tournament starts and each round ends. You will automatically move to the next screen
+                                        as soon as the game begins. if you wish to exit the session you may click
+                                        below. You can also click the title in the header to return to the landing page at any time.
+                                        Share the join code or join link to help other players join the tournament.
+                                    </p>
+                                    <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>
+                                    <Button
+                                        onClick={() => {
+                                            setPlayerIdToRemove(playerId ? playerId : '');
+                                            setModalTitle('Are you sure you want to exit the tournament?');
+                                            setModalMessage('You will leave the tournament.');
+                                            setShowModal(true);
+                                        }}
+                                    >
+                                        Exit Tournament
+                                    </Button>
+                                </div>
+                        }
+
+                        <div className='ResultTable'>
+                            <Table
+                                pagination={{ pageSize: 5, position: ['none', players.length > 5 ? 'bottomCenter' : "none"] }}
+                                columns={columns}
+                                dataSource={data}
+                                rowKey={(record) => record.key ? record.key : 'row-key'}
+                                rowClassName={(record, index) => {
+                                    if (playerId && isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
+                                        return 'Clickable';
+                                    } else if (playerId && record.key?.toLowerCase() === playerId.toLowerCase()) {
+                                        return 'MatchingPlayer';
+                                    } else {
+                                        return 'HighlightRow'
+                                    }
+                                }}
+                                onRow={(record, rowIndex) => {
+                                    return {
+                                        onClick: event => {
+                                            if (playerId && isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
+                                                setPlayerIdToRemove(record.key);
+                                                setModalTitle('Are you sure you want to remove: ' + record.name + '?');
+                                                setModalMessage('The player will be removed from the Tournament including all of their information');
+                                                setShowModal(true);
+                                            }
+                                        },
+                                    }
+                                }}
+                            />
+                        </div>
+                        {
+                            showModal &&
+                            <VerificationModal
+                                cancel={cancelModal}
+                                confirm={confirmModal}
+                                title={modalTitle}
+                                message={modalMessage}
+                            />
+                        }
                     </div>
             }
-
-            <div className='ResultTable'>
-                <Table
-                    pagination={{ pageSize: 5, position: ['none', players.length > 5 ? 'bottomCenter' : "none"] }}
-                    columns={columns}
-                    dataSource={data}
-                    rowKey={(record) => record.key ? record.key : 'row-key'}
-                    rowClassName={(record, index) => {
-                        if (playerId && isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
-                            return 'Clickable';
-                        } else if (playerId && record.key?.toLowerCase() === playerId.toLowerCase()) {
-                            return 'MatchingPlayer';
-                        } else {
-                            return 'HighlightRow'
-                        }
-                    }}
-                    onRow={(record, rowIndex) => {
-                        return {
-                            onClick: event => {
-                                if (playerId && isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
-                                    setPlayerIdToRemove(record.key);
-                                    setModalTitle('Are you sure you want to remove: ' + record.name + '?');
-                                    setModalMessage('The player will be removed from the Tournament including all of their information');
-                                    setShowModal(true);
-                                }
-                            },
-                        }
-                    }}
-                />
-            </div>
-            {
-                showModal &&
-                <VerificationModal
-                    cancel={cancelModal}
-                    confirm={confirmModal}
-                    title={modalTitle}
-                    message={modalMessage}
-                />
-            }
-        </div>
-    )
+        </>)
 }
 
 export default WaitRoom;

@@ -20,11 +20,15 @@ import { FullScreenConfetti } from '../../ReusableComponents/Confetti';
 import { RoundNames } from '../../Utils/Utils';
 import VerificationModal from '../../ReusableComponents/VerificationModal';
 import { advanceSession } from '../../Utils/Api';
+import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
 const SessionResults = (props: { players: FinalResult[] }) => {
 
+    
+    // make user play dice onboarding game before they can join the session
+    const [finishedDiceGame, setFinishedDiceGame] = useState(false);
 
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false)
@@ -307,65 +311,70 @@ const SessionResults = (props: { players: FinalResult[] }) => {
     }
 
     return (
-        <div className='SessionResults' ref={contentToPrint}>
+        <>
             {
-                !isPrinting &&
-                <div className='StaticBackground'>
-                    <div className='StaticBackgroundImages'></div>
-                </div>
-            }
-            <div className='Instructions'>
-                <h1>Tournament Results </h1>
-                <h2>{getPlacement()}</h2>
-                <div className='EndTournamentButtons'>
-                    <Button onClick={() => {
-                        setLeaveTo('/');
-                        setShowVerificationModal(true);
-                    }}>Return Home</Button>
-                    <Button onClick={() => {
-                        setLeaveTo('/results');
-                        setShowVerificationModal(true);
-                    }}>View Historical Results</Button>
-                    <Button onClick={() => handlePrint(null, () => contentToPrint.current)}>Save Results</Button>
-                    <Button onClick={() => saveGraphs()}>Save Graphs</Button>
-                </div>
-            </div>
-
-            <br></br>
-
-            <div className='ResultTable'>
-                <Table
-                    pagination={isPrinting ? { pageSize: props.players.length, position: ['none', 'none'] } :
-                        { pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
-                    columns={tableColumns}
-                    dataSource={tableData}
-                    rowKey={(record) => record.key}
-                    rowClassName={(record, index) => {
-                        if (playerId && record.key.toLowerCase() === playerId.toLowerCase()) {
-                            return 'MatchingPlayer';
-                        } else {
-                            return 'HighlightRow'
+                !finishedDiceGame ?
+                    <DiceSelectGame isOnboarding={false} finished={() => setFinishedDiceGame(true)} />
+                    :
+                    <div className='SessionResults' ref={contentToPrint}>
+                        {
+                            !isPrinting &&
+                            <div className='StaticBackground'>
+                                <div className='StaticBackgroundImages'></div>
+                            </div>
                         }
-                    }}
-                />
-            </div>
+                        <div className='Instructions'>
+                            <h1>Tournament Results </h1>
+                            <h2>{getPlacement()}</h2>
+                            <div className='EndTournamentButtons'>
+                                <Button onClick={() => {
+                                    setLeaveTo('/');
+                                    setShowVerificationModal(true);
+                                }}>Return Home</Button>
+                                <Button onClick={() => {
+                                    setLeaveTo('/results');
+                                    setShowVerificationModal(true);
+                                }}>View Historical Results</Button>
+                                <Button onClick={() => handlePrint(null, () => contentToPrint.current)}>Save Results</Button>
+                                <Button onClick={() => saveGraphs()}>Save Graphs</Button>
+                            </div>
+                        </div>
 
-            {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
-            {
-                !isPrinting &&
-                <Scatter className='ScatterCanvas' options={shotsCostOptions} data={shotsCostData} />
-            }
-            {
-                !isPrinting &&
-                <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
-            }
-            <br></br>
+                        <br></br>
 
-            <br></br>
-            <br></br>
-            <br></br>
+                        <div className='ResultTable'>
+                            <Table
+                                pagination={isPrinting ? { pageSize: props.players.length, position: ['none', 'none'] } :
+                                    { pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
+                                columns={tableColumns}
+                                dataSource={tableData}
+                                rowKey={(record) => record.key}
+                                rowClassName={(record, index) => {
+                                    if (playerId && record.key.toLowerCase() === playerId.toLowerCase()) {
+                                        return 'MatchingPlayer';
+                                    } else {
+                                        return 'HighlightRow'
+                                    }
+                                }}
+                            />
+                        </div>
 
-            <div className='Instructions'>
+                        {/* Initial data visualizations through https://www.chartjs.org/docs/latest/charts/scatter.html */}
+                        {
+                            !isPrinting &&
+                            <Scatter className='ScatterCanvas' options={shotsCostOptions} data={shotsCostData} />
+                        }
+                        {
+                            !isPrinting &&
+                            <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
+                        }
+                        <br></br>
+
+                        <br></br>
+                        <br></br>
+                        <br></br>
+
+                        {/* <div className='Instructions'>
                     <h1>Play Mechanical Arm Mission</h1>
                     <p>--- still under development ---</p>
                     {
@@ -381,18 +390,22 @@ const SessionResults = (props: { players: FinalResult[] }) => {
                         :
                         <p>Host must begin the game</p>
                     }
-            </div>
-            <FullScreenConfetti />
-            {
-                showVerificationModal &&
-                <VerificationModal
-                    title="Are you sure you want to leave?"
-                    message="Once you leave the session results page you can't come back."
-                    confirm={() => leavePage()}
-                    cancel={() => setShowVerificationModal(false)}
-                />
+            </div> */}
+
+                        <FullScreenConfetti />
+
+                        {
+                            showVerificationModal &&
+                            <VerificationModal
+                                title="Are you sure you want to leave?"
+                                message="Once you leave the session results page you can't come back."
+                                confirm={() => leavePage()}
+                                cancel={() => setShowVerificationModal(false)}
+                            />
+                        }
+                    </div>
             }
-        </div>
+        </>
     )
 }
 

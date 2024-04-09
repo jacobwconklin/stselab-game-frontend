@@ -1,5 +1,39 @@
 This can outline the major TODOs so they can be ordered 
 
+
+Pre-condition test quiz:
+D&D like. Since main measurement is that people understand mechanims to solve problems. 
+Give people question with access to different dice and let them roll them and try to get close to a certain number. 
+Onboarding Test
+Have a pool of dice each with a "cost"
+You get 8 limited credits (currency) to buy dice and try to get a total of 12 as the sum of all rolls. Ask them which dice combination to pick. 
+Allow picking more than one of the same size dice. Could create table. 
+Find probability of them rolling 12 but don't show them just record their choices Plus the score = probability of rolling 12. 
+Make onboarding a requirement to get into wait room. Make offboarding a requirement to view the final results
+"Play Onboarding Game to join the session" and "Play Offboarding Game to view the final results"
+
+In OFFBOARDING test keep everything else the same but change total trying to reach to 20 and # of credits to 10. 
+
+
+
+Feedback:
+Intro screen turn off historic results options button. 
+
+on register screen:
+add demographics (politically correct) (race) + latino etc.
+Change Country to where are you playing the game from / where you reside.
+Delete hobbies. 
+
+On Education change to have option for No, option for current, and option for yes (not just yes or no)
+Remove associate and professional from education. 
+
+Comment out specialization screen (take it out for now)
+
+Add new questions with the 7 point scale:
+
+
+
+
 #1: SCALE UP stselab-games-backend plan to at least first basic level, it is too slow and weak rn. Ask professor about his budget / goals.
 
 # 1 b: Maybe Change Azure SQL database plan? the 100,000 vCore seconds do not seem to be enough, just me playing through the game once with two players used 700, and most people would take longer to play and have more people playing. I don't know about 5DTU might be too little, and honestly pay as you go might be worth it for app that is rarely used. 

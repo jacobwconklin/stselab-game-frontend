@@ -148,6 +148,7 @@ const AmateurOnly = (props: { round: Number }) => {
                                         onClick={() => advanceSession(sessionId, setHostClickedButton)}
                                         type='primary'
                                     >Begin Next Round</Button>
+                                    // TODO warn host that this will advance everyone
                                 }
                             </div>
                         </div>
