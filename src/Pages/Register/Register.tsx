@@ -5,6 +5,7 @@ import {
     InputNumber,
     Radio,
     Select,
+    SelectProps,
     Table,
 } from 'antd';
 import './Register.scss';
@@ -33,8 +34,20 @@ const Register = () => {
     const [participationReason, setParticipationReason] = useState('');
     const [gender, setGender] = useState('');
     const [age, setAge] = useState<number | null>(0);
-    const [country, setCountry] = useState('');
-    const [hobbies, setHobbies] = useState('');
+    const [residence, setResidence] = useState('');
+
+    // ethnicity is a multi select that is converted to a comma separated string
+    const ethnicityOptions: SelectProps['options'] = [
+        { value: 'American Indian or Alaska Native', label: 'American Indian or Alaska Native' },
+        { value: 'Asian or Asian American', label: 'Asian or Asian American' },
+        { value: 'Black or African American', label: 'Black or African American' },
+        { value: 'Hispanic or Latino', label: 'Hispanic or Latino' },
+        { value: 'Middle Eastern or North African', label: 'Middle Eastern or North African' },
+        { value: 'Native Hawai\'ian or Other Pacific Islander', label: 'Native Hawai\'ian or Other Pacific Islander' },
+        { value: 'White or European', label: 'White or European' },
+        { value: 'Prefer not to say', label: 'Prefer not to say' },
+    ]
+    const [ethnicity, setEthnicity] = useState<string[]>([]);
 
     // If user is an undergraduate or graduate college student open the college 
     // questions to them
@@ -48,7 +61,7 @@ const Register = () => {
     /**
      * Information for Table for gathering Educational Background
      */
-    const educationLevels = ["Highschool", "Associates", "Bachelors", "Masters", "Professional (MBA, JD, MD)", "Doctorate"]
+    const educationLevels = ["Highschool", "Bachelors", "Masters", "Doctorate"]
 
     const [educationalBackgroundCompleted, setEducationalBackgroundCompleted] = useState(Array(educationLevels.length + 1).fill(0));
     const [educationalBackgroundSubjectArea, setEducationalBackgroundSubjectArea] = useState(Array(educationLevels.length + 1).fill('N/A'));
@@ -59,7 +72,7 @@ const Register = () => {
 
         const dataSourceArray = educationLevels.map((educationLevel, index) => {
             return {
-                key: index,
+                key: "Key: " + index + educationalBackgroundCompleted[index] + educationalBackgroundSubjectArea[index],
                 EducationLevel: <p>{educationLevel}</p>,
                 Completed: <div>
                     <Radio.Group
@@ -71,6 +84,7 @@ const Register = () => {
                         value={educationalBackgroundCompleted[index]}>
                         <Radio value={0}>No</Radio>
                         <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>Current</Radio>
                     </Radio.Group>
                 </div>,
                 SubjectArea: <div>
@@ -88,7 +102,7 @@ const Register = () => {
             }
         });
         dataSourceArray.push({
-            key: educationLevels.length,
+            key: "Key: " + educationalBackgroundCompleted[educationLevels.length] + educationalBackgroundSubjectArea[educationLevels.length],
             EducationLevel: <div>
                 <p>Other (Please Specify)</p>
                 <Input
@@ -108,6 +122,7 @@ const Register = () => {
                     value={educationalBackgroundCompleted[educationLevels.length]}>
                     <Radio value={0}>No</Radio>
                     <Radio value={1}>Yes</Radio>
+                    <Radio value={2}>Current</Radio>
                 </Radio.Group>
             </div>,
             SubjectArea: <div>
@@ -153,122 +168,22 @@ const Register = () => {
      * End information for Table for gathering Educational Background
      */
 
-
-    /**
-     * Information for Table for gathering Technical Organization Background and years of specializations
-     */
-    const specializations = ["Aerospace Engineering", "Design", "Electrical Engineering", "Industrial Engineering",
-        "Manufacturing", "Material Science or Engineering", "Mechanical Engineering", "Project Management",
-        "Robotics or Mechatronics", "Software or Computer Engineering or Computer Science", "Systems Engineering"];
-
-    const [specializationCompleted, setSpecializationCompleted] = useState(Array(specializations.length + 1).fill(0));
-    const [specializationYears, setSpecializationYears] = useState(Array(specializations.length + 1).fill(0));
-    const [otherSpecialization, setOtherSpecialization] = useState('');
-
-
-    // Create each row of table
-    const getSpecializationDataSource = () => {
-
-        const dataSourceArray = specializations.map((specialization, index) => {
-            return {
-                key: index,
-                Specialization: <p>{specialization}</p>,
-                Completed: <div>
-                    <Radio.Group
-                        onChange={(e) => {
-                            const newSpecializationCompleted = [...specializationCompleted];
-                            newSpecializationCompleted[index] = e.target.value;
-                            setSpecializationCompleted(newSpecializationCompleted);
-                        }}
-                        value={specializationCompleted[index]}>
-                        <Radio value={0}>No</Radio>
-                        <Radio value={1}>Yes</Radio>
-                    </Radio.Group>
-                </div>,
-                Years: <div>
-                    <InputNumber
-                        value={specializationYears[index]}
-                        min={0}
-                        max={99}
-                        onChange={(e) => {
-                            const newSpecializationYears = [...specializationYears];
-                            newSpecializationYears[index] = e;
-                            setSpecializationYears(newSpecializationYears);
-                        }}
-                        disabled={specializationCompleted[index] === 0}
-                    />
-                </div>,
-            }
-        });
-        dataSourceArray.push({
-            key: specializations.length,
-            Specialization: <div>
-                <p>Other (Please Specify)</p>
-                <Input
-                    value={otherSpecialization}
-                    onChange={(e) => setOtherSpecialization(e.target.value)}
-                    maxLength={64}
-                />
-            </div>,
-            Completed: <div>
-                <p style={{ color: 'whitesmoke' }}> . </p>
-                <Radio.Group
-                    onChange={(e) => {
-                        const newSpecializationCompleted = [...specializationCompleted];
-                        newSpecializationCompleted[specializations.length] = e.target.value;
-                        setSpecializationCompleted(newSpecializationCompleted);
-                    }}
-                    value={specializationCompleted[specializations.length]}>
-                    <Radio value={0}>No</Radio>
-                    <Radio value={1}>Yes</Radio>
-                </Radio.Group>
-            </div>,
-            Years: <div>
-                <p style={{ color: 'whitesmoke' }}> . </p>
-                <InputNumber
-                    value={specializationYears[specializations.length]}
-                    min={0}
-                    max={99}
-                    onChange={(e) => {
-                        const newSpecializationYears = [...specializationYears];
-                        newSpecializationYears[specializations.length] = e;;
-                        setSpecializationYears(newSpecializationYears);
-                    }}
-                    disabled={specializationCompleted[specializations.length] === 0}
-                />
-            </div>,
-
-        })
-        return dataSourceArray;
-    }
-
-    const specializationColumns = [
-        {
-            title: 'Specialization',
-            dataIndex: 'Specialization',
-            key: 'Specialization',
-            width: '30%'
-        },
-        {
-            title: 'Have you worked or volunteered in this field?',
-            dataIndex: 'Completed',
-            key: 'Completed',
-            width: '30%'
-        },
-        {
-            title: 'Number of Years',
-            dataIndex: 'Years',
-            key: 'Years',
-            width: '30%'
-        },
+    // 7 point questions:
+    const experienceQuestions = ["riskAnalysisExperience", "supplierExperience", "proposalOrStatementOfWorkExperience", "bidsForRequestsExperience", "systemArchitectureExperience", "golfExperience", "systemsEngineeringExpertise",
+        "statementOfWorkExpertise"];
+    // how experience questions are presented to users:
+    const experienceQuestionPrompts=[
+        "How experienced are you with probabilistic reasoning and/or risk analysis?",
+        "Do you have any experience with working with suppliers or contractors?",
+        "Do you have any experience evaluating or creating request for proposal (RFP), or statement of work (SOW) documents?",
+        "Do you have any experience submitting bids for requests for proposal (RFPs)?",
+        "Do you have any experience with creating or evaluating system architectures?",
+        "How familiar are you with the game of Golf?",
+        "A systems engineering problem is:",
+        "Defining statement of work documents and / or work contracts is:",
     ];
-
-    /**
-     * End information for Table for gathering Educational Background
-     */
-
-    const [systemsEngineeringExpertise, setSystemsEngineeringExpertise] = useState<number | null>(null);
-    const [statementOfWorkExpertise, setStatementOfWorkExpertise] = useState<number | null>(null);
+    // values saved for experience questions:
+    const [experienceValues, setExperienceValues] = useState<Array<null | number>>(Array(experienceQuestions.length).fill(null));
 
     const [color, setColor] = useState('#ffffff');
     const [joinCode, setJoinCode] = useState(joinCodeUrl ? joinCodeUrl : '');
@@ -297,19 +212,23 @@ const Register = () => {
         } else if (!age) {
             document.getElementById('Age')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
-        } else if (!country) {
-            document.getElementById('Country')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (!residence) {
+            document.getElementById('Residence')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        } else if (ethnicity.length === 0) {
+            document.getElementById('Ethnicity')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         } else if (isCollegeStudent && (!university || !degreeProgram || !yearsInProgram)) {
             document.getElementById('IsCollegeStudent')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
-        } else if (systemsEngineeringExpertise === null) {
-            document.getElementById('SystemsExpertise')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return false;
-        } else if (statementOfWorkExpertise === null) {
-            document.getElementById('StatementOfWorkExpertise')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return false;
         } else {
+            // check all 7 point experience questions
+            for (let i = 0; i < experienceValues.length; i++) {
+                if (experienceValues[i] === null) {
+                    document.getElementById(experienceQuestions[i])?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return false;
+                }
+            }
             return true;
         }
     }
@@ -321,8 +240,9 @@ const Register = () => {
     useEffect(() => {
         if (localStorage.getItem('playerInformation') && !pulledFromLocalStorage) {
             // stored education and specialization names:
-            const educationLevelsStored = ["highschoolEducation", "associatesEducation", "bachelorsEducation", "mastersEducation", "professionalEducation", "doctorateEducation", "otherEducation"];
-            const specializationsStored = ["aerospaceEngineeringSpecialization", "designSpecialization", "electricalEngineeringSpecialization", "industrialEngineeringSpecialization", "manufacturingSpecialization", "materialScienceSpecialization", "mechanicalEngineeringSpecialization", "projectManagementSpecialization", "roboticsSpecialization", "softwareSpecialization", "systemsEngineeringSpecialization", "otherSpecialization"]
+            const educationLevelsStored = ["highschoolEducation", "bachelorsEducation", "mastersEducation", "doctorateEducation", "otherEducation"];
+            const experienceQuestionsStored = ["riskAnalysisExperience", "supplierExperience", "proposalOrStatementOfWorkExperience", "bidsForRequestsExperience", "systemArchitectureExperience", "golfExperience", "systemsEngineeringExpertise",
+                "statementOfWorkExpertise"];
 
             const playerInformation = JSON.parse(localStorage.getItem('playerInformation') as string);
             setName(playerInformation.name);
@@ -330,42 +250,38 @@ const Register = () => {
             setParticipationReason(playerInformation.participationReason);
             setGender(playerInformation.gender);
             setAge(playerInformation.age);
-            setCountry(playerInformation.country);
-            if (playerInformation.hobbies) setHobbies(playerInformation.hobbies);
+            setResidence(playerInformation.residence);
+            setEthnicity(playerInformation.ethnicity.split(', '));
             setIsCollegeStudent(playerInformation.isCollegeStudent);
             if (playerInformation.university) setUniversity(playerInformation.university);
             if (playerInformation.degreeProgram) setDegreeProgram(playerInformation.degreeProgram);
             if (playerInformation.yearsInProgram) setYearsInProgram(playerInformation.yearsInProgram);
+            const newEducationalBackgroundCompleted = [...educationalBackgroundCompleted];
+            const newEducationalBackgroundSubjectArea = [...educationalBackgroundSubjectArea];
             educationLevelsStored.forEach((educationLevel, index) => {
                 if (playerInformation[educationLevel]) {
-                    const newEducationalBackgroundCompleted = [...educationalBackgroundCompleted];
-                    newEducationalBackgroundCompleted[index] = true;
-                    setEducationalBackgroundCompleted(newEducationalBackgroundCompleted);
-                    const newEducationalBackgroundSubjectArea = [...educationalBackgroundSubjectArea];
-                    newEducationalBackgroundSubjectArea[index] = playerInformation[educationLevel];
-                    setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
+                    newEducationalBackgroundCompleted[index] = playerInformation[educationLevel].startsWith("Yes") ? 1 : 2;
+                    newEducationalBackgroundSubjectArea[index] 
+                        = playerInformation[educationLevel].substring(playerInformation[educationLevel].indexOf(":") + 1);
+                } else {
+                    newEducationalBackgroundCompleted[index] = 0;
                 }
             });
+            setEducationalBackgroundCompleted(newEducationalBackgroundCompleted);
+            setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
             if (playerInformation.otherEducationName) setOtherEducation(playerInformation.otherEducationName);
 
-            specializationsStored.forEach((specialization, index) => {
-                if (playerInformation[specialization]) {
-                    const newSpecializationCompleted = [...specializationCompleted];
-                    newSpecializationCompleted[index] = true;
-                    setSpecializationCompleted(newSpecializationCompleted);
-                    const newSpecializationYears = [...specializationYears];
-                    newSpecializationYears[index] = playerInformation[specialization];
-                    setSpecializationYears(newSpecializationYears);
+            const newExperienceValues = [...experienceValues];
+            experienceQuestionsStored.forEach((experienceQuestion, index) => {
+                if (playerInformation[experienceQuestion]) {
+                    newExperienceValues[index] = playerInformation[experienceQuestion];
                 }
             });
-            if (playerInformation.otherSpecializationName) setOtherSpecialization(playerInformation.otherSpecializationName);
-
-            if (playerInformation.systemsEngineeringExpertise) setSystemsEngineeringExpertise(playerInformation.systemsEngineeringExpertise);
-            if (playerInformation.statementOfWorkExpertise) setStatementOfWorkExpertise(playerInformation.statementOfWorkExpertise);
+            setExperienceValues(newExperienceValues);
 
             setPulledFromLocalStorage(true);
         }
-    }, [educationalBackgroundCompleted, educationalBackgroundSubjectArea, pulledFromLocalStorage, specializationCompleted, specializationYears]);
+    }, [educationalBackgroundCompleted, educationalBackgroundSubjectArea, pulledFromLocalStorage, experienceValues]);
 
     const submit = async () => {
         // if successful give a happy message, otherwise let them know after an error from the backend
@@ -383,8 +299,8 @@ const Register = () => {
                     participationReason,
                     gender,
                     age,
-                    country,
-                    hobbies,
+                    residence,
+                    ethnicity: ethnicity.join(', '), // convert array to string
 
                     isCollegeStudent: isCollegeStudent,
                     university,
@@ -392,33 +308,28 @@ const Register = () => {
                     yearsInProgram,
 
                     // TODO may be better to just send arrays? Instead of so many ungrouped fields for education levels and specializations ... 
-                    highschoolEducation: educationalBackgroundCompleted[0] ? educationalBackgroundSubjectArea[0] : null,
-                    associatesEducation: educationalBackgroundCompleted[1] ? educationalBackgroundSubjectArea[1] : null,
-                    bachelorsEducation: educationalBackgroundCompleted[2] ? educationalBackgroundSubjectArea[2] : null,
-                    mastersEducation: educationalBackgroundCompleted[3] ? educationalBackgroundSubjectArea[3] : null,
-                    professionalEducation: educationalBackgroundCompleted[4] ? educationalBackgroundSubjectArea[4] : null,
-                    doctorateEducation: educationalBackgroundCompleted[5] ? educationalBackgroundSubjectArea[5] : null,
+                    // All selected education values begin with "Yes:" or "Current:".
+                    highschoolEducation: educationalBackgroundCompleted[0] ? 
+                    ((educationalBackgroundCompleted[0] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[0])  : undefined,
+                    bachelorsEducation: educationalBackgroundCompleted[1] ? 
+                    ((educationalBackgroundCompleted[1] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[1])  : undefined,
+                    mastersEducation: educationalBackgroundCompleted[2] ? 
+                    ((educationalBackgroundCompleted[2] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[2])  : undefined,
+                    doctorateEducation: educationalBackgroundCompleted[3] ? 
+                    ((educationalBackgroundCompleted[3] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[3])  : undefined,
                     otherEducationName: educationalBackgroundCompleted[educationLevels.length] ? otherEducation : null,
                     otherEducation: educationalBackgroundCompleted[educationLevels.length]
-                        ? educationalBackgroundSubjectArea[educationLevels.length] : null,
+                        ? ((educationalBackgroundCompleted[educationLevels.length] === 1 ? "Yes:" : "Current:") 
+                        + educationalBackgroundSubjectArea[educationLevels.length])  : undefined,
 
-                    aerospaceEngineeringSpecialization: specializationCompleted[0] ? specializationYears[0] : null,
-                    designSpecialization: specializationCompleted[1] ? specializationYears[1] : null,
-                    electricalEngineeringSpecialization: specializationCompleted[2] ? specializationYears[2] : null,
-                    industrialEngineeringSpecialization: specializationCompleted[3] ? specializationYears[3] : null,
-                    manufacturingSpecialization: specializationCompleted[4] ? specializationYears[4] : null,
-                    materialScienceSpecialization: specializationCompleted[5] ? specializationYears[5] : null,
-                    mechanicalEngineeringSpecialization: specializationCompleted[6] ? specializationYears[6] : null,
-                    projectManagementSpecialization: specializationCompleted[7] ? specializationYears[7] : null,
-                    roboticsSpecialization: specializationCompleted[8] ? specializationYears[8] : null,
-                    softwareSpecialization: specializationCompleted[9] ? specializationYears[9] : null,
-                    systemsEngineeringSpecialization: specializationCompleted[10] ? specializationYears[10] : null,
-                    otherSpecializationName: specializationCompleted[specializations.length] ? otherSpecialization : null,
-                    otherSpecialization: specializationCompleted[specializations.length]
-                        ? specializationYears[specializations.length] : null,
-
-                    systemsEngineeringExpertise,
-                    statementOfWorkExpertise,
+                    riskAnalysisExperience: experienceValues[0],
+                    supplierExperience: experienceValues[1],
+                    proposalOrStatementOfWorkExperience: experienceValues[2],
+                    bidsForRequestsExperience: experienceValues[3],
+                    systemArchitectureExperience: experienceValues[4],
+                    golfExperience: experienceValues[5],
+                    systemsEngineeringExpertise: experienceValues[6],
+                    statementOfWorkExpertise: experienceValues[7],
                 }
 
                 // Save to context whether a player is joining or hosting the session. The Player's unique playerId
@@ -426,7 +337,6 @@ const Register = () => {
 
                 // Save player information to localStorage and retreive it if it is there on start
                 localStorage.setItem('playerInformation', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation }));
-
 
                 if (playerType === 'host') {
                     const submitResult = await postRequest('player/host', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation }))
@@ -550,39 +460,48 @@ const Register = () => {
                                 onChange={(e) => setAge(e)}
                                 addonAfter="Years Old"
                             />
-                            <p className='FormTitle' id='Country' >
+                            <p className='FormTitle' id='Residence' >
                                 <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                Country
+                                Country of Residence
                             </p>
                             <Select
-                                className={attemptedSubmit && !country ? "ErrorForm" : ""}
+                                className={attemptedSubmit && !residence ? "ErrorForm" : ""}
                                 showSearch
                                 filterOption={(input: string, option?: { label: string; value: string }) =>
                                     (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
                                 defaultValue=""
-                                value={country}
+                                value={residence}
                                 options={
                                     allCountriesArray.map((country) => { return { value: country, label: country } })
                                 }
                                 onChange={(newValue) => {
-                                    setCountry(newValue);
+                                    setResidence(newValue);
                                 }}
                             />
 
-                            <p className='FormTitle' id='Hobbies' >Have you ever participated in any sports or serious hobbies? If so, please list them:</p>
-                            <Input
-                                value={hobbies}
-                                onChange={(event) => {
-                                    setHobbies(event.target.value);
+                            <p className='FormTitle' id='Ethnicity' >
+                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
+                                Ethnicity Identity (check all that apply):
+                            </p>
+                            <Select
+                                className={attemptedSubmit && ethnicity.length === 0 ? "ErrorForm" : ""}
+                                mode="multiple"
+                                allowClear
+                                style={{ width: '100%' }}
+                                placeholder="Please select"
+                                defaultValue={[]}
+                                value={ethnicity}
+                                onChange={(value: string[]) => {
+                                    if (value.includes('Prefer not to say')) {
+                                        setEthnicity(['Prefer not to say'])
+                                    } else {
+                                        setEthnicity(value)
+                                    }
                                 }}
-                                maxLength={64}
-                                placeholder='Soccer, Chess, etc.'
+                                options={ethnicityOptions}
                             />
-
 
                             <div className='PageBreak'></div>
-
-
 
                             <p className='FormTitle' id='IsCollegeStudent' >
                                 <span style={{ color: 'red', fontSize: 'large' }}>* </span>
@@ -642,6 +561,7 @@ const Register = () => {
 
                             <p>Educational Background. Please fill in all of your degrees and / or certifications</p>
                             <Table
+                                // key={"" + educationalBackgroundCompleted + educationalBackgroundSubjectArea + otherEducation}
                                 dataSource={getEducationalBackgroundDataSource()}
                                 columns={educationalBackgroundColumns}
                                 pagination={false}
@@ -649,61 +569,68 @@ const Register = () => {
 
                             <div className='PageBreak'></div>
 
-                            <p>
-                                If you have ever worked in a technical organization, for each area of specialization,
-                                indicate your number of years of experience.
-                            </p>
-                            <Table
-                                dataSource={getSpecializationDataSource()}
-                                columns={specializationColumns}
-                                pagination={false}
-                            />
+                            <h3>
+                                For the following questions please answer how much experience you have in each of the following areas. With the left-most circle being the least experience and the right-most circle being the most experience.
+                            </h3>
 
-                            <div className='PageBreak'></div>
+                            {
+                                // show all experience questions
+                                experienceValues.map((value, index) => (
+                                    <div key={index + " value of: " + value}>
+                                        <p id={experienceQuestions[index]}>
+                                            <span style={{ color: 'red', fontSize: 'large' }}>* </span>
+                                            {experienceQuestionPrompts[index]}
+                                        </p>
+                                        <div className={`ExpertiseGrid ${value === null
+                                            && attemptedSubmit ? "ErrorForm" : ""}`}>
+                                                <p>Outside my field of expertise</p>
+                                                <p>.....</p>
+                                                <p>.....</p>
+                                                <p>At the boundary of my field of Expertise</p>
+                                                <p>.....</p>
+                                                <p>.....</p>
+                                                <p>Inside my field of expertise</p>
 
-                            <p id='SystemsExpertise'>
-                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                A systems engineering problem is:
-                            </p>
-                            <div className={`ExpertiseGrid ${systemsEngineeringExpertise === null && attemptedSubmit ? "ErrorForm" : ""}`}>
-                                <p>Outside my field of expertise</p>
-                                <p>.....</p>
-                                <p>.....</p>
-                                <p>At the boundary of my field of Expertise</p>
-                                <p>.....</p>
-                                <p>.....</p>
-                                <p>Inside my field of expertise</p>
-
-                                <Radio checked={systemsEngineeringExpertise === 0} onClick={() => { setSystemsEngineeringExpertise(0) }}></Radio>
-                                <Radio checked={systemsEngineeringExpertise === 1} onClick={() => { setSystemsEngineeringExpertise(1) }}></Radio>
-                                <Radio checked={systemsEngineeringExpertise === 2} onClick={() => { setSystemsEngineeringExpertise(2) }}></Radio>
-                                <Radio checked={systemsEngineeringExpertise === 3} onClick={() => { setSystemsEngineeringExpertise(3) }}></Radio>
-                                <Radio checked={systemsEngineeringExpertise === 4} onClick={() => { setSystemsEngineeringExpertise(4) }}></Radio>
-                                <Radio checked={systemsEngineeringExpertise === 5} onClick={() => { setSystemsEngineeringExpertise(5) }}></Radio>
-                                <Radio checked={systemsEngineeringExpertise === 6} onClick={() => { setSystemsEngineeringExpertise(6) }}></Radio>
-                            </div>
-
-                            <p id='StatementOfWorkExpertise'>
-                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                Defining statement of work documents and / or work contracts is:
-                            </p>
-                            <div className={`ExpertiseGrid ${!statementOfWorkExpertise && attemptedSubmit ? "ErrorForm" : ""}`}>
-                                <p>Outside my field of expertise</p>
-                                <p>.....</p>
-                                <p>.....</p>
-                                <p>At the boundary of my field of Expertise</p>
-                                <p>.....</p>
-                                <p>.....</p>
-                                <p>Inside my field of expertise</p>
-
-                                <Radio checked={statementOfWorkExpertise === 0} onClick={() => { setStatementOfWorkExpertise(0) }}></Radio>
-                                <Radio checked={statementOfWorkExpertise === 1} onClick={() => { setStatementOfWorkExpertise(1) }}></Radio>
-                                <Radio checked={statementOfWorkExpertise === 2} onClick={() => { setStatementOfWorkExpertise(2) }}></Radio>
-                                <Radio checked={statementOfWorkExpertise === 3} onClick={() => { setStatementOfWorkExpertise(3) }}></Radio>
-                                <Radio checked={statementOfWorkExpertise === 4} onClick={() => { setStatementOfWorkExpertise(4) }}></Radio>
-                                <Radio checked={statementOfWorkExpertise === 5} onClick={() => { setStatementOfWorkExpertise(5) }}></Radio>
-                                <Radio checked={statementOfWorkExpertise === 6} onClick={() => { setStatementOfWorkExpertise(6) }}></Radio>
-                            </div>
+                                                <Radio checked={value === 0} value={value === 0} onClick={() => {
+                                                    const newValues = [...experienceValues];
+                                                    newValues[index] = 0;
+                                                    setExperienceValues(newValues) 
+                                                }}></Radio>
+                                                <Radio checked={value === 1} value={value === 1} onClick={() => { 
+                                                    const newValues = [...experienceValues];
+                                                    newValues[index] = 1;
+                                                    setExperienceValues(newValues) 
+                                                }}></Radio>
+                                                <Radio checked={value === 2} onClick={() => { 
+                                                    const newValues = [...experienceValues];
+                                                    newValues[index] = 2;
+                                                    setExperienceValues(newValues);
+                                                }}></Radio>
+                                                <Radio checked={value === 3} onClick={() => { 
+                                                    const newValues = [...experienceValues];
+                                                    newValues[index] = 3;
+                                                    setExperienceValues(newValues) 
+                                                }}></Radio>
+                                                <Radio checked={value === 4} onClick={() => { 
+                                                    const newValues = [...experienceValues];
+                                                    newValues[index] = 4;
+                                                    setExperienceValues(newValues) 
+                                                }}></Radio>
+                                                <Radio checked={value === 5} onClick={() => { 
+                                                    const newValues = [...experienceValues];
+                                                    newValues[index] = 5;
+                                                    setExperienceValues(newValues) 
+                                                }}></Radio>
+                                                <Radio checked={value === 6} onClick={() => { 
+                                                    const newValues = [...experienceValues];
+                                                    newValues[index] = 6;
+                                                    setExperienceValues(newValues) 
+                                                }}></Radio>
+                                        </div>
+                                        <br/>
+                                    </div>
+                                ))
+                            }
 
                             <div className='PageBreak'></div>
 

@@ -78,7 +78,6 @@ const DiceSelectGame = (props: {
             // this is the final die, check if sum is correct and return 1 if found
             // loop through values of die at current index
             for (let i = 1; i <= selectedDie[index].val; i++) {
-                // console.log("" + sum + " + " + i + " = " + (sum + i) + "");
                 if (sum + i === totalToReach) return 1;
             }
             return 0;
@@ -108,8 +107,6 @@ const DiceSelectGame = (props: {
         // use recursive function to do this.
         const totalNumberOfCorrectPossibilities = recursiveCorrectPossibilities(0, 0)
 
-        // console.log("Total Correct Possibilities: ", totalNumberOfCorrectPossibilities, " Total Possibilities: ", totalNumberOfPossibilities, "score: ", totalNumberOfCorrectPossibilities / totalNumberOfPossibilities);
-
         return 100 * (totalNumberOfCorrectPossibilities / totalNumberOfPossibilities);
     }
 
@@ -134,14 +131,13 @@ const DiceSelectGame = (props: {
             if (result.success) {
                 props.finished();
             } else {
-                console.log("Error saving dice results to database during: ", props.isOnboarding ? "onboarding" : "offboarding", result);
+                console.error("Error saving dice results to database during: ", props.isOnboarding ? "onboarding" : "offboarding", result);
                 setClickedRoll(false);
             }
 
-            // console.log(scoreSelectedDie());
             // setClickedRoll(false);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             setClickedRoll(false);
         }
     }

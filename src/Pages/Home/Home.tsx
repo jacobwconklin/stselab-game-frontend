@@ -179,31 +179,6 @@ const Home = () => {
 
                     <div style={{ height: '30px' }}></div>
                     <br></br>
-                    {/* <br></br>
-                    <Button
-                        onClick={() => {
-                            const result = PlayPutt(15, 1, 1, 0.5);
-                            console.log(result);
-                        }}
-                    >
-                        Play Putt
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            const result = H_Arch(700, 1, 1, 1)
-                            console.log(result);
-                        }}
-                    >
-                        Play h arch
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            const result = PlayShort(700, 1, 1, 0.5)
-                            console.log(result);
-                        }}
-                    >
-                        Play Short
-                    </Button> */}
                 </div>
                 <br></br>
             </div>

@@ -18,8 +18,8 @@ export interface PlayerInformation {
     participationReason: string;
     gender: string;
     age: null | number;
-    country: string;
-    hobbies?: string;
+    residence: string;
+    ethnicity: string;
 
     isCollegeStudent: number;
     university?: string;
@@ -28,31 +28,18 @@ export interface PlayerInformation {
 
     // Education levels: "HighSchool", "Associates", "Bachelors", "Masters", "Professional (MBA, JD, MD)", "Doctorate", "Other"
     highschoolEducation?: string;
-    associatesEducation?: string;
     bachelorsEducation?: string;
     mastersEducation?: string;
-    professionalEducation?: string;
     doctorateEducation?: string;
     otherEducationName?: string | null;
     otherEducation?: string;
 
-    // Specializations: "Aerospace Engineering", "Design", "Electrical Engineering", "Industrial Engineering", 
-    //    "Manufacturing", "Material Science or Engineering", "Mechanical Engineering", "Project Management", 
-    //    "Robotics or Mechatronics", "Software or Computer Engineering or Computer Science", "Systems Engineering"
-    aerospaceEngineeringSpecialization?: number;
-    designSpecialization?: number;
-    electricalEngineeringSpecialization?: number;
-    industrialEngineeringSpecialization?: number;
-    manufacturingSpecialization?: number;
-    materialScienceSpecialization?: number;
-    mechanicalEngineeringSpecialization?: number;
-    projectManagementSpecialization?: number;
-    roboticsSpecialization?: number;
-    softwareSpecialization?: number;
-    systemsEngineeringSpecialization?: number;
-    otherSpecializationName?: string | null;
-    otherSpecialization?: number;
-
+    riskAnalysisExperience: null | number;
+    supplierExperience: null | number;
+    proposalOrStatementOfWorkExperience: null | number;
+    bidsForRequestsExperience: null | number;
+    systemArchitectureExperience: null | number;
+    golfExperience: null | number;
     systemsEngineeringExpertise: null | number;
     statementOfWorkExpertise: null | number;
 }

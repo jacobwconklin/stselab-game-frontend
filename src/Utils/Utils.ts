@@ -115,7 +115,6 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         } else {
             const shotScore = ((55 - shots - 5) * (100 / 55)) * customPerformance;
             const costScore = ((140 - cost - 10) * (100 / 140)) * (1 - customPerformance);
-            console.log("Scores: ", shotScore, costScore);
             return (shotScore + costScore);
         }
     } else {
