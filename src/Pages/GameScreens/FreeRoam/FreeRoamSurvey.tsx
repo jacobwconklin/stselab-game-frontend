@@ -66,12 +66,14 @@ const FreeRoamSurvey = (props: {
     const [fairwayChoice, setFairwayChoice] = useState([]);
     const [shortChoice, setShortChoice] = useState([]);
     const [puttChoice, setPuttChoice] = useState([]);
+    const [entireHoleChoice, setEntireHoleChoice] = useState([]);
 
     const [driveNotSure, setDriveNotSure] = useState(false);
     const [longNotSure, setLongNotSure] = useState(false);
     const [fairwayNotSure, setFairwayNotSure] = useState(false);
     const [shortNotSure, setShortNotSure] = useState(false);
     const [puttNotSure, setPuttNotSure] = useState(false);
+    const [entireHoleNotSure, setEntireHoleNotSure] = useState(false);
 
     // const modules = ["Drive", "Long", "Fairway", "Short", "Putt"]
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
@@ -81,16 +83,19 @@ const FreeRoamSurvey = (props: {
         const choices = localStorage.getItem('freeRoamSurveyChoices');
         if (choices) {
             const parsedChoices = JSON.parse(choices);
-            setDriveChoice(parsedChoices.driveChoice);
-            setLongChoice(parsedChoices.longChoice);
-            setFairwayChoice(parsedChoices.fairwayChoice);
-            setShortChoice(parsedChoices.shortChoice);
-            setPuttChoice(parsedChoices.puttChoice);
-            setDriveNotSure(parsedChoices.driveNotSure);
-            setLongNotSure(parsedChoices.longNotSure);
-            setFairwayNotSure(parsedChoices.fairwayNotSure);
-            setShortNotSure(parsedChoices.shortNotSure);
-            setPuttNotSure(parsedChoices.puttNotSure);
+            setDriveChoice(parsedChoices.driveChoice ? parsedChoices.driveChoice : []);
+            setLongChoice(parsedChoices.longChoice ? parsedChoices.longChoice : []);
+            setFairwayChoice(parsedChoices.fairwayChoice ? parsedChoices.fairwayChoice : []);
+            setShortChoice(parsedChoices.shortChoice ? parsedChoices.shortChoice : []);
+            setPuttChoice(parsedChoices.puttChoice ? parsedChoices.puttChoice : []);
+            setEntireHoleChoice(parsedChoices.entireHoleChoice ? parsedChoices.entireHoleChoice : []);
+
+            setDriveNotSure(!!parsedChoices.driveNotSure);
+            setLongNotSure(!!parsedChoices.longNotSure);
+            setFairwayNotSure(!!parsedChoices.fairwayNotSure);
+            setShortNotSure(!!parsedChoices.shortNotSure);
+            setPuttNotSure(!!parsedChoices.puttNotSure);
+            setEntireHoleNotSure(!!parsedChoices.entireHoleNotSure);
         }
     }, []);
 
@@ -101,11 +106,13 @@ const FreeRoamSurvey = (props: {
             fairwayChoice,
             shortChoice,
             puttChoice,
+            entireHoleChoice,
             driveNotSure,
             longNotSure,
             fairwayNotSure,
             shortNotSure,
-            puttNotSure
+            puttNotSure,
+            entireHoleNotSure
         }));
     }
 
@@ -136,7 +143,8 @@ const FreeRoamSurvey = (props: {
             setAttemptedSubmit(true);
             // Check for all 5 modules having values
             if ((driveChoice.length > 0 || driveNotSure) && (longChoice.length > 0 || longNotSure) && (fairwayChoice.length > 0 ||
-                fairwayNotSure) && (shortChoice.length > 0 || shortNotSure) && (puttChoice.length > 0 || puttNotSure)) {
+                fairwayNotSure) && (shortChoice.length > 0 || shortNotSure) && (puttChoice.length > 0 || puttNotSure)
+                && (entireHoleChoice.length > 0 || entireHoleNotSure)) {
                 // save player information
                 const submitResult = await postRequest('player/freeRoamSurvey', JSON.stringify({
                     drive: driveNotSure ? 0 : convertChoicesToNumber(driveChoice),
@@ -144,6 +152,7 @@ const FreeRoamSurvey = (props: {
                     fairway: fairwayNotSure ? 0 : convertChoicesToNumber(fairwayChoice),
                     short: shortNotSure ? 0 : convertChoicesToNumber(shortChoice),
                     putt: puttNotSure ? 0 : convertChoicesToNumber(puttChoice),
+                    entireHole: entireHoleNotSure ? 0 : convertChoicesToNumber(entireHoleChoice),
                     playerId // example of one in db -> "06DB4206-1E4D-46E8-A261-AC8B545519FE"
                 }));
                 if (submitResult.success) {
@@ -347,6 +356,29 @@ const FreeRoamSurvey = (props: {
                                 value={puttNotSure}
                                 checked={puttNotSure}
                                 onClick={(e) => setPuttNotSure(value => !value)}
+                            >
+                                Not Sure
+                            </Radio>
+                        </div>
+                        <br></br>
+                        <h3 className='FormTitle' id='ParticipationReason' >
+                            <span style={{ color: 'red', fontSize: 'large' }}>* </span>
+                            Who is best for the Entire Hole?
+                        </h3>
+                        <div 
+                            className={`CheckboxAndRadio ${attemptedSubmit && entireHoleChoice.length === 0 
+                                && !entireHoleNotSure ? 'ErrorCheckBox' : ''}`}
+                        >
+                            <Checkbox.Group
+                                disabled={entireHoleNotSure}
+                                options={solverNames}
+                                value={entireHoleChoice}
+                                onChange={(checkedValues) => { setEntireHoleChoice(checkedValues) }}
+                            />
+                            <Radio
+                                value={entireHoleNotSure}
+                                checked={entireHoleNotSure}
+                                onClick={(e) => setEntireHoleNotSure(value => !value)}
                             >
                                 Not Sure
                             </Radio>

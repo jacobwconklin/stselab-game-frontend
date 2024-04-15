@@ -38,7 +38,10 @@ const AggregateResultGraphs = (props: { results: RoundResult[] }) => {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Costs of all Tournament Rounds"
+                text: "Shots and Costs of all Tournament Rounds",
+                font: {
+                    size: 18
+                }
             },
             legend: {
                 display: false
@@ -47,18 +50,36 @@ const AggregateResultGraphs = (props: { results: RoundResult[] }) => {
         scales: {
             y: {
                 beginAtZero: true,
-                reverse: true,
                 title: {
                     display: true,
-                    text: 'Shots'
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 }
             },
             x: {
                 beginAtZero: true,
-                reverse: true,
                 title: {
                     display: true,
-                    text: 'Cost'
+                    text: 'Cost',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 }
             },
         },
@@ -96,7 +117,10 @@ const AggregateResultGraphs = (props: { results: RoundResult[] }) => {
         plugins: {
             title: {
                 display: true,
-                text: `Score per Player by Round`
+                text: `Score per Player by Round`,
+                font: {
+                    size: 18
+                }
             },
             legend: {
                 display: false

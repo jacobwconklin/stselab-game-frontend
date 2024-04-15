@@ -173,7 +173,7 @@ const GameController = () => {
     // Fifth: round 4 -> jump to experimental round
     // Sixth: round 5 -> experimental round survey
     // Seventh: round 6 -> play Tournament Stage 1 (best performance)
-    // Eigth: round 7 -> Play Tournament Stage 2 (minimize cost for 35 strokes)
+    // Eigth: round 7 -> Play Tournament Stage 2 (minimize cost for tournamentStage2MaximumShots strokes)
     // Ninth: round 8 -> Play Tournament Stage 3 (balance)
     // Tenth: round 9 -> Play Tournament Stage 4 (custom reward function)
     // Eleventh: round 10 -> Show final Tournament Results

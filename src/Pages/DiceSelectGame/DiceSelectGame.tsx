@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import './DiceSelectGame.scss';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 import d6 from '../../Assets/Die/d6.png';
 import d8 from '../../Assets/Die/d8.png';
 import d10 from '../../Assets/Die/d10.png';
@@ -13,7 +13,7 @@ const DiceSelectGame = (props: {
     isOnboarding: boolean;
     finished: () => void;
 }) => {
-    
+
     // Scroll to top on entering page
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -26,6 +26,7 @@ const DiceSelectGame = (props: {
     const [selectedDie, setSelectedDie] = useState<{ val: number; cost: number; img: string; }[]>([]);
     const [clickedRoll, setClickedRoll] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [reasoning, setReasoning] = useState('');
 
     // player id will be pulled from context
     const { playerId } = useContext(UserContext) as UserContextType;
@@ -82,7 +83,7 @@ const DiceSelectGame = (props: {
                 };
             }
             return correctPossibilitiesFound;
-        } 
+        }
 
         let totalCorrectPossibilitesFound = 0;
         // loop through values of die at current index
@@ -96,15 +97,11 @@ const DiceSelectGame = (props: {
 
     // score selected die by telling probability that roll >= desired total
     const scoreSelectedDie = () => {
-        // set player's random value:
-        let playerRandomRoll = 0;
         // set total number of possibilities
         let totalNumberOfPossibilities = 1;
         selectedDie.forEach(die => {
             totalNumberOfPossibilities *= die.val;
-            playerRandomRoll += Math.floor(Math.random() * die.val) + 1;
         });
-        setRandomRoll(playerRandomRoll);
 
         // Going to do a semi-ugly brute force calculation for now.
         // TODO find prettier solution (not found by me yet) look here from Prof: https://anydice.com/
@@ -118,7 +115,19 @@ const DiceSelectGame = (props: {
     }
 
     // finish on / offboarding by rolling die
-    const rollDie = async () => {
+    const rollDie = () => {
+        // set player's random value:
+        let playerRandomRoll = 0;
+        selectedDie.forEach(die => {
+            playerRandomRoll += Math.floor(Math.random() * die.val) + 1;
+        });
+        setRandomRoll(playerRandomRoll);
+
+        setShowModal(true);
+    }
+
+    // save reasoning to database and move on
+    const saveAndContinue = async () => {
         // save die roll results to database then allow player to view the next page
         try {
             setClickedRoll(true);
@@ -133,14 +142,12 @@ const DiceSelectGame = (props: {
                 d20: selectedDie.filter(die => die.val === 20).length,
                 playerId,
                 onboarding: props.isOnboarding,
-                score: scoreSelectedDie()
+                score: scoreSelectedDie(),
+                reasoning
             }));
             if (result.success) {
                 // show results for a few seconds then move on
-                setShowModal(true);
-                setTimeout(() => {
-                    props.finished();
-                }, 5000);
+                props.finished();
             } else {
                 console.error("Error saving dice results to database during: ", props.isOnboarding ? "onboarding" : "offboarding", result);
                 setClickedRoll(false);
@@ -154,18 +161,18 @@ const DiceSelectGame = (props: {
     return (
         // just give it a solid colored background?
         <div className='DiceSelectGame'>
-        <div className='StaticBackground' />
+            <div className='StaticBackground' />
             <div className='Instructions'>
                 <h1>Goal: Roll a Sum of at Least {totalToReach}</h1>
                 <h2>Remaining Credits: {credits}</h2>
-                <h3>
+                <p>
                     {
                         props.isOnboarding ?
-                        "Play the Dice Game to join your session! You have 8 credits to spend by selecting die to roll. Your goal is for the sum of all die you roll to be at least 12. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection." 
-                        : 
-                        "Play the Dice Game to view your final results! You now have 10 credits to spend by selecting die to roll. Your new goal is for the sum of all die you roll to be at least 20. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
+                            "Play the Dice Game to join your session! You have 8 credits to spend by selecting die to roll. Your goal is for the sum of all die you roll to be at least 12. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
+                            :
+                            "Play the Dice Game to view your final results! You now have 10 credits to spend by selecting die to roll. Your new goal is for the sum of all die you roll to be at least 20. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
                     }
-                </h3>
+                </p>
                 <div className='SelectedDie'>
                     {
                         selectedDie.map((die, index) => {
@@ -220,13 +227,32 @@ const DiceSelectGame = (props: {
                 >
                     <div className='ModalBody'>
                         <h2>
-                            You rolled: {randomRoll} 
-                        </h2><h2>
+                            You rolled: {randomRoll}
+                        </h2>
+                        <p>
                             {randomRoll >= totalToReach ? " Congratulations!" : " Better Luck Next Time!"}
-                        </h2> 
-                        <p style={{width: '100%', textAlign: 'center'}} >
-                            Thank you. Your selection has been recorded. You will now be taken to the next page.
                         </p>
+                        <h2 style={{ width: '100%', textAlign: 'center' }} >
+                            Briefly, could you please explain why you picked this dice combo?
+                        </h2>
+                        <Input
+                            placeholder='Enter your reasoning here'
+                            // style={{width: '80%', margin: 'auto'}}
+                            maxLength={64}
+                            value={reasoning}
+                            onChange={(event) => {
+                                setReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 64) : event.target.value);
+                            }}
+                        />
+                        <br></br>
+                        <Button
+                            disabled={reasoning.trim().length === 0}
+                            onClick={() => {
+                                saveAndContinue();
+                            }}
+                        >
+                            Continue
+                        </Button>
                     </div>
                 </div>
             }

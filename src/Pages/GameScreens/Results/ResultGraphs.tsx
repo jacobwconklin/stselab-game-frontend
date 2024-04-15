@@ -6,11 +6,11 @@ import {
     LineElement,
     Tooltip,
     Legend,
-    Title
+    Title,
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 import { RoundResult } from '../../../Utils/Types';
-import { RoundNames, getDisplayRound } from '../../../Utils/Utils';
+import { RoundNames, getDisplayRound, tournamentStage2MaximumShots } from '../../../Utils/Utils';
 
 const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
 
@@ -28,7 +28,10 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
         plugins: {
             title: {
                 display: true,
-                text: `Shots and Costs for Round ${getDisplayRound(props?.round)}`
+                text: `Shots and Costs for Round ${getDisplayRound(props?.round)}`,
+                font: {
+                    size: 18
+                }
             },
             legend: {
                 display: props?.round === RoundNames.TournamentStage2 ? false : true,
@@ -37,23 +40,42 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
         scales: {
             y: {
                 beginAtZero: true,
-                reverse: true,
                 title: {
                     display: true,
-                    text: 'Shots'
-                },
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                }
                 
             },
             x: {
                 beginAtZero: true,
-                reverse: true,
                 min: 0,
                 max: 150,
                 title: {
                     display: true,
-                    text: 'Cost'
+                    text: 'Cost',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 }
             },
+            
         },
         elements: {
             point: {
@@ -83,7 +105,7 @@ const ResultGraphs = (props: {players: Array<RoundResult>, round: number}) => {
                     label: `Maximum Acceptable Shots`,
                     data: [{
                         x: index + 1,
-                        y: 35
+                        y: tournamentStage2MaximumShots
                     }],
                     backgroundColor: 'red'
                 }

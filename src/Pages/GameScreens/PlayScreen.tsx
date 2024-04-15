@@ -60,7 +60,8 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
                 solverTwo: solver2,
                 solverThree: solver3,
                 round: props.round,
-                score: pointsEarned !== null ? Math.floor( pointsEarned * 100) : null
+                score: pointsEarned !== null ? Math.floor( pointsEarned * 100) : null,
+                customPerformanceWeight: customPerformanceWeight ? Math.floor(customPerformanceWeight * 100) : null
             }));
             if (response.success) {
                 updateFinishedRounds();

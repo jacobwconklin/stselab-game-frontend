@@ -64,6 +64,7 @@ export interface RoundResult {
     architecture: string;
     score: number;
     round: number;
+    customPerformanceWeight?: number;
 }
 
 export interface DisplayRoundResult {
@@ -74,7 +75,7 @@ export interface DisplayRoundResult {
     cost: number | string;
     solvers: number[];
     architecture?: string;
-    score?: number | string;
+    score?: {score: number | string, customPerformanceWeight?: number};
     round?: number | string;
 }
 

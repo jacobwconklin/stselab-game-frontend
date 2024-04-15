@@ -42,7 +42,7 @@ const ModuleResults = (props: {
     }
 
     // save all module names to iterate through
-    const modules = ['Drive', 'Long', 'Fairway', 'Short', 'Putt'];
+    const modules = ['Drive', 'Long', 'Fairway', 'Short', 'Putt', 'Entire Hole'];
     const remainingDistanceModules = ['Drive', 'Long', 'Fairway'];
     // const moduleColors = ['red', 'blue', 'green', 'yellow', 'purple'];
     const solvers = [Solver.Professional, Solver.Amateur, Solver.Specialist];
@@ -60,7 +60,10 @@ const ModuleResults = (props: {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Traveled for Drive Module"
+                text: "Shots and Distance Traveled for Drive Module",
+                font: {
+                    size: 18
+                }
             }
         },
         scales: {
@@ -68,7 +71,17 @@ const ModuleResults = (props: {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Distance traveled towards hole'
+                    text: 'Distance traveled towards hole',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 }
             },
             x: {
@@ -76,7 +89,17 @@ const ModuleResults = (props: {
                 max: 2,
                 title: {
                     display: true,
-                    text: 'Shots'
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 }
             },
         },
@@ -107,14 +130,27 @@ const ModuleResults = (props: {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Traveled for Long Module"
+                text: "Shots and Distance Traveled for Long Module",
+                font: {
+                    size: 18
+                }
             }
         },
         scales: {
             y: {
                 title: {
                     display: true,
-                    text: 'Distance traveled towards hole'
+                    text: 'Distance traveled towards hole',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 },
                 max: 710,
                 min: 680
@@ -122,7 +158,17 @@ const ModuleResults = (props: {
             x: {
                 title: {
                     display: true,
-                    text: 'Shots'
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 }
             },
         },
@@ -153,7 +199,10 @@ const ModuleResults = (props: {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Traveled for Fairway Module"
+                text: "Shots and Distance Traveled for Fairway Module",
+                font: {
+                    size: 18
+                }
             }
         },
         scales: {
@@ -162,15 +211,34 @@ const ModuleResults = (props: {
                 min: 430,
                 title: {
                     display: true,
-                    text: 'Distance traveled towards hole'
-                }
+                    text: 'Distance traveled towards hole',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
             },
             x: {
-                beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Shots'
-                }
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
             },
         },
         elements: {
@@ -200,7 +268,10 @@ const ModuleResults = (props: {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Traveled for Short Module"
+                text: "Shots and Distance Traveled for Short Module",
+                font: {
+                    size: 18
+                }
             }
         },
         scales: {
@@ -209,15 +280,34 @@ const ModuleResults = (props: {
                 max: 460,
                 title: {
                     display: true,
-                    text: 'Distance traveled towards hole'
-                }
+                    text: 'Distance traveled towards hole',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
             },
             x: {
-                beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Shots'
-                }
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
             },
         },
         elements: {
@@ -248,7 +338,10 @@ const ModuleResults = (props: {
         plugins: {
             title: {
                 display: true,
-                text: "Shots and Distance Traveled for Putt Module"
+                text: "Shots and Distance Traveled for Putt Module",
+                font: {
+                    size: 18
+                }
             }
         },
         scales: {
@@ -257,15 +350,34 @@ const ModuleResults = (props: {
                 max: 20,
                 title: {
                     display: true,
-                    text: 'Distance traveled towards hole'
-                }
+                    text: 'Distance traveled towards hole',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
             },
             x: {
-                beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Shots'
-                }
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
             },
         },
         elements: {
@@ -290,6 +402,76 @@ const ModuleResults = (props: {
         })
     };
 
+    // For JUST Entire Hole show all shot and distance results per solver
+
+    const entireHoleOptions = {
+        plugins: {
+            title: {
+                display: true,
+                text: "Shots and Distance Traveled for Entire Hole",
+                font: {
+                    size: 18
+                }
+            }
+        },
+        scales: {
+            y: {
+                min: 600,
+                max: 800,
+                title: {
+                    display: true,
+                    text: 'Distance traveled towards hole',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
+            },
+        },
+        elements: {
+            point: { radius: 10, }
+        },
+        layout: { padding: 20 },
+    };
+
+    const entireHoleData = {
+        datasets: solvers.map((solver: Solver, index: number) => {
+            return {
+                label: solverNames[solver - 1],
+                data: props?.results?.filter((result: ModuleResult) => result.solver === solver && result.module === 'Entire Hole')
+                    .map((result: ModuleResult) => {
+                        return {
+                            x: result.shots,
+                            y: (result.distance)
+                        }
+                    }),
+                backgroundColor: solverColors[index],
+            }
+        })
+    };
+
     // Bar graphs:
 
     // For All modules show average shots per solver 
@@ -303,6 +485,9 @@ const ModuleResults = (props: {
             title: {
                 display: true,
                 text: 'Average Shots per Solver for all Modules',
+                font: {
+                    size: 18
+                }
             },
         },
         scales: {
@@ -311,8 +496,18 @@ const ModuleResults = (props: {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Shots taken to finish module'
-                }
+                    text: 'Shots taken to finish module',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
             },
         },
         layout: {
@@ -358,6 +553,9 @@ const ModuleResults = (props: {
             title: {
                 display: true,
                 text: 'Average Distance Traveled per Solver for Drive, Long, and Fairway',
+                font: {
+                    size: 18
+                }
             },
         },
         scales: {
@@ -366,8 +564,18 @@ const ModuleResults = (props: {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Distance traveled towards hole'
-                }
+                    text: 'Distance traveled towards hole',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
             },
         },
         layout: {
@@ -413,32 +621,32 @@ const ModuleResults = (props: {
             key: 'module',
         },
         {
-            title: 'Professional Shot Avgerage',
+            title: 'Professional Shot Average',
             dataIndex: 'ProShotAvg',
             key: 'ProShotAvg',
         },
         {
-            title: 'Professional Distance Avgerage',
+            title: 'Professional Distance Average',
             dataIndex: 'ProDistanceAvg',
             key: 'ProDistanceAvg',
         },
         {
-            title: 'Specialist Shot Avgerage',
+            title: 'Specialist Shot Average',
             dataIndex: 'SpecShotAvg',
             key: 'SpecShotAvg',
         },
         {
-            title: 'Specialist Distance Avgerage',
+            title: 'Specialist Distance Average',
             dataIndex: 'SpecDistanceAvg',
             key: 'SpecDistanceAvg',
         },
         {
-            title: 'Amateur Shot Avgerage',
+            title: 'Amateur Shot Average',
             dataIndex: 'AmShotAvg',
             key: 'AmShotAvg',
         },
         {
-            title: 'Amateur Distance Avgerage',
+            title: 'Amateur Distance Average',
             dataIndex: 'AmDistanceAvg',
             key: 'AmDistanceAvg',
         },
@@ -502,9 +710,9 @@ const ModuleResults = (props: {
                     <Button onClick={() => props.return()}>
                         Back to {props.origin}
                     </Button>
-                    <Button onClick={() => simulateAll()} disabled={loading}>
+                    {/* <Button onClick={() => simulateAll()} disabled={loading}>
                         Simulate All
-                    </Button>
+                    </Button> */}
                     <Button onClick={() => setShowAverageGraphs(val => !val)}>
                         {showAverageGraphs ? "Hide " : "Show "} Averages Graphs
                     </Button>
@@ -550,6 +758,7 @@ const ModuleResults = (props: {
                     <Scatter className='ScatterCanvas ChartJSCanvas' options={fairwayOptions} data={fairwayData} />
                     <Scatter className='ScatterCanvas ChartJSCanvas' options={shortOptions} data={shortData} />
                     <Scatter className='ScatterCanvas ChartJSCanvas' options={puttOptions} data={puttData} />
+                    <Scatter className='ScatterCanvas ChartJSCanvas' options={entireHoleOptions} data={entireHoleData} />
                 </div>
             }
         </div>

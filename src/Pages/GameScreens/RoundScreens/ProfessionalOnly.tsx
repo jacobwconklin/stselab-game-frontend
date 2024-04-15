@@ -39,7 +39,8 @@ const ProfessionalOnly = (props: {
                     <div className='InformationHorizontalSplit'>
                         <div className='InfoContainer'>
                             <p>
-                                In this first warm up round all players must use only the Professional golfer to play all 5 holes. The Professional represents the traditional way of solving ISE problems by handing the entire problem, here the golf course, to a professional organization to handle everything.
+                                In this first warm up round all players must use only the Professional golfer to play all 5 holes. 
+                                Here, the Professional represents a domain-expert organization (e.g., NASA). The golf course represents a complex systems development task. Professional trying to navigate the entire course is an analogy to how complex system development tasks are handled in the industry, when problems are not decomposed.
                             </p>
                             <p>Click Play Round to run the simulation and view the results of the round.</p>
                         </div>

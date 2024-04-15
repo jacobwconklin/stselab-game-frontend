@@ -100,7 +100,7 @@ const Home = () => {
                             2) Three practice rounds are played to familiarize players with the Solvers: Professional, Specialist, and Amateur.
                         </p><p>
 
-                            3) An experimental round lets players test breaking the golf course down into smaller modules.
+                            3) An exploration round lets players test breaking the golf course down into smaller modules.
                         </p><p>
 
                             4) The tournament begins. It consists of four rounds each with a unique objective which will reward points. Players will choose how they want to break the golf course into modules, and what solvers they want for each module to best meet the objective.

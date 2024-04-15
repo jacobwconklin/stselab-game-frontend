@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import './TournamentStage.scss';
-import { Solver, solverNames } from '../../../Utils/Simulation';
-import { Button, Slider } from 'antd';
+import { Solver, moduleDescriptions, solverNames } from '../../../Utils/Simulation';
+import { Button, Slider, Tooltip } from 'antd';
 import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from '../../../ReusableComponents/SolverCards';
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
-import { RoundNames, animateBallIntoHole } from '../../../Utils/Utils';
+import { RoundNames, animateBallIntoHole, tournamentStage2MaximumShots } from '../../../Utils/Utils';
+import VerificationModal from '../../../ReusableComponents/VerificationModal';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
@@ -19,11 +20,11 @@ const TournamentStage = (props: {
     setCustomPerformanceWeight: (weight: number) => void
 }) => {
 
-    const [showTournamentBeginModal, setShowTournamentBeginModal] = 
+    const [showTournamentBeginModal, setShowTournamentBeginModal] =
         useState(props?.round === RoundNames.TournamentStage1 ? true : false);
 
     // value of architecture chosen (on changing architecture remove all chosen solvers)
-    const [architecture, setArchitecture] = useState<string>('h'); // 'h' | 'lp' | 'ds' | 'dap'
+    const [architecture, setArchitecture] = useState<'h' | 'lp' | 'ds' | 'dap'>('h'); // 'h' | 'lp' | 'ds' | 'dap'
 
     // use value to switch between selecting golfers based on architecture chosen
     // const [selectingDistanceLp, setSelectingDistanceLp] = useState<'Long' | 'Putt'>('Long');
@@ -41,6 +42,8 @@ const TournamentStage = (props: {
     const [selectedShortSolver, setSelectedShortSolver] = useState<Solver | null>(null);
     const [selectedPuttSolver, setSelectedPuttSolver] = useState<Solver | null>(null);
 
+    const [showPlayRoundModal, setShowPlayRoundModal] = useState(false);
+
     // Use effect to populate context with custom performance weight if user never touches slider
 
     const updateCustomPerformance = (value: number) => {
@@ -54,7 +57,7 @@ const TournamentStage = (props: {
 
     const roundObjectives = [
         "Best performance no matter the cost",
-        "Minimize cost with performance of at most 35 strokes",
+        `Minimize cost without exceeding ${tournamentStage2MaximumShots} strokes`,
         "Minimize cost and performance",
         "Choose the weight of performance versus cost yourself"
     ];
@@ -152,6 +155,13 @@ const TournamentStage = (props: {
         }
     }
 
+    // callback for modal to close and play round
+    const beginPlayingRound = () => {
+        setShowPlayRoundModal(false);
+        props.disablePlayRound();
+        animateBallIntoHole(submitPlayRound)
+    }
+
     const getSolverForSelectedModule = (): Solver | null => {
         if (selectingDistance === 'Drive') {
             return selectedDriveSolver;
@@ -181,6 +191,22 @@ const TournamentStage = (props: {
         }
     }
 
+    const getModuleToolTip = (module: string): string => {
+        if (module === 'Drive') {
+            return moduleDescriptions[0];
+        } else if (module === 'Long') {
+            return moduleDescriptions[1];
+        } else if (module === 'Fairway') {
+            return moduleDescriptions[2];
+        } else if (module === 'Short') {
+            return moduleDescriptions[3];
+        } else if (module === 'Putt') {
+            return moduleDescriptions[4];
+        } else {
+            return moduleDescriptions[5];
+        }
+    }
+
     return (
         <div className='TournamentStage'>
             <div className={`Highlight Drive ${selectingDistance === 'Drive' ? "Active" : " "}`}
@@ -205,26 +231,6 @@ const TournamentStage = (props: {
                                 <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </Button>
-                        {
-                            selectedDriveSolver &&
-                            <img className='HeaderIconImage' src={solverIcons[selectedDriveSolver - 1]} alt="Solver Icon" />
-                        }
-                        {
-                            selectedLongSolver &&
-                            <img className='HeaderIconImage' src={solverIcons[selectedLongSolver - 1]} alt="Solver Icon" />
-                        }
-                        {
-                            selectedFairwaySolver &&
-                            <img className='HeaderIconImage' src={solverIcons[selectedFairwaySolver - 1]} alt="Solver Icon" />
-                        }
-                        {
-                            selectedShortSolver &&
-                            <img className='HeaderIconImage' src={solverIcons[selectedShortSolver - 1]} alt="Solver Icon" />
-                        }
-                        {
-                            selectedPuttSolver &&
-                            <img className='HeaderIconImage' src={solverIcons[selectedPuttSolver - 1]} alt="Solver Icon" />
-                        }
                     </h1>
                     <div className='InfoContainer'>
                         <h2>
@@ -261,7 +267,7 @@ const TournamentStage = (props: {
                                                 clearSelectedSolvers();
                                                 // Set selecting distance to 'Drive' unless on lp then set it to long
                                                 setSelectingDistance(arch.architecture === 'lp' ? 'Long' : 'Drive');
-                                                setArchitecture(arch.architecture);
+                                                setArchitecture(arch.architecture as 'h' | 'lp' | 'ds' | 'dap');
                                             }}
                                             type={arch.architecture === architecture ? 'primary' : 'default'}
                                             className={readyToPlay() && arch.architecture === architecture ? 'CompletedSelection' : ''}
@@ -278,15 +284,23 @@ const TournamentStage = (props: {
                                 </h3>
                                 {
                                     architectureDescriptions.find(arch => arch.architecture === architecture)?.modules.map((module) => (
-                                        <Button
-                                            key={module}
-                                            onClick={() => setSelectingDistance(module === 'Entire Hole' ? 'Drive' : module as 'Drive' | 'Long' | 'Fairway' | 'Short' | 'Putt')}
-                                            type={module === "Entire Hole" ? 'primary' :
-                                                (selectingDistance === module ? 'primary' : 'default')}
-                                            className={getSolverForModule(module) ? 'CompletedSelection' : ''}
-                                        >
-                                            {module}
-                                        </Button>
+                                        <Tooltip title={getModuleToolTip(module)} placement='right' key={module}>
+                                            <Button
+                                                key={module}
+                                                onClick={() => setSelectingDistance(module === 'Entire Hole' ? 'Drive' : module as 'Drive' | 'Long' | 'Fairway' | 'Short' | 'Putt')}
+                                                type={module === "Entire Hole" ? 'primary' :
+                                                    (selectingDistance === module ? 'primary' : 'default')}
+                                                className={getSolverForModule(module) ? 'CompletedSelection' : ''}
+                                            >
+                                                {module}
+                                                &nbsp;
+                                                <svg width="12" height="12" strokeWidth="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M12 11.5V16.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d="M12 7.51L12.01 7.49889" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </Button>
+                                        </Tooltip>
                                     ))
                                 }
                             </div>
@@ -299,7 +313,8 @@ const TournamentStage = (props: {
                                         <>
                                             <p>
                                                 You Selected {solverNames[getSolverForSelectedModule()! - 1]}
-                                                &nbsp;to Play {architecture === 'h' ? 'the Entire Hole' : selectingDistance}
+                                                &nbsp;to Play {architecture === 'h' ? 'the Entire Hole' : selectingDistance}. 
+                                                Click a different Solver Below to Change
                                             </p>
                                             <img className='SelectedSolverImage' src={solverIcons[getSolverForSelectedModule()! - 1]} alt="Solver Icon" />
                                         </>
@@ -312,15 +327,51 @@ const TournamentStage = (props: {
 
                         </div>
                     </div>
-                    <Button
-                        onClick={() => {
-                            props.disablePlayRound();
-                            animateBallIntoHole(submitPlayRound)
-                        }}
-                        disabled={!!props.playingRound || !readyToPlay()}
-                    >
-                        Play Round
-                    </Button>
+                    <div className='SelectionsAndPlayButton'>
+                        {
+                            selectedDriveSolver &&
+                            <div className='ModuleAndSelectedSolver'>
+                                <p>{architecture === 'h' ? 'Entire Hole:' : 'Drive:'}</p>
+                                <img className='HeaderIconImage' src={solverIcons[selectedDriveSolver - 1]} alt="Solver Icon" />
+                            </div>
+                        }
+                        {
+                            selectedLongSolver &&
+                            <div className='ModuleAndSelectedSolver'>
+                                <p>{'Long:'}</p>
+                                <img className='HeaderIconImage' src={solverIcons[selectedLongSolver - 1]} alt="Solver Icon" />
+                            </div>
+                        }
+                        {
+                            selectedFairwaySolver &&
+                            <div className='ModuleAndSelectedSolver'>
+                                <p>{'Fairway:'}</p>
+                                <img className='HeaderIconImage' src={solverIcons[selectedFairwaySolver - 1]} alt="Solver Icon" />
+                            </div>
+                        }
+                        {
+                            selectedShortSolver &&
+                            <div className='ModuleAndSelectedSolver'>
+                                <p>{'Short:'}</p>
+                                <img className='HeaderIconImage' src={solverIcons[selectedShortSolver - 1]} alt="Solver Icon" />
+                            </div>
+                        }
+                        {
+                            selectedPuttSolver &&
+                            <div className='ModuleAndSelectedSolver'>
+                                <p>{'Putt:'}</p>
+                                <img className='HeaderIconImage' src={solverIcons[selectedPuttSolver - 1]} alt="Solver Icon" />
+                            </div>
+                        }
+                        <Button
+                            onClick={() => {
+                                setShowPlayRoundModal(true);
+                            }}
+                            disabled={!!props.playingRound || !readyToPlay()}
+                        >
+                            Play Round
+                        </Button>
+                    </div>
                 </div>
                 <div className='Solvers'>
                     <ProfessionalSolverCard select={selectGolfer} />
@@ -343,6 +394,15 @@ const TournamentStage = (props: {
                         </div>
                     </div>
                 </div>
+            }
+            {
+                showPlayRoundModal &&
+                <VerificationModal 
+                    cancel={() => setShowPlayRoundModal(false)}
+                    confirm={() => beginPlayingRound()}
+                    title="Are You Sure?"
+                    message="You will only play each Tournament Round once. Are you sure you want to play with your selected Modules and Solvers?"
+                />
             }
         </div>
     )

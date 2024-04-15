@@ -1,6 +1,6 @@
 import { SetStateAction, useContext, useState } from 'react';
 import './FreeRoamGame.scss';
-import { Solver, runPlayDrive, runPlayFairway, runPlayLong, runPlayPutt, runPlayShort, solverNames } from '../../../Utils/Simulation';
+import { Solver, moduleDescriptions, runPlayDrive, runPlayFairway, runPlayLong, runPlayPutt, runPlayShort, runSimEntireHole, solverNames } from '../../../Utils/Simulation';
 import { Button, Tooltip } from 'antd';
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
@@ -30,14 +30,8 @@ const FreeRoamGame = (props: {
 }) => {
 
     const { playerColor, playerId, isHost, sessionId } = useContext(UserContext) as UserContextType;
-    const modules = ['Drive', 'Long', 'Fairway', 'Short', 'Putt'];
-    const moduleDescriptions = [
-        "Driving off the Tee involves hitting the ball as far as possible towards the hole. Driving is only the first hit, so it will always only be one shot.",
-        "Playing Long means Driving the ball off of the Tee and then continuing to hit the ball until it is on the green. Here the green is considered 15 units of distance from the hole.",
-        "Playing the Fairway is played after the ball is driven off the Tee, so it has been hit exactly once. Playing the Fairway begins wherever the ball landed from the drive, but for this experiment it starts at 450 units of distance from the hole. It continues to hit until reaching the green, which is 15 units of distance from the hole.",
-        "Playing short is played after the ball is driven off the Tee, so it has been hit exactly once. Playing short begins wherever the ball landed from the drive, but for this experiment it starts at 450 units of distance from the hole. It continues to shoot until successfully putting the ball in the hole.",
-        "Putting is played after the ball has been hit onto the green, which is 15 units of distance from the hole. Putting continues until the ball is in the hole."
-    ]
+    const modules = ['Drive', 'Long', 'Fairway', 'Short', 'Putt', 'Entire Hole'];
+    
 
     // use value to switch between selecting long and close golfers
     const [selectedModule, setSelectedModule] = useState<string>('Drive');
@@ -67,6 +61,9 @@ const FreeRoamGame = (props: {
                 result = await runPlayShort(selectedSolver);
             } else if (selectedModule === 'Putt') {
                 result = await runPlayPutt(selectedSolver);
+            } else if (selectedModule === 'Entire Hole') {
+                const shotsAndCost = await runSimEntireHole(selectedSolver);
+                result = { shots: shotsAndCost.shots, distance: 700 };
             }
             setLatestShot(result.shots);
             setLatestDistance(result.distance);
@@ -157,7 +154,7 @@ const FreeRoamGame = (props: {
                 <div className='Controls'>
                     <div className='Instructions'>
                         <h1>
-                            Experimental Round
+                            Exploration Round
                             <Button className='InfoButtonHolder' onClick={() => props.setShowExplanationModal(true)}>
                                 &nbsp;
                                 <svg width="24" height="24" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -227,12 +224,12 @@ const FreeRoamGame = (props: {
                                 >
                                     Play {solverNames[selectedSolver - 1]} on {selectedModule}
                                 </Button>
-                                <Button
+                                {/* <Button
                                     onClick={() => simulateAll()}
                                     disabled={loading}
                                 >
                                     Simulate All
-                                </Button>
+                                </Button> */}
                                 <Button
                                     onClick={() => { props.setShowModuleResults(true) }}
                                     disabled={props.allResults.length === 0}
@@ -271,7 +268,7 @@ const FreeRoamGame = (props: {
                                 onClick={() => setShowVerificationModal(true)}
                                 disabled={!!hostClickedButton}
                             >
-                                End Experimental Round
+                                End Exploration Round
                             </Button>
                         }
                     </div>
@@ -287,7 +284,7 @@ const FreeRoamGame = (props: {
                         onClick={() => props.setShowExplanationModal(false)}
                     >
                         <div className='ExplanationModalBody'>
-                            <h2>What is the Experimental Round?</h2>
+                            <h2>What is the Exploration Round?</h2>
                             <p>
                                 In this round scores still do not count towards the Tournament rankings. Instead this is an opportunity for players to test different solvers on different modules.
                             </p>
@@ -295,7 +292,10 @@ const FreeRoamGame = (props: {
                                 Play as much as you would like with as many different combinations as you would like. This will go on until the host moves the game forward.
                             </p>
                             <p>
-                                Select different modules by clicking their name at the top of the screen or by clicking on the corresponding part of the golf course at the bottom of the screen. Then choose your solver and click play game. All of you scores can be seen by clicking view results. Click Simulate All to have every golfer play every module once.
+                                Select different modules by clicking their name at the top of the screen or by clicking on the corresponding part of the golf course at the bottom of the screen. Then choose your solver and click play game. All of you scores can be seen by clicking view results. 
+                                {
+                                    // Click Simulate All to have every golfer play every module once.
+                                }
                             </p>
                             <p>
                                 This experiment should allow you to familiarize yourself with how golf can be broken down into modules to be solved in more novel ways.
@@ -310,8 +310,8 @@ const FreeRoamGame = (props: {
             {
                 showVerificationModal &&
                 <VerificationModal
-                    title="Are you sure you end the Experimental Round?"
-                    message="This will end the experiment for all players and begin a survey on their findings."
+                    title="Are you sure you end the Exploration Round?"
+                    message="This will end the exploration for all players and begin a survey on their findings."
                     confirm={() => advanceSession(sessionId, setHostClickedButton)}
                     cancel={() => setShowVerificationModal(false)}
                 />

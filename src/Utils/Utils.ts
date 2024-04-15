@@ -61,6 +61,9 @@ export const getArchitectureCommonName = (architecture: string) => {
     else return "Unknown Architecture"
 }
 
+// adjustable const for tournament stage 2
+export const tournamentStage2MaximumShots = 25;
+
 // Scores the results of a round in the tournament 
 // @param customPerfomance is a percent (between 0 and 1) of the score that is associated with shots.
 // 1 - customPerformance is the percent associated with cost
@@ -76,7 +79,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
             return (55 - shots - 5) * (100 / 55);
         }
     } else if (round === RoundNames.TournamentStage2) {
-        // On round 7 minimum cost is rewarded as long as the performance is <= 35 strokes (TODO settle on stroke number)
+        // On round 7 minimum cost is rewarded as long as the performance is <= tournamentStage2MaximumShots
         // This one may need to not be linear
         // Minimum cost ~ (3 specialists 60 - 90), (3 amateurs = 25), (3 professional ~ 50), 
         // Say Minimum cost is 10 = score of 100
@@ -87,7 +90,7 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         }
 
         const score = (160 - cost - 10) * (100 / 160); 
-        if (shots > 35) {
+        if (shots > tournamentStage2MaximumShots) {
             // divide score by amount as penalty
             return Math.floor(score / 10);
         } else {
@@ -111,10 +114,10 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         if (shots > 50) {
             return ((160 - cost - 10) * (100 / 160)) * (1 - customPerformance);
         } else if (cost > 150) {
-            return ((55 - shots - 5) * (100 / 45)) * customPerformance;
+            return ((55 - shots - 5) * (100 / 55)) * customPerformance;
         } else {
             const shotScore = ((55 - shots - 5) * (100 / 55)) * customPerformance;
-            const costScore = ((140 - cost - 10) * (100 / 140)) * (1 - customPerformance);
+            const costScore = ((160 - cost - 10) * (100 / 160)) * (1 - customPerformance);
             return (shotScore + costScore);
         }
     } else {

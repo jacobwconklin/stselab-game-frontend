@@ -53,14 +53,14 @@ const ArmExperimentResults = (props: {
     ].concat(
         armSolverNames.map(solverName => {
             return {
-                title: solverName + ' Weight Avgerage',
+                title: solverName + ' Weight Average',
                 dataIndex: solverName + ' Weight Avg',
                 key: solverName + 'WeightAvg',
             }
         }).concat(
             armSolverNames.map(solverName => {
                 return {
-                    title: solverName + ' Cost Avgerage',
+                    title: solverName + ' Cost Average',
                     dataIndex: solverName + ' Cost Avg',
                     key: solverName + 'CostAvg',
                 }

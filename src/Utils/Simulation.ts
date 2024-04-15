@@ -16,6 +16,15 @@ export const solverNames = ['Professional', 'Amateur', 'Specialist'];
 
 const groupSizePerSolver = [1, 25, 3];
 
+export const moduleDescriptions = [
+    "Driving off the Tee involves hitting the ball as far as possible towards the hole. Driving is only the first hit, so it will always only be one shot.",
+    "Long means Driving the ball off of the Tee and then continuing to hit the ball until it is on the Green. Here the green is considered 15 units of distance from the hole.",
+    "Fairway begins wherever the ball landed from the Drive. It continues to hit until reaching the green, which is 15 units of distance from the hole.",
+    "Short begins wherever the ball landed from the drive and continues until successfully putting the ball in the hole.",
+    "Putting is played after the ball has been placed on the Green, which is 15 units of distance from the hole, and. continues until the ball is in the hole.",
+    "Playing the entire hole involves driving off the tee and then hitting the ball until it is in the hole. The full distance of 700 units will be covered."
+]
+
 // use for post requests to simulation
 const simulationPostRequest = async (endpoint: string, payload: string) => {
     // for now must hit back-end for access to simulation, 

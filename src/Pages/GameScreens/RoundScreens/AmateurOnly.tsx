@@ -71,24 +71,45 @@ const AmateurOnly = (props: { round: Number }) => {
         plugins: {
             title: {
                 display: true,
-                text: `Shots and Costs for Amateurs`
+                text: `Shots and Costs for Amateurs`,
+                font: {
+                    size: 18
+                }
             }
         },
         scales: {
             y: {
-                reverse: true,
                 title: {
                     display: true,
-                    text: 'Shots'
+                    text: 'Shots',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 }
             },
             x: {
                 beginAtZero: true,
                 max: 2,
-                reverse: true,
                 title: {
                     display: true,
-                    text: 'Cost'
+                    text: 'Cost',
+                    font: {
+                        weight: "bold" as any,
+                        size: 14,
+                    }
+                },  
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
                 }
             },
         },
@@ -168,9 +189,14 @@ const AmateurOnly = (props: { round: Number }) => {
 
                                 <div className='InfoContainer'>
                                     <p>
-                                        In this round all players must use only one Amateur golfer to play all 5 holes. This is the only time a single Amateur will be an option. Everywhere else 25 Amateurs will be used and the best result out of all of them will be taken. Here you will learn the "skills" of an individual Amateur. Combining the results of multiple Amateurs represents crowd-sourcing solutions and picking the best one. This can be an affordable alternative to hiring a professional.
+                                        In this round all players must use only one Amateur golfer to play all 5 holes. Here you will explore the "skills" of an individual Amateur.
                                     </p>
-                                    <p>You may run this simulation as many times as you would like. You can see all of the outcomes by clicking view results.{isHost ? " As host you must begin the next round from the view results page." : ""} </p>
+                                    <p>
+                                        You may run this simulation as many times as you would like. You can see all of the outcomes by clicking view results.{isHost ? " As host you must begin the next round from the view results page." : " The host must begin the next round."} 
+                                    </p>
+                                    <p>
+                                        Please note that, when Amateurs are engaged, they are usually engaged in large numbers in a crowdsourcing format, and only their “best” response is used. Here the goal is to visualize the variability in individual performances.
+                                    </p>
                                     {
                                         loading &&
                                         <p>Amateur is playing ... </p>

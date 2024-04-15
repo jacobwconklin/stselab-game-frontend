@@ -8,6 +8,7 @@ import AggregateResultGraphs from './AggregateResultGraphs';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import { Solver, solverNames } from '../../Utils/Simulation';
 import { RoundNames } from '../../Utils/Utils';
+import { render } from '@testing-library/react';
 
 // AllResults
 // Only show for tournament stage results (not professional only or h_arch)
@@ -98,8 +99,8 @@ const AllResults = () => {
             key: 'score',
             defaultSortOrder: 'descend' as any,
             sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
-                const scoreA = Number(a.score);
-                const scoreB = Number(b.score);
+                const scoreA = Number(a.score? a.score.score : '');
+                const scoreB = Number(b.score ? b.score.score : '');
                 if (isNaN(scoreA) && !isNaN(scoreB)) {
                     return -1;
                 } else if (!isNaN(scoreA) && isNaN(scoreB)) {
@@ -108,6 +109,20 @@ const AllResults = () => {
                     return 0;
                 } else {
                     return scoreA - scoreB;
+                }
+            },
+            render: (result: {score: number, customPerformanceWeight: number | undefined}) => {
+                if (result.customPerformanceWeight) {
+                    // if shots are over the maximum acceptable shots for round 7, add message
+                    return (
+                        <div className="ScoreWithCustomWeight">
+                            <p>{result.score}</p>
+                            <p>{result.customPerformanceWeight}% Shots</p>
+                            <p>{100 - result.customPerformanceWeight}% Cost</p>
+                        </div>
+                    )
+                } else {
+                    return result.score;
                 }
             }
         },
@@ -191,10 +206,13 @@ const AllResults = () => {
         }
     ];
 
-    const tableData: DisplayRoundResult[] = filteredResults.map((player: RoundResult, index: number) => (
-        {
+    const tableData: DisplayRoundResult[] = filteredResults.map((player: RoundResult, index: number) => {
+        console.log("See if I got cpw: ", player.customPerformanceWeight);
+        return {
             key: player.id,
-            score: player.score / 100,
+            score: {score: player.score / 100, customPerformanceWeight: player.round === RoundNames.TournamentStage4 
+                ? player.customPerformanceWeight : undefined
+            },
             name: player.name,
             color: player.color,
             shots: player.shots,
@@ -203,7 +221,7 @@ const AllResults = () => {
             architecture: player.architecture,
             solvers: [player.solverOne, player.solverTwo, player.solverThree].filter((solver) => !!solver),
         }
-    ));
+    });
 
 
     return (

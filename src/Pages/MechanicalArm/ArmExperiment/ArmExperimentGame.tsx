@@ -38,7 +38,7 @@ const ArmExperimentGame = (props: {
         <div className="ArmExperimentGame">
             <FactoryBackground />
             <div className='Instructions'>
-                <h1>Experimental Round
+                <h1>Exploration Round
                     <Button className='InfoButtonHolder' onClick={() => props.setShowTypedMessage(true)}>
                         &nbsp;
                         <svg width="24" height="24" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -131,7 +131,7 @@ const ArmExperimentGame = (props: {
                             onClick={() => setShowVerificationModal(true)}
                             type='primary'
                         >
-                            End Experimental Round
+                            End Exploration Round
                         </Button>
                     }
                 </div>
