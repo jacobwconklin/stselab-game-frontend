@@ -11,7 +11,7 @@ import {
 import './Register.scss';
 import { useContext, useEffect, useState } from 'react';
 import { postRequest } from '../../Utils/Api';
-import { PlayerInformation, PlayerBrief, UserContextType } from '../../Utils/Types';
+import { PlayerInformation, PlayerBrief, UserContextType, EssentialPlayerInformation } from '../../Utils/Types';
 import { UserContext } from '../../App';
 import { useNavigate, useParams } from 'react-router-dom';
 import GolfBall from '../../ReusableComponents/GolfBall';
@@ -346,6 +346,16 @@ const Register = () => {
                         setSessionId(submitResult.joinCode);
                         setPlayerId(submitResult.playerId);
                         setPlayerColor(color);
+                        // save essential information to local storage
+                        const essentialPlayerInformation: EssentialPlayerInformation = 
+                        {
+                            isHost: true,
+                            sessionId: submitResult.joinCode,
+                            playerId: submitResult.playerId,
+                            playerColor: color
+                        }
+                        localStorage.setItem('essentialPlayerInformation', JSON.stringify(essentialPlayerInformation))
+
                         navigate('/game');
                     } else {
                         alert("Failed to submit form. \n\nThe database or backend may be rebooting, please wait one minute and try again.");
@@ -360,12 +370,22 @@ const Register = () => {
                         setSessionId(Number(joinCode));
                         setPlayerId(submitResult.playerId);
                         setPlayerColor(color);
+                        // save essential information to local storage
+                        const essentialPlayerInformation: EssentialPlayerInformation = 
+                        {
+                            isHost: false,
+                            sessionId: Number(joinCode),
+                            playerId: submitResult.playerId,
+                            playerColor: color
+                        }
+                        localStorage.setItem('essentialPlayerInformation', JSON.stringify(essentialPlayerInformation))
+
                         navigate('/game');
                     } else if (submitResult.error === "Session has already started") {
                         alert("Cannot join session, it has already started.");
                         setSubmitting(false);
                     } else {
-                        alert("Failed to submit form. \n\nThe database or backend may be rebooting, please wait one minute and try again.");
+                        alert("Failed to submit form. \n\nEnsure the Join Code is Correct");
                         console.error(submitResult)
                         setSubmitting(false);
                     }

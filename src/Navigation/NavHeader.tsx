@@ -5,13 +5,14 @@ import VerificationModal from '../ReusableComponents/VerificationModal';
 import { useContext, useState } from 'react';
 import { UserContext } from '../App';
 import { UserContextType } from '../Utils/Types';
+import { postRequest } from '../Utils/Api';
 
 // NavHeader
 const NavHeader = () => {
 
     const navigate = useNavigate();
     const [showReturnHomeModal, setShowReturnHomeModal] = useState(false);
-    const { sessionId } = useContext(UserContext) as UserContextType;
+    const { sessionId, playerId, setPlayerId, setPlayerColor, setSessionId } = useContext(UserContext) as UserContextType;
 
     return (
         <div className='NavHeader top-font'>
@@ -32,7 +33,7 @@ const NavHeader = () => {
             </div>
             {
                 // show session join code so others can join ongoing session
-                sessionId &&
+                !!sessionId &&
                 <div className='SessionJoinCode'>
                     <p>
                         Session Join Code: 
@@ -48,8 +49,16 @@ const NavHeader = () => {
                 showReturnHomeModal &&
                 <VerificationModal
                     title='Are you sure you want to return Home?'
-                    message='Returning home will cause you to lose all progress and data if you are in a session. Are you sure you want to go?'
+                    message='Returning home will cause you to lose all progress and data if you are in a session. You will not be able to rejoing the session. Are you sure you want to go?'
                     confirm={() => {
+                    // removes player if they navigate away from game
+                    if (playerId) {
+                        postRequest("player/remove", JSON.stringify({ playerId }));
+                        localStorage.setItem('essentialPlayerInformation', '');
+                        setPlayerId(''); 
+                        setPlayerColor('');
+                        setSessionId(0);
+                    }
                         navigate('/')
                         // TODO exit player from session?
                     }}

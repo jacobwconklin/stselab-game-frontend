@@ -111,6 +111,13 @@ export interface FinalResult {
     scores: Score[];
 }
 
+export interface EssentialPlayerInformation {
+    isHost: Boolean;
+    sessionId: number | null;
+    playerId: string | null;
+    playerColor: string | null;
+}
+
 export interface UserContextType {
     isHost: Boolean;
     setIsHost: (isHost: boolean) => void;

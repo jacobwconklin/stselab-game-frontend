@@ -15,11 +15,23 @@ import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
 // can invite players to join their session.
 const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void }) => {
 
+    // check host status and session id / join code from context
+    const { isHost, sessionId, playerId, setPlayerId, setSessionId, setPlayerColor } = useContext(UserContext) as UserContextType;
+
     // make user play dice onboarding game before they can join the session
     const [finishedDiceGame, setFinishedDiceGame] = useState(false);
 
-    // check host status and session id / join code from context
-    const { isHost, sessionId, playerId } = useContext(UserContext) as UserContextType;
+    // if user refreshes page, check if they have already played the dice game for THIS session
+    useEffect(() => {
+        const diceGameFinished = localStorage.getItem('diceGameFinished');
+        if (diceGameFinished) {
+            const parsedResults = JSON.parse(diceGameFinished);
+            if (parsedResults.sessionId === sessionId && parsedResults.playerId === playerId && parsedResults.onboarding) {
+                setFinishedDiceGame(true);
+            }
+        }
+    }, [sessionId, playerId])
+
     // Ensure host doesn't click button multiple times
     const [beginningTournament, setBeginningTournament] = useState<Boolean>(false);
     const [players, setPlayers] = useState<Array<PlayerBrief> | []>([]);
@@ -55,6 +67,10 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
     const removePlayer = async (playerIdToRemove: string) => {
         const response = await postRequest("player/remove", JSON.stringify({ playerId: playerIdToRemove }));
         if (playerId === playerIdToRemove) {
+            localStorage.setItem('essentialPlayerInformation', '');
+            setPlayerId(''); 
+            setPlayerColor('');
+            setSessionId(0);
             navigate('/');
         }
         if (!response.success) {
@@ -169,7 +185,7 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
                                         }
                                     </h2>
                                     <Button
-                                        disabled={!!beginningTournament}
+                                        disabled={!!beginningTournament || players.length < 1}
                                         onClick={() => setShowBeginModal(true)}
                                         type='primary'
                                     >

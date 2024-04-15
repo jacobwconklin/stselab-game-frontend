@@ -1,7 +1,7 @@
 import { Button, Table } from 'antd';
 import './SessionResults.scss';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { UserContext } from '../../App';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import {
@@ -26,9 +26,21 @@ import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
 // Only show for tournament stage results (not professional only or h_arch)
 const SessionResults = (props: { players: FinalResult[] }) => {
 
+    const { playerId, sessionId, setPlayerColor, setPlayerId, setSessionId } = useContext(UserContext) as UserContextType;
     
     // make user play dice onboarding game before they can join the session
     const [finishedDiceGame, setFinishedDiceGame] = useState(false);
+
+    // if user refreshes page, check if they have already played the dice game for THIS session
+    useEffect(() => {
+        const diceGameFinished = localStorage.getItem('diceGameFinished');
+        if (diceGameFinished) {
+            const parsedResults = JSON.parse(diceGameFinished);
+            if (parsedResults.sessionId === sessionId && parsedResults.playerId === playerId && !parsedResults.onboarding) {
+                setFinishedDiceGame(true);
+            }
+        }
+    }, [playerId, sessionId])
 
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     // const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false)
@@ -36,10 +48,13 @@ const SessionResults = (props: { players: FinalResult[] }) => {
     const navigate = useNavigate();
 
     const leavePage = () => {
+        // exit session
+        localStorage.setItem('essentialPlayerInformation', '');
+        setSessionId(0);
+        setPlayerId("");
+        setPlayerColor("");
         navigate(leaveTo);
     }
-
-    const { playerId } = useContext(UserContext) as UserContextType;
 
     const sumShots = (scores: Score[]) => {
         let total = 0;

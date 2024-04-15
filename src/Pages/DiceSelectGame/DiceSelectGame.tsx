@@ -29,7 +29,7 @@ const DiceSelectGame = (props: {
     const [reasoning, setReasoning] = useState('');
 
     // player id will be pulled from context
-    const { playerId } = useContext(UserContext) as UserContextType;
+    const { playerId, sessionId } = useContext(UserContext) as UserContextType;
 
     // could make border of the die the player's chosen color maybe?
     // die must have image, and val
@@ -146,7 +146,8 @@ const DiceSelectGame = (props: {
                 reasoning
             }));
             if (result.success) {
-                // show results for a few seconds then move on
+                // save results to local storgae in case user refreshes page and move on
+                localStorage.setItem("diceGameFinished", JSON.stringify({sessionId, playerId, onboarding: props.isOnboarding}))
                 props.finished();
             } else {
                 console.error("Error saving dice results to database during: ", props.isOnboarding ? "onboarding" : "offboarding", result);

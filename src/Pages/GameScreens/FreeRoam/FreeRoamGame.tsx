@@ -80,39 +80,39 @@ const FreeRoamGame = (props: {
         }
     }
 
-    const simulateAll = async () => {
-        try {
-            setLoading(true);
-            // save all results as it goes
-            const simulatedResults = [];
-            // For each solver play each module once
-            for (let i = 1; i < 4; i++) {
-                let result = await runPlayDrive(i);
-                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Drive' });
-                result = await runPlayLong(i);
-                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Long' });
-                result = await runPlayFairway(i);
-                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Fairway' });
-                result = await runPlayShort(i);
-                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Short' });
-                result = await runPlayPutt(i);
-                simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Putt' });
-            }
-            // For now do not save free roam results to database to reduce workload on be and db,
-            // TODO if simulate all data is wanted it can be saved by uncommenting this below:
-            // if (playerId) {
-            //     await Promise.all(simulatedResults.map(async (result) => {
-            //         await saveFreeRoamResult(result.shots, result.distance);
-            //         return null;
-            //     }));
-            // }
-            props.setAllResults([...props.allResults, ...simulatedResults]);
-            setSimulatedAll(true);
-            setLoading(false);
-        } catch (error) {
-            console.error("Error simulating all: ", error);
-        }
-    }
+    // const simulateAll = async () => {
+    //     try {
+    //         setLoading(true);
+    //         // save all results as it goes
+    //         const simulatedResults = [];
+    //         // For each solver play each module once
+    //         for (let i = 1; i < 4; i++) {
+    //             let result = await runPlayDrive(i);
+    //             simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Drive' });
+    //             result = await runPlayLong(i);
+    //             simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Long' });
+    //             result = await runPlayFairway(i);
+    //             simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Fairway' });
+    //             result = await runPlayShort(i);
+    //             simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Short' });
+    //             result = await runPlayPutt(i);
+    //             simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Putt' });
+    //         }
+    //         // For now do not save free roam results to database to reduce workload on be and db,
+    //         // TODO if simulate all data is wanted it can be saved by uncommenting this below:
+    //         // if (playerId) {
+    //         //     await Promise.all(simulatedResults.map(async (result) => {
+    //         //         await saveFreeRoamResult(result.shots, result.distance);
+    //         //         return null;
+    //         //     }));
+    //         // }
+    //         props.setAllResults([...props.allResults, ...simulatedResults]);
+    //         setSimulatedAll(true);
+    //         setLoading(false);
+    //     } catch (error) {
+    //         console.error("Error simulating all: ", error);
+    //     }
+    // }
 
     const saveFreeRoamResult = async (shots: number, distance: number) => {
         try {

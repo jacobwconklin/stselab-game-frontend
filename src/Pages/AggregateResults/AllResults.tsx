@@ -8,7 +8,6 @@ import AggregateResultGraphs from './AggregateResultGraphs';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import { Solver, solverNames } from '../../Utils/Simulation';
 import { RoundNames } from '../../Utils/Utils';
-import { render } from '@testing-library/react';
 
 // AllResults
 // Only show for tournament stage results (not professional only or h_arch)

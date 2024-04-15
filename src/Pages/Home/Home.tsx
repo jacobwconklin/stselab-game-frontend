@@ -19,6 +19,8 @@ const Home = () => {
     const [collapseHow, setCollapseHow] = useState(false);
     const [collapseLearn, setCollapseLearn] = useState(false);
 
+    // if redirected to home page and there is
+
     return (
         <div className='Home'>
             <div className='StaticBackground'>

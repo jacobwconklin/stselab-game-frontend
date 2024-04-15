@@ -20,11 +20,13 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
     const [customPerformanceWeight, setCustomPerformanceWeight] = useState<number>(0.5);
 
     // pull playerId from Context
-    const { playerId, playerColor } = useContext(UserContext) as UserContextType;
+    const { playerId, sessionId, playerColor } = useContext(UserContext) as UserContextType;
 
     const updateFinishedRounds = () => {
         const copy = props.finishedRounds;
         copy[props.round] = true;
+        // save to local storage too in case of refresh
+        localStorage.setItem('finishedRound', JSON.stringify({playerId, sessionId, data: copy}));
         props.setFinishedRound(copy);
     }
 
