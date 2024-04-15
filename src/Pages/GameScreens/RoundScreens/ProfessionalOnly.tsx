@@ -11,14 +11,14 @@ import { useState } from 'react';
 // Have players play on h_arch with one professional to showcase the standard way problems are solved
 const ProfessionalOnly = (props: {
     playingRound: Boolean, round: Number,
-    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
+    playRound: (architecture: string, reasoning: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
     disablePlayRound: () => void
 }) => {
 
     const [showTypedMessage, setShowTypedMessage] = useState(true)
 
     const playRoundCallback = () => {
-        props.playRound("h", Solver.Professional)
+        props.playRound("h", '', Solver.Professional)
     }
 
     return (

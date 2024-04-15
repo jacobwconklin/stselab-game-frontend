@@ -47,6 +47,9 @@ const GameController = () => {
     // When player finishes the current round allow them to see scores for the round
     const [finishedRound, setFinishedRound] = useState<Array<Boolean>>(Array.apply(false, Array(20)).map(val => !!val));
 
+    // force player to complete onboarding even if they enter a game late
+    const [completedOnboarding, setCompletedOnboarding] = useState(false);
+
     useEffect(() => {
         // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
         // Interval will regularly poll back-end for updates 
@@ -69,6 +72,14 @@ const GameController = () => {
                             const parsedData = JSON.parse(finishedRoundData);
                             if (parsedData.sessionId === sessionId && parsedData.playerId === playerId) {
                                 setFinishedRound(parsedData.data);
+                            }
+                        }
+                        // if onboarding data exists for this session pull it on refresh (here)
+                        const onboardingData = localStorage.getItem('diceGameFinished');
+                        if (onboardingData) {
+                            const parsedData = JSON.parse(onboardingData);
+                            if (parsedData.sessionId === sessionId && parsedData.playerId === playerId) {
+                                setCompletedOnboarding(true);
                             }
                         }
                     } else {
@@ -232,10 +243,13 @@ const GameController = () => {
         )
     }
     // if session has not started show wait room
-    else if (currRound === RoundNames.WaitRoom) {
+    else if (currRound === RoundNames.WaitRoom || !completedOnboarding) {
         return (
             <div className='GameController'>
-                <WaitRoom setJumpToMechanicalArmMission={setJumpToMechanicalArmMission} />
+                <WaitRoom 
+                    setJumpToMechanicalArmMission={setJumpToMechanicalArmMission} 
+                    onboardingCompleted={() => setCompletedOnboarding(true)} 
+                />
             </div>
         )
     }

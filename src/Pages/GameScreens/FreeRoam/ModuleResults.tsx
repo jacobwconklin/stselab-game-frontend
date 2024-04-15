@@ -510,6 +510,14 @@ const ModuleResults = (props: {
                     }
                 },
             },
+            x: {
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
+            }
         },
         layout: {
             padding: 20
@@ -578,6 +586,14 @@ const ModuleResults = (props: {
                     }
                 },
             },
+            x: {
+                ticks: {
+                    font: {
+                        size: 14,
+                        weight: "bold" as any
+                    }
+                },
+            }
         },
         layout: {
             padding: 20

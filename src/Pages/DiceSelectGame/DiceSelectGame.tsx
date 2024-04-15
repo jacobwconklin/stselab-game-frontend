@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import './DiceSelectGame.scss';
-import { Button, Input } from 'antd';
+import { Button } from 'antd';
 import d6 from '../../Assets/Die/d6.png';
 import d8 from '../../Assets/Die/d8.png';
 import d10 from '../../Assets/Die/d10.png';
@@ -9,6 +9,7 @@ import d20 from '../../Assets/Die/d20.png';
 import { postRequest } from '../../Utils/Api';
 import { UserContext } from '../../App';
 import { UserContextType } from '../../Utils/Types';
+import TextArea from 'antd/es/input/TextArea';
 const DiceSelectGame = (props: {
     isOnboarding: boolean;
     finished: () => void;
@@ -233,21 +234,28 @@ const DiceSelectGame = (props: {
                         <p>
                             {randomRoll >= totalToReach ? " Congratulations!" : " Better Luck Next Time!"}
                         </p>
+                        {
+                            !props.isOnboarding &&
+                            <p>
+                                The probaility that you would roll a sum of at least {totalToReach} was {scoreSelectedDie().toFixed(2)}%
+                            </p>
+                        }
                         <h2 style={{ width: '100%', textAlign: 'center' }} >
                             Briefly, could you please explain why you picked this dice combo?
                         </h2>
-                        <Input
+                        <TextArea
+                            autoSize
                             placeholder='Enter your reasoning here'
                             // style={{width: '80%', margin: 'auto'}}
-                            maxLength={64}
+                            maxLength={240}
                             value={reasoning}
                             onChange={(event) => {
-                                setReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 64) : event.target.value);
+                                setReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 240) : event.target.value);
                             }}
                         />
                         <br></br>
                         <Button
-                            disabled={reasoning.trim().length === 0}
+                            disabled={reasoning.trim().length < 10}
                             onClick={() => {
                                 saveAndContinue();
                             }}

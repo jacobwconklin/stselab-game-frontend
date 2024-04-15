@@ -13,7 +13,10 @@ import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
 // can invite players to join their session.
-const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void }) => {
+const WaitRoom = (props: { 
+    setJumpToMechanicalArmMission: (val: boolean) => void,
+    onboardingCompleted: () => void
+}) => {
 
     // check host status and session id / join code from context
     const { isHost, sessionId, playerId, setPlayerId, setSessionId, setPlayerColor } = useContext(UserContext) as UserContextType;
@@ -27,10 +30,11 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
         if (diceGameFinished) {
             const parsedResults = JSON.parse(diceGameFinished);
             if (parsedResults.sessionId === sessionId && parsedResults.playerId === playerId && parsedResults.onboarding) {
+                props.onboardingCompleted();
                 setFinishedDiceGame(true);
             }
         }
-    }, [sessionId, playerId])
+    }, [sessionId, playerId, props])
 
     // Ensure host doesn't click button multiple times
     const [beginningTournament, setBeginningTournament] = useState<Boolean>(false);
@@ -48,7 +52,7 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
                 const response = await postRequest('session/players', JSON.stringify({ sessionId }));
                 if (response.success) {
                     setPlayers(response.players);
-                    setCompletedOnboarding(response.completedOnboarding)
+                    setCompletedOnboarding(response.completedOnboarding);
                 } else {
                     console.error("Error pulling players in session in wait room: ", response);
                 }
@@ -126,12 +130,15 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
     const [messageApi, contextHolder] = message.useMessage();
 
 
-
     return (
         <>
             {
                 !finishedDiceGame ?
-                    <DiceSelectGame isOnboarding={true} finished={() => setFinishedDiceGame(true)} />
+                    <DiceSelectGame isOnboarding={true} finished={() => {
+                            setFinishedDiceGame(true);
+                            props.onboardingCompleted();
+                        }}
+                    />
                     :
                     <div className='WaitRoom'>
                         <div className='StaticBackground'>
@@ -306,7 +313,7 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
                                 cancel={() => setShowBeginModal(false)}
                                 confirm={() => advanceSession(sessionId, setBeginningTournament)}
                                 title={"Ready to Begin the Game?"}
-                                message={"No players can join the game once it has started, and any players who have not completed onboarding will no longer have a chance to do so. Are you sure you want to begin the game?"}
+                                message={"Are you sure you want to begin the game? Players will still be able to join using the join code at in the header at the top of your screen. However, they will jump to where you are in the game after completing the onboarding dice game."}
                             />
                         }
                     </div>

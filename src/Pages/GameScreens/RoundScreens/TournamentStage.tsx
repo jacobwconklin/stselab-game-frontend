@@ -7,14 +7,14 @@ import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
 import { RoundNames, animateBallIntoHole, tournamentStage2MaximumShots } from '../../../Utils/Utils';
-import VerificationModal from '../../../ReusableComponents/VerificationModal';
+import TextArea from 'antd/es/input/TextArea';
 
 // TournamentStage
 // Players select an architecture, and then select a solver for each required distance for that
 // architecture. There will be different objectives based on the round number.
 const TournamentStage = (props: {
     playingRound: Boolean, round: number,
-    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
+    playRound: (architecture: string, reasoning: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
     disablePlayRound: () => void,
     customPerformanceWeight: number,
     setCustomPerformanceWeight: (weight: number) => void
@@ -44,6 +44,8 @@ const TournamentStage = (props: {
 
     const [showPlayRoundModal, setShowPlayRoundModal] = useState(false);
 
+    const [reasoning, setReasoning] = useState(''); // Reasoning for module and solver choices
+
     // Use effect to populate context with custom performance weight if user never touches slider
 
     const updateCustomPerformance = (value: number) => {
@@ -58,7 +60,7 @@ const TournamentStage = (props: {
     const roundObjectives = [
         "Best performance no matter the cost",
         `Minimize cost without exceeding ${tournamentStage2MaximumShots} strokes`,
-        "Minimize cost and performance",
+        "Minimize cost and performance", // expound on this. IE could say 50% of score will come from shots taken and 50% from cost...?
         "Choose the weight of performance versus cost yourself"
     ];
 
@@ -144,14 +146,14 @@ const TournamentStage = (props: {
     // Handles playing the round passing the selected values to props.playRound
     const submitPlayRound = () => {
         if (architecture === 'h' && selectedDriveSolver) {
-            props.playRound("h", selectedDriveSolver);
+            props.playRound("h", reasoning, selectedDriveSolver);
         } else if (architecture === 'lp' && selectedLongSolver && selectedPuttSolver) {
-            props.playRound("lp", selectedLongSolver, selectedPuttSolver);
+            props.playRound("lp", reasoning, selectedLongSolver, selectedPuttSolver);
         } else if (architecture === 'ds' && selectedDriveSolver && selectedShortSolver) {
-            props.playRound("ds", selectedDriveSolver, selectedShortSolver);
+            props.playRound("ds", reasoning, selectedDriveSolver, selectedShortSolver);
         } else if (selectedDriveSolver && selectedFairwaySolver && selectedPuttSolver) {
             // dap
-            props.playRound("dap", selectedDriveSolver, selectedFairwaySolver, selectedPuttSolver);
+            props.playRound("dap", reasoning, selectedDriveSolver, selectedFairwaySolver, selectedPuttSolver);
         }
     }
 
@@ -313,7 +315,7 @@ const TournamentStage = (props: {
                                         <>
                                             <p>
                                                 You Selected {solverNames[getSolverForSelectedModule()! - 1]}
-                                                &nbsp;to Play {architecture === 'h' ? 'the Entire Hole' : selectingDistance}. 
+                                                &nbsp;to Play {architecture === 'h' ? 'the Entire Hole' : selectingDistance}.
                                                 Click a different Solver Below to Change
                                             </p>
                                             <img className='SelectedSolverImage' src={solverIcons[getSolverForSelectedModule()! - 1]} alt="Solver Icon" />
@@ -397,12 +399,49 @@ const TournamentStage = (props: {
             }
             {
                 showPlayRoundModal &&
-                <VerificationModal 
-                    cancel={() => setShowPlayRoundModal(false)}
-                    confirm={() => beginPlayingRound()}
-                    title="Are You Sure?"
-                    message="You will only play each Tournament Round once. Are you sure you want to play with your selected Modules and Solvers?"
-                />
+                <div className='Modal'
+                // Can have click out here but they may not read
+                >
+                    <div className='ModalBody'>
+                        <h1>
+                            Are You Sure?
+                        </h1>
+                        <p style={{ width: '100%', textAlign: 'left' }} >
+                            You will only play each Tournament Round once. Are you sure you want to play with your selected Modules and Solvers? If so provide a brief explanation of why you chose the modules and solvers you did to play the round:
+                        </p>
+                        <TextArea
+                            autoSize
+                            placeholder='Enter your reasoning here'
+                            // style={{width: '80%', margin: 'auto'}}
+                            maxLength={240}
+                            value={reasoning}
+                            onChange={(event) => {
+                                setReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 240) : event.target.value);
+                            }}
+                        />
+                        <br></br>
+                        <div className='ModalButtons'>
+                            <Button
+                                disabled={reasoning.trim().length < 10}
+                                onClick={() => {
+                                    beginPlayingRound();
+                                }}
+                            >
+                                Confirm
+                            </Button>
+                            <br/>
+                            <br/>
+                            <Button
+                                onClick={() => {
+                                    setShowPlayRoundModal(false);
+                                }}
+                                type="primary"
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </div>
+                </div>
             }
         </div>
     )

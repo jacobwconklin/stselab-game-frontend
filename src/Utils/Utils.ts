@@ -124,6 +124,8 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         // console.error("Error invalid round")
         return null;
     }
+
+    // TODO add non-normalized values? 
 }
 
 // Animate player ball going into the hole

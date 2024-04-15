@@ -15,7 +15,7 @@ import { animateBallIntoHole } from '../../../Utils/Utils';
 // traditional solutions.
 const EntireHole = (props: {
     playingRound: Boolean, round: Number,
-    playRound: (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
+    playRound: (architecture: string, reasoning: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => void,
     disablePlayRound: () => void
 }) => {
 
@@ -23,7 +23,7 @@ const EntireHole = (props: {
     const [selectedSolver, setSelectedSolver] = useState<Solver | null>(null);
 
     const playRoundCallback = () => {
-        props.playRound("h", selectedSolver ? selectedSolver : Solver.Professional);
+        props.playRound("h", '', selectedSolver ? selectedSolver : Solver.Professional);
     }
 
     return (

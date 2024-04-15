@@ -31,7 +31,7 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
     }
 
     // Plays round with selected solver
-    const playRound = async (architecture: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => {
+    const playRound = async (architecture: string, reasoning: string, solver1: Solver, solver2?: Solver, solver3?: Solver) => {
 
         try {
             setPlayingRound(true);
@@ -63,7 +63,8 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
                 solverThree: solver3,
                 round: props.round,
                 score: pointsEarned !== null ? Math.floor( pointsEarned * 100) : null,
-                customPerformanceWeight: customPerformanceWeight ? Math.floor(customPerformanceWeight * 100) : null
+                customPerformanceWeight: customPerformanceWeight ? Math.floor(customPerformanceWeight * 100) : null,
+                reasoning
             }));
             if (response.success) {
                 updateFinishedRounds();
