@@ -153,7 +153,7 @@ const Home = () => {
                 </div>
                 <div className='DialogCard BeginGameCard'>
                     <h1>Ready to Begin?</h1>
-                    <p>Choose below to join a running tournament or to host and create a new game</p>
+                    <p>Choose below to join a Game or to host and create a new game</p>
                     <div className='BeginButtons'>
                         <Button
                             type='primary'

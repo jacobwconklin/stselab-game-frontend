@@ -55,7 +55,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             title: 'Shots',
             dataIndex: 'shots',
             key: 'shots',
-            defaultSortOrder: props.round < RoundNames.TournamentStage1 ? 'ascend' as any : null,
+            defaultSortOrder: props.round < RoundNames.TournamentStage1 ? 'descend' as any : null,
             sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
                 const shotsA = Number(a.shots);
                 const shotsB = Number(b.shots);

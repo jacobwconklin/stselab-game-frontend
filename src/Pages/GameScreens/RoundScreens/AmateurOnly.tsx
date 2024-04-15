@@ -19,6 +19,7 @@ import golfBallSvg from '../../../Assets/golfBall.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
 import { animateBallIntoHole } from '../../../Utils/Utils';
 import { UserContextType } from '../../../Utils/Types';
+import VerificationModal from '../../../ReusableComponents/VerificationModal';
 
 // AmateurOnly
 // Have players play on h_arch with only one amateur as many time as they would like to learn
@@ -35,6 +36,7 @@ const AmateurOnly = (props: { round: Number }) => {
 
     const { isHost, sessionId } = useContext(UserContext) as UserContextType;
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
+    const [showModal, setShowModal] = useState(false);
 
     const playAmateurRound = async () => {
         try {
@@ -145,7 +147,7 @@ const AmateurOnly = (props: { round: Number }) => {
                                     <Button
                                         className='BeginNextRoundButton'
                                         disabled={!!hostClickedButton}
-                                        onClick={() => advanceSession(sessionId, setHostClickedButton)}
+                                        onClick={() => setShowModal(true)}
                                         type='primary'
                                     >Begin Next Round</Button>
                                     // TODO warn host that this will advance everyone
@@ -202,6 +204,15 @@ const AmateurOnly = (props: { round: Number }) => {
                             </div>
                         </div>
                     </div>
+            }
+            {
+                showModal &&
+                <VerificationModal
+                    title="Continue to the Next Round?"
+                    message="This will advance all players to the next round. You will not be able to return to this round."
+                    confirm={() => advanceSession(sessionId, setHostClickedButton)}
+                    cancel={() => setShowModal(false)}
+                />
             }
         </div>
     )

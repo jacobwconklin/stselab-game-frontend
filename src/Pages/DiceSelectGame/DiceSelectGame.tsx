@@ -13,10 +13,6 @@ const DiceSelectGame = (props: {
     isOnboarding: boolean;
     finished: () => void;
 }) => {
-
-    // Highest score I have acheived for onboarding is 3 d6 with probability of 11.57%
-    // Highest score acheived for offboarding is 5 d6 with probability of 8.37%
-
     
     // Scroll to top on entering page
     useEffect(() => {
@@ -26,8 +22,10 @@ const DiceSelectGame = (props: {
     // props will tell if it is the oboarding or offboarding version of the game.
     const [credits, setCredits] = useState(props?.isOnboarding ? 8 : 10);
     const [totalToReach] = useState(props?.isOnboarding ? 12 : 20);
+    const [randomRoll, setRandomRoll] = useState(0);
     const [selectedDie, setSelectedDie] = useState<{ val: number; cost: number; img: string; }[]>([]);
     const [clickedRoll, setClickedRoll] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     // player id will be pulled from context
     const { playerId } = useContext(UserContext) as UserContextType;
@@ -75,12 +73,15 @@ const DiceSelectGame = (props: {
     // index is the current die being cycled through, 
     const recursiveCorrectPossibilities = (index: number, sum: number): number => {
         if (index === selectedDie.length - 1) {
-            // this is the final die, check if sum is correct and return 1 if found
+            // this is the final die, check if sum is >= the total to reach and add to total 
+            let correctPossibilitiesFound = 0;
             // loop through values of die at current index
             for (let i = 1; i <= selectedDie[index].val; i++) {
-                if (sum + i === totalToReach) return 1;
+                if (sum + i >= totalToReach) {
+                    correctPossibilitiesFound++;
+                };
             }
-            return 0;
+            return correctPossibilitiesFound;
         } 
 
         let totalCorrectPossibilitesFound = 0;
@@ -93,17 +94,23 @@ const DiceSelectGame = (props: {
 
     }
 
-    // score selected die by telling probability that roll = desired total
+    // score selected die by telling probability that roll >= desired total
     const scoreSelectedDie = () => {
+        // set player's random value:
+        let playerRandomRoll = 0;
+        // set total number of possibilities
         let totalNumberOfPossibilities = 1;
         selectedDie.forEach(die => {
             totalNumberOfPossibilities *= die.val;
+            playerRandomRoll += Math.floor(Math.random() * die.val) + 1;
         });
+        setRandomRoll(playerRandomRoll);
 
         // Going to do a semi-ugly brute force calculation for now.
         // TODO find prettier solution (not found by me yet) look here from Prof: https://anydice.com/
 
-        // for each possible value of each die check all other possible values of all other die and whenever the sum is the desired total increment the totalNumberOfCorrectPossibilities
+        // for each possible value of each die check all other possible values of all other die and whenever 
+        // the sum is >= the desired total increment the totalNumberOfCorrectPossibilities
         // use recursive function to do this.
         const totalNumberOfCorrectPossibilities = recursiveCorrectPossibilities(0, 0)
 
@@ -129,34 +136,34 @@ const DiceSelectGame = (props: {
                 score: scoreSelectedDie()
             }));
             if (result.success) {
-                props.finished();
+                // show results for a few seconds then move on
+                setShowModal(true);
+                setTimeout(() => {
+                    props.finished();
+                }, 5000);
             } else {
                 console.error("Error saving dice results to database during: ", props.isOnboarding ? "onboarding" : "offboarding", result);
                 setClickedRoll(false);
             }
-
-            // setClickedRoll(false);
         } catch (error) {
             console.error(error);
             setClickedRoll(false);
         }
     }
 
-    // allow player to remove a die from their selection. 
-
     return (
         // just give it a solid colored background?
         <div className='DiceSelectGame'>
         <div className='StaticBackground' />
             <div className='Instructions'>
-                <h1>Goal: Roll a Sum of {totalToReach}</h1>
+                <h1>Goal: Roll a Sum of at Least {totalToReach}</h1>
                 <h2>Remaining Credits: {credits}</h2>
                 <h3>
                     {
                         props.isOnboarding ?
-                        "Play the Dice Game to join your session! You have 8 credits to spend by selecting die to roll. Your goal is for the sum of all die you roll to be 12. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection." 
+                        "Play the Dice Game to join your session! You have 8 credits to spend by selecting die to roll. Your goal is for the sum of all die you roll to be at least 12. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection." 
                         : 
-                        "Play the Dice Game to view your final results! You now have 10 credits to spend by selecting die to roll. Your new goal is for the sum of all die you roll to be 20. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
+                        "Play the Dice Game to view your final results! You now have 10 credits to spend by selecting die to roll. Your new goal is for the sum of all die you roll to be at least 20. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
                     }
                 </h3>
                 <div className='SelectedDie'>
@@ -205,6 +212,24 @@ const DiceSelectGame = (props: {
                     })
                 }
             </div>
+            {
+                // show modal view for set amount of seconds displaying message
+                showModal &&
+                <div className='Modal'
+                // Can have click out here but they may not read
+                >
+                    <div className='ModalBody'>
+                        <h2>
+                            You rolled: {randomRoll} 
+                        </h2><h2>
+                            {randomRoll >= totalToReach ? " Congratulations!" : " Better Luck Next Time!"}
+                        </h2> 
+                        <p style={{width: '100%', textAlign: 'center'}} >
+                            Thank you. Your selection has been recorded. You will now be taken to the next page.
+                        </p>
+                    </div>
+                </div>
+            }
         </div>
     )
 }

@@ -251,7 +251,7 @@ const Register = () => {
             setGender(playerInformation.gender);
             setAge(playerInformation.age);
             setResidence(playerInformation.residence);
-            setEthnicity(playerInformation.ethnicity.split(', '));
+            setEthnicity(playerInformation.ethnicity? playerInformation.ethnicity.split(', '): []);
             setIsCollegeStudent(playerInformation.isCollegeStudent);
             if (playerInformation.university) setUniversity(playerInformation.university);
             if (playerInformation.degreeProgram) setDegreeProgram(playerInformation.degreeProgram);

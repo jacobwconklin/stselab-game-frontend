@@ -19,7 +19,7 @@ import { useReactToPrint } from 'react-to-print';
 import { FullScreenConfetti } from '../../ReusableComponents/Confetti';
 import { RoundNames } from '../../Utils/Utils';
 import VerificationModal from '../../ReusableComponents/VerificationModal';
-import { advanceSession } from '../../Utils/Api';
+// import { advanceSession } from '../../Utils/Api';
 import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
 
 // SessionResults
@@ -31,7 +31,7 @@ const SessionResults = (props: { players: FinalResult[] }) => {
     const [finishedDiceGame, setFinishedDiceGame] = useState(false);
 
     const [showVerificationModal, setShowVerificationModal] = useState(false);
-    const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false)
+    // const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false)
     const [leaveTo, setLeaveTo] = useState('/');
     const navigate = useNavigate();
 
@@ -39,7 +39,7 @@ const SessionResults = (props: { players: FinalResult[] }) => {
         navigate(leaveTo);
     }
 
-    const { playerId, isHost, sessionId } = useContext(UserContext) as UserContextType;
+    const { playerId } = useContext(UserContext) as UserContextType;
 
     const sumShots = (scores: Score[]) => {
         let total = 0;
@@ -76,6 +76,9 @@ const SessionResults = (props: { players: FinalResult[] }) => {
             title: {
                 display: true,
                 text: `Shots and Costs of all Tournament Rounds`
+            },
+            legend: {
+                display: false
             }
         },
         scales: {
@@ -133,6 +136,9 @@ const SessionResults = (props: { players: FinalResult[] }) => {
             title: {
                 display: true,
                 text: `Score per Player by Round`
+            },
+            legend: {
+                display: false
             }
         },
         scales: {

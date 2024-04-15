@@ -23,6 +23,7 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
     // Ensure host doesn't click button multiple times
     const [beginningTournament, setBeginningTournament] = useState<Boolean>(false);
     const [players, setPlayers] = useState<Array<PlayerBrief> | []>([]);
+    const [completedOnboarding, setCompletedOnboarding] = useState<Array<string> | []>([]);
 
     const navigate = useNavigate();
 
@@ -35,6 +36,7 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
                 const response = await postRequest('session/players', JSON.stringify({ sessionId }));
                 if (response.success) {
                     setPlayers(response.players);
+                    setCompletedOnboarding(response.completedOnboarding)
                 } else {
                     console.error("Error pulling players in session in wait room: ", response);
                 }
@@ -61,19 +63,20 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
         }
     }
 
-    // functionality for modal
-    const [showModal, setShowModal] = useState(false);
+    // functionality for modals
+    const [showBeginModal, setShowBeginModal] = useState(false);
+    const [showRemoveModal, setShowRemoveModal] = useState(false);
     const [playerIdToRemove, setPlayerIdToRemove] = useState('');
-    const [modalTitle, setModalTitle] = useState('Are you sure?');
-    const [modalMessage, setModalMessage] = useState('Action cannot be undone');
+    const [removeModalTitle, setRemoveModalTitle] = useState('Are you sure?');
+    const [removeModalMessage, setRemoveModalMessage] = useState('Action cannot be undone');
 
-    const cancelModal = () => {
-        setShowModal(false);
+    const cancelRemoveModal = () => {
+        setShowRemoveModal(false);
     }
 
-    const confirmModal = () => {
+    const confirmRemoveModal = () => {
         removePlayer(playerIdToRemove);
-        setShowModal(false);
+        setShowRemoveModal(false);
     }
 
     const columns = [
@@ -156,9 +159,18 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
                                     </p>
 
                                     <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>
+                                    <h2>
+                                        {
+                                            // Show how many players have completed onboarding:
+                                            completedOnboarding.length === players.length ?
+                                            "All players have completed onboarding" 
+                                            :
+                                            `${completedOnboarding.length} players have completed onboarding`
+                                        }
+                                    </h2>
                                     <Button
                                         disabled={!!beginningTournament}
-                                        onClick={() => advanceSession(sessionId, setBeginningTournament)}
+                                        onClick={() => setShowBeginModal(true)}
                                         type='primary'
                                     >
                                         Begin STSELab Golf
@@ -212,12 +224,21 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
                                         Share the join code or join link to help other players join the tournament.
                                     </p>
                                     <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>
+                                    <h2>
+                                        {
+                                            // Show how many players have completed onboarding:
+                                            completedOnboarding.length === players.length ?
+                                            "All players have completed onboarding" 
+                                            :
+                                            `${completedOnboarding.length} players have completed onboarding`
+                                        }
+                                    </h2>
                                     <Button
                                         onClick={() => {
                                             setPlayerIdToRemove(playerId ? playerId : '');
-                                            setModalTitle('Are you sure you want to exit the tournament?');
-                                            setModalMessage('You will leave the tournament.');
-                                            setShowModal(true);
+                                            setRemoveModalTitle('Are you sure you want to exit the tournament?');
+                                            setRemoveModalMessage('You will leave the tournament.');
+                                            setShowRemoveModal(true);
                                         }}
                                     >
                                         Exit Tournament
@@ -245,9 +266,9 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
                                         onClick: event => {
                                             if (playerId && isHost && record.key && record.key.toLowerCase() !== playerId.toLowerCase()) {
                                                 setPlayerIdToRemove(record.key);
-                                                setModalTitle('Are you sure you want to remove: ' + record.name + '?');
-                                                setModalMessage('The player will be removed from the Tournament including all of their information');
-                                                setShowModal(true);
+                                                setRemoveModalTitle('Are you sure you want to remove: ' + record.name + '?');
+                                                setRemoveModalMessage('The player will be removed from the Tournament including all of their information');
+                                                setShowRemoveModal(true);
                                             }
                                         },
                                     }
@@ -255,12 +276,21 @@ const WaitRoom = (props: { setJumpToMechanicalArmMission: (val: boolean) => void
                             />
                         </div>
                         {
-                            showModal &&
+                            showRemoveModal &&
                             <VerificationModal
-                                cancel={cancelModal}
-                                confirm={confirmModal}
-                                title={modalTitle}
-                                message={modalMessage}
+                                cancel={cancelRemoveModal}
+                                confirm={confirmRemoveModal}
+                                title={removeModalTitle}
+                                message={removeModalMessage}
+                            />
+                        }
+                        {
+                            showBeginModal &&
+                            <VerificationModal
+                                cancel={() => setShowBeginModal(false)}
+                                confirm={() => advanceSession(sessionId, setBeginningTournament)}
+                                title={"Ready to Begin the Game?"}
+                                message={"No players can join the game once it has started, and any players who have not completed onboarding will no longer have a chance to do so. Are you sure you want to begin the game?"}
                             />
                         }
                     </div>
