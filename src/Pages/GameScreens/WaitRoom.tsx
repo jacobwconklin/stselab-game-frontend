@@ -242,8 +242,9 @@ const WaitRoom = (props: {
                                     </div>
                                     <p>
                                         The host controls when the tournament starts and each round ends. You will automatically move to the next screen
-                                        as soon as the game begins. if you wish to exit the session you may click
-                                        below. You can also click the title in the header to return to the landing page at any time.
+                                        as soon as the game begins. if you wish to exit the session you may click Exit Tournament
+                                        below. You can also click the title in the header to exit the session and return to the 
+                                        home page at any time.
                                         Share the join code or join link to help other players join the tournament.
                                     </p>
                                     <h2> Players in the Tournament: {players && players.length > 0 ? players.length : "..."} </h2>

@@ -6,7 +6,7 @@ import { AmateurSolverCard, ProfessionalSolverCard, SpecialistSolverCard } from 
 import professionalIcon from '../../../Assets/man-golfing-dark-skin-tone.svg';
 import specialistIcon from '../../../Assets/woman-golfing-light-skin-tone.svg';
 import amateurIcon from '../../../Assets/person-golfing-medium-light-skin-tone.svg';
-import { RoundNames, animateBallIntoHole, tournamentStage2MaximumShots } from '../../../Utils/Utils';
+import { RoundNames, animateBallIntoHole, inDevMode, tournamentStage2MaximumShots } from '../../../Utils/Utils';
 import TextArea from 'antd/es/input/TextArea';
 
 // TournamentStage
@@ -60,7 +60,7 @@ const TournamentStage = (props: {
     const roundObjectives = [
         "Best performance no matter the cost",
         `Minimize cost without exceeding ${tournamentStage2MaximumShots} strokes`,
-        "Minimize cost and performance", // expound on this. IE could say 50% of score will come from shots taken and 50% from cost...?
+        "Minimize cost and performance. 50% of the score will come from performance and 50% will come from cost.", // expound on this. IE could say 50% of score will come from shots taken and 50% from cost...?
         "Choose the weight of performance versus cost yourself"
     ];
 
@@ -422,7 +422,7 @@ const TournamentStage = (props: {
                         <br></br>
                         <div className='ModalButtons'>
                             <Button
-                                disabled={reasoning.trim().length < 10}
+                                disabled={!inDevMode() && reasoning.trim().length < 10}
                                 onClick={() => {
                                     beginPlayingRound();
                                 }}

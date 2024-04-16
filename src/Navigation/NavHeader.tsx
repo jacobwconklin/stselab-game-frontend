@@ -49,7 +49,7 @@ const NavHeader = () => {
                 showReturnHomeModal &&
                 <VerificationModal
                     title='Are you sure you want to return Home?'
-                    message='Returning home will cause you to lose all progress and data if you are in a session. You will not be able to rejoing the session. Are you sure you want to go?'
+                    message='Returning home will cause you to lose all progress and data if you are in a session. Are you sure you want to go?'
                     confirm={() => {
                     // removes player if they navigate away from game
                     if (playerId) {

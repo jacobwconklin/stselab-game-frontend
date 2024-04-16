@@ -105,10 +105,10 @@ const Home = () => {
                             3) An exploration round lets players test breaking the golf course down into smaller modules.
                         </p><p>
 
-                            4) The tournament begins. It consists of four rounds each with a unique objective which will reward points. Players will choose how they want to break the golf course into modules, and what solvers they want for each module to best meet the objective.
+                            4) The tournament begins. It consists of four rounds each with a unique objective which will reward a score. Players will choose how they want to break the golf course into modules, and what solvers they want for each module to best meet the objective.
                         </p><p>
 
-                            5) The final results are shown, and the player who collected the most points wins the tournament.
+                            5) The final results are shown, and the player who acheived the highest total score wins the tournament.
                         </p>
                         {/* <h3>Mechanical Arm Mission:</h3> */}
                     </div>

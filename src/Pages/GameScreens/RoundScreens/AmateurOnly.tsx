@@ -145,6 +145,26 @@ const AmateurOnly = (props: { round: Number }) => {
         return (total / allResults.length).toFixed(2);
     }
 
+    const highestShots = () => {
+        let highest = allResults[0].shots;
+        allResults.forEach(result => {
+            if (result.shots > highest) {
+                highest = result.shots;
+            }
+        });
+        return highest;
+    }
+
+    const lowestShots = () => {
+        let lowest = allResults[0].shots;
+        allResults.forEach(result => {
+            if (result.shots < lowest) {
+                lowest = result.shots;
+            }
+        });
+        return lowest;
+    }
+
 
     return (
         <div className='AmateurOnly'>
@@ -160,7 +180,9 @@ const AmateurOnly = (props: { round: Number }) => {
                                     :
                                     <p>Host must begin the next round.</p>
                             }
+                            <p>Highest number of shots: {highestShots()} </p>
                             <p>Average number of shots: {avgShots()} </p>
+                            <p>Lowest number of shots: {lowestShots()} </p>
                             <div className='ResultButtons'>
                                 <Button onClick={() => setShowAmateurResults(false)}>Return to simulation</Button>
                                 {

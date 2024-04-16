@@ -1,3 +1,8 @@
+// Tells other parts of the application if we are in dev mode, could allow for speedier procession through game (such as no min char for reasoning)
+export const inDevMode = () => {
+    return process.env.NODE_ENV !== 'production';
+}
+
 // When updating round numbers do so here to not break application
 export enum RoundNames {
     WaitRoom = 0,
@@ -82,14 +87,14 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         // On round 7 minimum cost is rewarded as long as the performance is <= tournamentStage2MaximumShots
         // This one may need to not be linear
         // Minimum cost ~ (3 specialists 60 - 90), (3 amateurs = 25), (3 professional ~ 50), 
-        // Say Minimum cost is 10 = score of 100
+        // Say Minimum cost is 0 = score of 100
         // Maximum cost is 150 (1 pro, 2 spec got over 100)
         // say Maximum cost is 150 = score of 0
         if (cost > 150) {
             return 0;
         }
 
-        const score = (160 - cost - 10) * (100 / 160); 
+        const score = (150 - cost) * (100 / 150); 
         if (shots > tournamentStage2MaximumShots) {
             // divide score by amount as penalty
             return Math.floor(score / 10);
@@ -101,31 +106,29 @@ export const scoreRound = (round: number, shots: number, cost: number, customPer
         // (will be given )
         // for now use 50 50 split
         if (shots > 50) {
-            return ((160 - cost - 10) * (100 / 160)) / 2;
+            return ((150 - cost) * (100 / 150)) / 2;
         } else if (cost > 150) {
             return ((55 - shots - 5) * (100 / 55)) / 2;
         } else {
             const shotScore = (55 - shots - 5) * (100 / 55);
-            const costScore = (160 - cost - 10) * (100 / 160);
+            const costScore = (150 - cost) * (100 / 150);
             return (shotScore + costScore) / 2;
         }
     } else if (round === RoundNames.TournamentStage4 && customPerformance ) {
         // let users define custom reward function
         if (shots > 50) {
-            return ((160 - cost - 10) * (100 / 160)) * (1 - customPerformance);
+            return ((150 - cost) * (100 / 150)) * (1 - customPerformance);
         } else if (cost > 150) {
             return ((55 - shots - 5) * (100 / 55)) * customPerformance;
         } else {
             const shotScore = ((55 - shots - 5) * (100 / 55)) * customPerformance;
-            const costScore = ((160 - cost - 10) * (100 / 160)) * (1 - customPerformance);
+            const costScore = ((150 - cost) * (100 / 150)) * (1 - customPerformance);
             return (shotScore + costScore);
         }
     } else {
         // console.error("Error invalid round")
         return null;
     }
-
-    // TODO add non-normalized values? 
 }
 
 // Animate player ball going into the hole

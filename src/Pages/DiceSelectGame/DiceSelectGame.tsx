@@ -10,6 +10,7 @@ import { postRequest } from '../../Utils/Api';
 import { UserContext } from '../../App';
 import { UserContextType } from '../../Utils/Types';
 import TextArea from 'antd/es/input/TextArea';
+import { inDevMode } from '../../Utils/Utils';
 const DiceSelectGame = (props: {
     isOnboarding: boolean;
     finished: () => void;
@@ -255,7 +256,7 @@ const DiceSelectGame = (props: {
                         />
                         <br></br>
                         <Button
-                            disabled={reasoning.trim().length < 10}
+                            disabled={!inDevMode() && reasoning.trim().length < 10}
                             onClick={() => {
                                 saveAndContinue();
                             }}
