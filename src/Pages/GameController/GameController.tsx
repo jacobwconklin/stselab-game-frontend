@@ -61,24 +61,29 @@ const GameController = () => {
                 if (!sessionId || !playerId) {
                     const storedPlayerInformation = localStorage.getItem('essentialPlayerInformation');
                     if (storedPlayerInformation) {
-                        const parsed = JSON.parse(storedPlayerInformation);
-                        setSessionId(parsed.sessionId);
-                        setPlayerId(parsed.playerId);
-                        setPlayerColor(parsed.playerColor);
-                        setIsHost(parsed.isHost);
+                        const parsedPlayerInformation = JSON.parse(storedPlayerInformation);
+                        setSessionId(parsedPlayerInformation.sessionId);
+                        setPlayerId(parsedPlayerInformation.playerId);
+                        setPlayerColor(parsedPlayerInformation.playerColor);
+                        setIsHost(parsedPlayerInformation.isHost);
+                        // EVEN though context is set above ^ cannot use it below as it won't be updated by the time the code 
+                        // executes the following statements. Therefore parsedPlayerInformation.sessionId 
+                        // and parsedPlayerInformation.playerId must be used
                         // if finished round data exists for this session pull it on refresh (here)
                         const finishedRoundData = localStorage.getItem('finishedRound');
                         if (finishedRoundData) {
-                            const parsedData = JSON.parse(finishedRoundData);
-                            if (parsedData.sessionId === sessionId && parsedData.playerId === playerId) {
-                                setFinishedRound(parsedData.data);
+                            const parsedFinishedRoundData = JSON.parse(finishedRoundData);
+                            if (parsedFinishedRoundData.sessionId === parsedPlayerInformation.sessionId 
+                                && parsedFinishedRoundData.playerId === parsedPlayerInformation.playerId) {
+                                setFinishedRound(parsedFinishedRoundData.data);
                             }
                         }
                         // if onboarding data exists for this session pull it on refresh (here)
                         const onboardingData = localStorage.getItem('diceGameFinished');
                         if (onboardingData) {
-                            const parsedData = JSON.parse(onboardingData);
-                            if (parsedData.sessionId === sessionId && parsedData.playerId === playerId) {
+                            const parsedDiceResultData = JSON.parse(onboardingData);
+                            if (parsedDiceResultData.sessionId === parsedPlayerInformation.sessionId 
+                                && parsedDiceResultData.playerId === parsedPlayerInformation.playerId) {
                                 setCompletedOnboarding(true);
                             }
                         }

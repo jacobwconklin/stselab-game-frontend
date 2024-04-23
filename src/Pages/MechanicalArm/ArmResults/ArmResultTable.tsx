@@ -177,7 +177,11 @@ const ArmResultTable = (props: {
     return (
         <div className="ResultTable">
             <Table
-                pagination={{ pageSize: 5, position: ['none', props.results.length > 5 ? 'bottomCenter' : "none"] }}
+                pagination={{ 
+                    position: ['none', props.results.length > 10 ? 'bottomCenter' : "none"],
+                    showSizeChanger: true,
+                    defaultPageSize: 10,
+                }}
                 columns={columns}
                 dataSource={getData()}
                 rowKey={(record) => record.id}

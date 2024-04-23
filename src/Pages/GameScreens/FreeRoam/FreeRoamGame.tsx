@@ -62,7 +62,7 @@ const FreeRoamGame = (props: {
             } else if (selectedModule === 'Putt') {
                 result = await runPlayPutt(selectedSolver);
             } else if (selectedModule === 'Entire Hole') {
-                const shotsAndCost = await runSimEntireHole(selectedSolver);
+                const shotsAndCost = await runSimEntireHole(selectedSolver, undefined, 1);
                 result = { shots: shotsAndCost.shots, distance: 700 };
             }
             setLatestShot(result.shots);

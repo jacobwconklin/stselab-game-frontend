@@ -1,5 +1,14 @@
 This can outline the major TODOs so they can be ordered 
 
+
+Notes from live demo:
+'''
+
+
+
+'''
+
+
 Remember) Clear all tables before demo to his class (May need another db (currently my personal) for development and testing )
 
 Could Maybe limit the # of times player can "simulate all" on experiemental page
@@ -28,8 +37,12 @@ Could Maybe limit the # of times player can "simulate all" on experiemental page
 
 Make selector cards light up somehow so that they show which is selected
 
+Maybe add authentication for requests to backend, or make deployed backend such that it only accepts hosted front-end ?
+
 Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
 round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.
+
+Add a function in backend that will write out all data for a session, I. E. if prof plays with his class it can essentially "export" that data to csv or something. Look into python writting csv files from sql? Might be nice to have. 
 
 Potential optimization:
 - websockets

@@ -240,7 +240,10 @@ const FreeRoamSurvey = (props: {
                     </div>
                     :
                     <div className='SurveyForms'>
-                        <h2>Please select who you believe are the best solvers for each module. You may select more than one.</h2>
+                        <h2>
+                            Please select who you believe are the best solvers for each module. You may select more than one.
+                            Best refers to the best performance, meaning the least number of shots.    
+                        </h2>
                         <Button
                             onClick={() => {
                                 // save current choices into memory so that they can be returned to after reviewing results

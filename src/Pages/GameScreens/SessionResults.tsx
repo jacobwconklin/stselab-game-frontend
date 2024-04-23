@@ -390,7 +390,11 @@ const SessionResults = (props: { players: FinalResult[] }) => {
                         <div className='ResultTable'>
                             <Table
                                 pagination={isPrinting ? { pageSize: props.players.length, position: ['none', 'none'] } :
-                                    { pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
+                                { 
+                                    position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"],
+                                    showSizeChanger: true,
+                                    defaultPageSize: 10,
+                                }}
                                 columns={tableColumns}
                                 dataSource={tableData}
                                 rowKey={(record) => record.key}

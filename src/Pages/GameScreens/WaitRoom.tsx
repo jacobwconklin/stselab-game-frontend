@@ -116,6 +116,12 @@ const WaitRoom = (props: {
             key: 'color',
             render: (color: string) => <GolfBall color={color} ></GolfBall>
         },
+        {
+            title: 'Onboarded?',
+            dataIndex: 'onboarded',
+            key: 'onboarded',
+            render: (onboarded: boolean) => onboarded ? 'Yes' : 'No'
+        },
     ];
 
     const data = players.map((player, index) => (
@@ -124,6 +130,7 @@ const WaitRoom = (props: {
             number: index + 1,
             name: player.name,
             color: player.color,
+            onboarded: player.completedOnboarding
         }
     ))
 
@@ -272,7 +279,11 @@ const WaitRoom = (props: {
 
                         <div className='ResultTable'>
                             <Table
-                                pagination={{ pageSize: 5, position: ['none', players.length > 5 ? 'bottomCenter' : "none"] }}
+                                pagination={{ 
+                                    position: ['none', players.length > 10 ? 'bottomCenter' : "none"],
+                                    showSizeChanger: true,
+                                    defaultPageSize: 10,
+                                }}
                                 columns={columns}
                                 dataSource={data}
                                 rowKey={(record) => record.key ? record.key : 'row-key'}

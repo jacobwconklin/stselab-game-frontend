@@ -371,7 +371,7 @@ const TournamentStage = (props: {
                             }}
                             disabled={!!props.playingRound || !readyToPlay()}
                         >
-                            Play Round
+                            Play 5 Holes
                         </Button>
                     </div>
                 </div>
@@ -389,7 +389,7 @@ const TournamentStage = (props: {
                     <div className='ModalBody'>
                         <h2>The Tournament Has Begun!</h2>
                         <p>
-                            Here you will play four rounds each with a unique objective. In each round you may select one architecture and any solver types you would like. Points are awarded for acheiving the objectives. The winner will be the player with the most total points at the end of the tournament.
+                            Here you will play four rounds each with a unique objective. Each round is played on 5 holes. In each round you may select one architecture and any solver types you would like. Points are awarded for acheiving the objectives. The winner will be the player with the most total points at the end of the tournament.
                         </p>
                         <div className='ModalButtons'>
                             <Button onClick={() => setShowTournamentBeginModal(false)}>Begin</Button>
@@ -407,7 +407,7 @@ const TournamentStage = (props: {
                             Are You Sure?
                         </h1>
                         <p style={{ width: '100%', textAlign: 'left' }} >
-                            You will only play each Tournament Round once. Are you sure you want to play with your selected Modules and Solvers? If so provide a brief explanation of why you chose the modules and solvers you did to play the round:
+                            You will only play each Tournament Round once. Are you sure you want to play 5 holes with your selected Modules and Solvers? If so provide a brief explanation of why you chose the modules and solvers you did to play the round:
                         </p>
                         <TextArea
                             autoSize

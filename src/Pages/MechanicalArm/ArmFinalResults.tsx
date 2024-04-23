@@ -342,7 +342,11 @@ const ArmFinalResults = (props: {
                         <div className='ResultTable'>
                             <Table
                                 pagination={isPrinting ? { pageSize: props.results.length, position: ['none', 'none'] } :
-                                    { pageSize: 5, position: ['none', props.results.length > 5 ? 'bottomCenter' : "none"] }}
+                                { 
+                                    position: ['none', props.results.length > 10 ? 'bottomCenter' : "none"],
+                                    showSizeChanger: true,
+                                    defaultPageSize: 10,
+                                }}
                                 columns={tableColumns}
                                 dataSource={tableData}
                                 rowKey={(record) => record.key ? record.key : record.score}

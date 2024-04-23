@@ -9,6 +9,7 @@ export interface PlayerBrief {
     name: string;
     color: string;
     sessionId?: number;
+    completedOnboarding?: boolean;
 }
 
 // All information for players obtained from the registration form

@@ -69,10 +69,9 @@ const Register = () => {
 
     // Create each row of table
     const getEducationalBackgroundDataSource = () => {
-
         const dataSourceArray = educationLevels.map((educationLevel, index) => {
             return {
-                key: "Key: " + index + educationalBackgroundCompleted[index] + educationalBackgroundSubjectArea[index],
+                key: "Key: " + index,
                 EducationLevel: <p>{educationLevel}</p>,
                 Completed: <div>
                     <Radio.Group
@@ -93,7 +92,11 @@ const Register = () => {
                         onChange={(e) => {
                             const newEducationalBackgroundSubjectArea = [...educationalBackgroundSubjectArea];
                             newEducationalBackgroundSubjectArea[index] = e.target.value;
-                            setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
+                            setEducationalBackgroundSubjectArea((prev) => {
+                                const newEducationalBackgroundSubjectArea = [...prev];
+                                newEducationalBackgroundSubjectArea[index] = e.target.value;
+                                return newEducationalBackgroundSubjectArea;
+                            });
                         }}
                         maxLength={64}
                         disabled={educationalBackgroundCompleted[index] === 0}
@@ -102,7 +105,7 @@ const Register = () => {
             }
         });
         dataSourceArray.push({
-            key: "Key: " + educationalBackgroundCompleted[educationLevels.length] + educationalBackgroundSubjectArea[educationLevels.length],
+            key: "Key: Other Education",
             EducationLevel: <div>
                 <p>Other (Please Specify)</p>
                 <Input
@@ -256,8 +259,8 @@ const Register = () => {
             if (playerInformation.university) setUniversity(playerInformation.university);
             if (playerInformation.degreeProgram) setDegreeProgram(playerInformation.degreeProgram);
             if (playerInformation.yearsInProgram) setYearsInProgram(playerInformation.yearsInProgram);
-            const newEducationalBackgroundCompleted = [...educationalBackgroundCompleted];
-            const newEducationalBackgroundSubjectArea = [...educationalBackgroundSubjectArea];
+            const newEducationalBackgroundCompleted = Array(educationLevels.length + 1).fill(0);
+            const newEducationalBackgroundSubjectArea = Array(educationLevels.length + 1).fill("N/A");
             educationLevelsStored.forEach((educationLevel, index) => {
                 if (playerInformation[educationLevel]) {
                     newEducationalBackgroundCompleted[index] = playerInformation[educationLevel].startsWith("Yes") ? 1 : 2;
@@ -281,7 +284,7 @@ const Register = () => {
 
             setPulledFromLocalStorage(true);
         }
-    }, [educationalBackgroundCompleted, educationalBackgroundSubjectArea, pulledFromLocalStorage, experienceValues]);
+    }, [pulledFromLocalStorage, experienceValues, educationLevels.length]);
 
     const submit = async () => {
         // if successful give a happy message, otherwise let them know after an error from the backend

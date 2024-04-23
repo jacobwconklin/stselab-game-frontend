@@ -49,13 +49,13 @@ const simulationPostRequest = async (endpoint: string, payload: string) => {
 // TODO can set up hole length, holes, and runs to be dynamic if desired and changable by host on a settings page
 
 // run h_arch simulation where one solver handles entire course
-export const runSimEntireHole = async(solver: Solver, overwriteSolverSize?: number) => {
+export const runSimEntireHole = async(solver: Solver, overwriteSolverSize?: number, numberOfHoles?: number) => {
     try {
         const response = await simulationPostRequest('h_arch', JSON.stringify({
             HoleLength: 700,
             Expertise: solver, 
             TournamentSize: overwriteSolverSize ? overwriteSolverSize : groupSizePerSolver[solver - 1],
-            Holes: holesPerArchitecture,
+            Holes: numberOfHoles ? numberOfHoles : holesPerArchitecture,
             runs: 1
         }));
         // TODO if decimal costs are desired update database to accept floats

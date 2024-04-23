@@ -207,7 +207,11 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
     return (
         <div className="ResultTable">
             <Table
-                pagination={{ pageSize: 5, position: ['none', props.players.length > 5 ? 'bottomCenter' : "none"] }}
+                pagination={{ 
+                    position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"],
+                    showSizeChanger: true,
+                    defaultPageSize: 10,
+                }}
                 columns={props.round < RoundNames.TournamentStage1 ? baseColumns : getExtendedColumns()}
                 dataSource={props.round < RoundNames.TournamentStage1 ? getBaseData() : getExtendedData()}
                 rowKey={(record) => record.key}

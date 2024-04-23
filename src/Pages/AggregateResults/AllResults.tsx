@@ -265,7 +265,11 @@ const AllResults = () => {
                     <>
                         <div className='ResultTable'>
                             <Table
-                                pagination={{ pageSize: 5, position: ['bottomCenter'] }}
+                                pagination={{ 
+                                    position: ['bottomCenter'],
+                                    showSizeChanger: true,
+                                    defaultPageSize: 10,
+                                }}
                                 columns={tableColumns}
                                 dataSource={tableData}
                                 rowClassName={() => "HighlightRow"}
