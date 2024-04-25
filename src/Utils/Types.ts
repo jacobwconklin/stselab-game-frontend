@@ -35,14 +35,14 @@ export interface PlayerInformation {
     otherEducationName?: string | null;
     otherEducation?: string;
 
-    riskAnalysisExperience: null | number;
-    supplierExperience: null | number;
-    proposalOrStatementOfWorkExperience: null | number;
-    bidsForRequestsExperience: null | number;
-    systemArchitectureExperience: null | number;
-    golfExperience: null | number;
-    systemsEngineeringExpertise: null | number;
-    statementOfWorkExpertise: null | number;
+    riskAnalysisExperience: null | number | string;
+    supplierExperience: null | number | string;
+    proposalOrStatementOfWorkExperience: null | number | string;
+    bidsForRequestsExperience: null | number | string;
+    systemArchitectureExperience: null | number | string;
+    golfExperience: null | number | string;
+    systemsEngineeringExpertise: null | number | string;
+    statementOfWorkExpertise: null | number | string;
 }
 
 export interface SessionStatus {

@@ -17,39 +17,49 @@ import { Scatter } from 'react-chartjs-2';
 import { DisplayScore, FinalResult, Score, UserContextType } from '../../Utils/Types';
 import { useReactToPrint } from 'react-to-print';
 import { FullScreenConfetti } from '../../ReusableComponents/Confetti';
-import { RoundNames } from '../../Utils/Utils';
+import { RoundNames, clearObjectFromStorage, getObjectFromStorage } from '../../Utils/Utils';
 import VerificationModal from '../../ReusableComponents/VerificationModal';
 // import { advanceSession } from '../../Utils/Api';
 import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
+import { postRequest } from '../../Utils/Api';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
 const SessionResults = (props: { players: FinalResult[] }) => {
 
-    const { playerId, sessionId, setPlayerColor, setPlayerId, setSessionId } = useContext(UserContext) as UserContextType;
+    const { playerId, sessionId, setPlayerColor, setPlayerId, setSessionId, isHost } = useContext(UserContext) as UserContextType;
     
     // make user play dice onboarding game before they can join the session
     const [finishedDiceGame, setFinishedDiceGame] = useState(false);
 
     // if user refreshes page, check if they have already played the dice game for THIS session
     useEffect(() => {
-        const diceGameFinished = localStorage.getItem('diceGameFinished');
+        const diceGameFinished = getObjectFromStorage('diceGameFinished');
         if (diceGameFinished) {
-            const parsedResults = JSON.parse(diceGameFinished);
-            if (parsedResults.sessionId === sessionId && parsedResults.playerId === playerId && !parsedResults.onboarding) {
+            if (diceGameFinished.sessionId === sessionId && diceGameFinished.playerId === playerId && !diceGameFinished.onboarding) {
                 setFinishedDiceGame(true);
             }
         }
     }, [playerId, sessionId])
 
+    useEffect(() => {
+        if (isHost) {
+            try {
+                postRequest("session/end", JSON.stringify({ sessionId }));
+            } catch (error) {
+                console.error("Error ending session: ", error);
+            }
+        }
+    }, [sessionId, isHost])
+
     const [showVerificationModal, setShowVerificationModal] = useState(false);
-    // const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false)
+    // const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false) 
     const [leaveTo, setLeaveTo] = useState('/');
     const navigate = useNavigate();
 
     const leavePage = () => {
         // exit session
-        localStorage.setItem('essentialPlayerInformation', '');
+        clearObjectFromStorage('essentialPlayerInformation');
         setSessionId(0);
         setPlayerId("");
         setPlayerColor("");

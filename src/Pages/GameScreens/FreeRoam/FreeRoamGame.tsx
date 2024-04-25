@@ -99,7 +99,7 @@ const FreeRoamGame = (props: {
     //             simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Putt' });
     //         }
     //         // For now do not save free roam results to database to reduce workload on be and db,
-    //         // TODO if simulate all data is wanted it can be saved by uncommenting this below:
+    //         // if simulate all data is wanted it can be saved by uncommenting this below:
     //         // if (playerId) {
     //         //     await Promise.all(simulatedResults.map(async (result) => {
     //         //         await saveFreeRoamResult(result.shots, result.distance);

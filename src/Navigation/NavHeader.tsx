@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import { UserContext } from '../App';
 import { UserContextType } from '../Utils/Types';
 import { postRequest } from '../Utils/Api';
+import { clearObjectFromStorage } from '../Utils/Utils';
 
 // NavHeader
 const NavHeader = () => {
@@ -54,13 +55,12 @@ const NavHeader = () => {
                     // removes player if they navigate away from game
                     if (playerId) {
                         postRequest("player/remove", JSON.stringify({ playerId }));
-                        localStorage.setItem('essentialPlayerInformation', '');
+                        clearObjectFromStorage('essentialPlayerInformation');
                         setPlayerId(''); 
                         setPlayerColor('');
                         setSessionId(0);
                     }
                         navigate('/')
-                        // TODO exit player from session?
                     }}
                     cancel={() => setShowReturnHomeModal(false)}
                 />

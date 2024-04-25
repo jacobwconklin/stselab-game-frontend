@@ -41,7 +41,6 @@ const ArmResultTable = (props: {
     }
 
     // Want name, score, weight, cost, components (from architecture), solvers 
-    // TODO May add mechanical arm colored icon like golf ball ... 
     const columns = [
         {
             title: 'Score',

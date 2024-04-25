@@ -193,7 +193,6 @@ const AmateurOnly = (props: { round: Number }) => {
                                         onClick={() => setShowModal(true)}
                                         type='primary'
                                     >Begin Next Round</Button>
-                                    // TODO warn host that this will advance everyone
                                 }
                             </div>
                         </div>

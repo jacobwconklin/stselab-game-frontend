@@ -58,7 +58,6 @@ export const runSimEntireHole = async(solver: Solver, overwriteSolverSize?: numb
             Holes: numberOfHoles ? numberOfHoles : holesPerArchitecture,
             runs: 1
         }));
-        // TODO if decimal costs are desired update database to accept floats
         return {shots: response[0][0], cost: response[4][0]};
     } catch (error) {
         // generate random value to not break deployed
@@ -161,7 +160,7 @@ export const runPlayLong = async(solver: Solver) => {
             BallNow: 700,
             Expertise: solver,
             N: groupSizePerSolver[solver - 1],
-            rule: 2, // TODO Decide between optimize distance to hole or shots
+            rule: 2,
         }));
         return {shots: response[response.length - 2], distance: Math.floor((700 - response[response.length - 1]) * 100) / 100};
     } catch (error) {

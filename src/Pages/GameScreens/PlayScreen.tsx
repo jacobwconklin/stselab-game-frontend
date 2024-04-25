@@ -8,7 +8,7 @@ import TournamentStage from './RoundScreens/TournamentStage';
 import ProfessionalOnly from './RoundScreens/ProfessionalOnly';
 import AmateurOnly from './RoundScreens/AmateurOnly';
 import EntireHole from './RoundScreens/EntireHole';
-import { RoundNames, scoreRound } from '../../Utils/Utils';
+import { RoundNames, saveObjectToStorage, scoreRound } from '../../Utils/Utils';
 import { UserContextType } from '../../Utils/Types';
 import FactoryBackground from '../../ReusableComponents/FactoryBackground';
 
@@ -25,8 +25,8 @@ const PlayScreen = (props: {round: number, setFinishedRound: (val: Array<Boolean
     const updateFinishedRounds = () => {
         const copy = props.finishedRounds;
         copy[props.round] = true;
-        // save to local storage too in case of refresh
-        localStorage.setItem('finishedRound', JSON.stringify({playerId, sessionId, data: copy}));
+        // save to local and session storage too in case of refresh
+        saveObjectToStorage('finishedRound', {playerId, sessionId, data: copy});
         props.setFinishedRound(copy);
     }
 

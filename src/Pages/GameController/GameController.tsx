@@ -9,7 +9,7 @@ import RoundResults from '../GameScreens/Results/RoundResults';
 import SessionResults from '../GameScreens/SessionResults';
 import FreeRoam from '../GameScreens/FreeRoam/FreeRoam';
 import { ArmFinalResult, ArmRoundResult, FinalResult, RoundResult, UserContextType } from '../../Utils/Types';
-import { RoundNames } from '../../Utils/Utils';
+import { RoundNames, clearObjectFromStorage, getObjectFromStorage } from '../../Utils/Utils';
 import ArmFinalResults from '../MechanicalArm/ArmFinalResults';
 import ArmExperiment from '../MechanicalArm/ArmExperiment/ArmExperiment';
 import ArmGameScreen from '../MechanicalArm/ArmGameScreen';
@@ -59,31 +59,28 @@ const GameController = () => {
                 // If they aren't there then the user is not in a valid session and should be redirected to the home page,
                 // but if they are then the user likely refreshed their page
                 if (!sessionId || !playerId) {
-                    const storedPlayerInformation = localStorage.getItem('essentialPlayerInformation');
+                    const storedPlayerInformation = getObjectFromStorage('essentialPlayerInformation');
                     if (storedPlayerInformation) {
-                        const parsedPlayerInformation = JSON.parse(storedPlayerInformation);
-                        setSessionId(parsedPlayerInformation.sessionId);
-                        setPlayerId(parsedPlayerInformation.playerId);
-                        setPlayerColor(parsedPlayerInformation.playerColor);
-                        setIsHost(parsedPlayerInformation.isHost);
+                        setSessionId(storedPlayerInformation.sessionId);
+                        setPlayerId(storedPlayerInformation.playerId);
+                        setPlayerColor(storedPlayerInformation.playerColor);
+                        setIsHost(storedPlayerInformation.isHost);
                         // EVEN though context is set above ^ cannot use it below as it won't be updated by the time the code 
-                        // executes the following statements. Therefore parsedPlayerInformation.sessionId 
-                        // and parsedPlayerInformation.playerId must be used
+                        // executes the following statements. Therefore storedPlayerInformation.sessionId 
+                        // and storedPlayerInformation.playerId must be used
                         // if finished round data exists for this session pull it on refresh (here)
-                        const finishedRoundData = localStorage.getItem('finishedRound');
+                        const finishedRoundData = getObjectFromStorage('finishedRound');
                         if (finishedRoundData) {
-                            const parsedFinishedRoundData = JSON.parse(finishedRoundData);
-                            if (parsedFinishedRoundData.sessionId === parsedPlayerInformation.sessionId 
-                                && parsedFinishedRoundData.playerId === parsedPlayerInformation.playerId) {
-                                setFinishedRound(parsedFinishedRoundData.data);
+                            if (finishedRoundData.sessionId === storedPlayerInformation.sessionId 
+                                && finishedRoundData.playerId === storedPlayerInformation.playerId) {
+                                setFinishedRound(finishedRoundData.data);
                             }
                         }
                         // if onboarding data exists for this session pull it on refresh (here)
-                        const onboardingData = localStorage.getItem('diceGameFinished');
+                        const onboardingData = getObjectFromStorage('diceGameFinished');
                         if (onboardingData) {
-                            const parsedDiceResultData = JSON.parse(onboardingData);
-                            if (parsedDiceResultData.sessionId === parsedPlayerInformation.sessionId 
-                                && parsedDiceResultData.playerId === parsedPlayerInformation.playerId) {
+                            if (onboardingData.sessionId === storedPlayerInformation.sessionId 
+                                && onboardingData.playerId === storedPlayerInformation.playerId) {
                                 setCompletedOnboarding(true);
                             }
                         }
@@ -96,14 +93,14 @@ const GameController = () => {
                     // if response tells us that session is invalid then redirect to home page
                     if (!sessionId || response.error === "Session not found") {
                         // TODO could prompt user with modal to give them a chance to try again rather than immediately redirecting them
-                        localStorage.setItem('essentialPlayerInformation', '');
+                        clearObjectFromStorage('essentialPlayerInformation');
                         setSessionId(0);
                         setPlayerId("");
                         setPlayerColor("");
                         alert("Session not found, returning to home page")
                         setInValidSession(false);
                     } else if (response.error === "Player not in session") {
-                        localStorage.setItem('essentialPlayerInformation', '');
+                        clearObjectFromStorage('essentialPlayerInformation');
                         setSessionId(0);
                         setPlayerId("");
                         setPlayerColor("");
@@ -112,10 +109,10 @@ const GameController = () => {
                     } else if (response.error) {
                         // TODO may need to attempt to exit player from session they are in then redirect them home?
                         alert("Error getting session: " + response.error);
-                    } else if (response?.session?.endDate && response?.session?.endDate !== "None") {
+                    } else if (response?.session?.endDate) {
                         // on receiving a session with an end date we know we are on the final results page of Mechanical Arm Mission and 
                         // no longer need to poll the BE for updates to round number)
-                        setCurrRound(RoundNames.ArmFinalResults);
+                        setCurrRound(RoundNames.FinalResults);
                         // pull results once then clear interval
                         const resultsResponse = await postRequest('/session/finalresults', JSON.stringify({
                             sessionId
@@ -207,7 +204,8 @@ const GameController = () => {
     //     React.useCallback(() => {
     //         // removes player if they navigate away from game
     //         if (playerId) postRequest("player/remove", JSON.stringify({ playerId }));
-    //         // TODO SPECIFICALLY if host leaves, could "end" the session for everyone. For now they just have to leave themselves
+    //         // TODO SPECIFICALLY if host leaves, could "end" the session for everyone (or try to assign new host). 
+    //         // For now they just have to leave themselves
     //         // as they get stuck without a host. 
     //     }, [playerId])
     // );

@@ -338,7 +338,7 @@ export const runArmArchitectureSimulation = (
     solverFour?: ArmSolver, 
     customPerformance?: number
 ): ArmRoundResult => {
-    // Gets weight and cost from evaluateArmRound method (TODO will come from simulation),
+    // Gets weight and cost from evaluateArmRound method
     const {weight, cost} = evaluateArmRound(architecture, solverOne, solverTwo, solverThree, solverFour);
     // then gets score based on round being played from scoreArmRound method.
     return {

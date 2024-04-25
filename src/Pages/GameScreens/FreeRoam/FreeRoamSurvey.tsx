@@ -9,6 +9,7 @@ import { advanceSession, postRequest } from '../../../Utils/Api';
 import { UserContext } from '../../../App';
 import VerificationModal from '../../../ReusableComponents/VerificationModal';
 import { solverNames } from '../../../Utils/Simulation';
+import { clearObjectFromStorage, getObjectFromStorage, saveObjectToStorage } from '../../../Utils/Utils';
 
 // FreeRoamSurvey
 const FreeRoamSurvey = (props: {
@@ -78,29 +79,28 @@ const FreeRoamSurvey = (props: {
     // const modules = ["Drive", "Long", "Fairway", "Short", "Putt"]
     const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false);
 
-    // pull player choices from localStorage if there
+    // pull player choices from localStorage / sessionStorage if there
     useEffect(() => {
-        const choices = localStorage.getItem('freeRoamSurveyChoices');
+        const choices = getObjectFromStorage('freeRoamSurveyChoices');
         if (choices) {
-            const parsedChoices = JSON.parse(choices);
-            setDriveChoice(parsedChoices.driveChoice ? parsedChoices.driveChoice : []);
-            setLongChoice(parsedChoices.longChoice ? parsedChoices.longChoice : []);
-            setFairwayChoice(parsedChoices.fairwayChoice ? parsedChoices.fairwayChoice : []);
-            setShortChoice(parsedChoices.shortChoice ? parsedChoices.shortChoice : []);
-            setPuttChoice(parsedChoices.puttChoice ? parsedChoices.puttChoice : []);
-            setEntireHoleChoice(parsedChoices.entireHoleChoice ? parsedChoices.entireHoleChoice : []);
+            setDriveChoice(choices.driveChoice ? choices.driveChoice : []);
+            setLongChoice(choices.longChoice ? choices.longChoice : []);
+            setFairwayChoice(choices.fairwayChoice ? choices.fairwayChoice : []);
+            setShortChoice(choices.shortChoice ? choices.shortChoice : []);
+            setPuttChoice(choices.puttChoice ? choices.puttChoice : []);
+            setEntireHoleChoice(choices.entireHoleChoice ? choices.entireHoleChoice : []);
 
-            setDriveNotSure(!!parsedChoices.driveNotSure);
-            setLongNotSure(!!parsedChoices.longNotSure);
-            setFairwayNotSure(!!parsedChoices.fairwayNotSure);
-            setShortNotSure(!!parsedChoices.shortNotSure);
-            setPuttNotSure(!!parsedChoices.puttNotSure);
-            setEntireHoleNotSure(!!parsedChoices.entireHoleNotSure);
+            setDriveNotSure(!!choices.driveNotSure);
+            setLongNotSure(!!choices.longNotSure);
+            setFairwayNotSure(!!choices.fairwayNotSure);
+            setShortNotSure(!!choices.shortNotSure);
+            setPuttNotSure(!!choices.puttNotSure);
+            setEntireHoleNotSure(!!choices.entireHoleNotSure);
         }
     }, []);
 
     const saveCurrentChoices = () => {
-        localStorage.setItem('freeRoamSurveyChoices', JSON.stringify({
+        saveObjectToStorage('freeRoamSurveyChoices', {
             driveChoice,
             longChoice,
             fairwayChoice,
@@ -113,7 +113,7 @@ const FreeRoamSurvey = (props: {
             shortNotSure,
             puttNotSure,
             entireHoleNotSure
-        }));
+        });
     }
 
     const convertChoicesToNumber = (choices: string[]) => {
@@ -156,8 +156,8 @@ const FreeRoamSurvey = (props: {
                     playerId // example of one in db -> "06DB4206-1E4D-46E8-A261-AC8B545519FE"
                 }));
                 if (submitResult.success) {
-                    // clear local storage
-                    localStorage.removeItem('freeRoamSurveyChoices');
+                    // clear local and session storage
+                    clearObjectFromStorage('freeRoamSurveyChoices');
                     props.setSurveySuccessfullySubmitted(true);
                 } else {
                     alert("Failed to submit free roam survey.");

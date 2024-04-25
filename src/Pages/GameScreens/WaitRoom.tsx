@@ -9,6 +9,7 @@ import GolfBall from '../../ReusableComponents/GolfBall';
 import { PlayerBrief, UserContextType } from '../../Utils/Types';
 import { CopyOutlined } from '@ant-design/icons';
 import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
+import { clearObjectFromStorage, getObjectFromStorage } from '../../Utils/Utils';
 
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
@@ -26,10 +27,9 @@ const WaitRoom = (props: {
 
     // if user refreshes page, check if they have already played the dice game for THIS session
     useEffect(() => {
-        const diceGameFinished = localStorage.getItem('diceGameFinished');
+        const diceGameFinished = getObjectFromStorage('diceGameFinished');
         if (diceGameFinished) {
-            const parsedResults = JSON.parse(diceGameFinished);
-            if (parsedResults.sessionId === sessionId && parsedResults.playerId === playerId && parsedResults.onboarding) {
+            if (diceGameFinished.sessionId === sessionId && diceGameFinished.playerId === playerId && diceGameFinished.onboarding) {
                 props.onboardingCompleted();
                 setFinishedDiceGame(true);
             }
@@ -71,7 +71,7 @@ const WaitRoom = (props: {
     const removePlayer = async (playerIdToRemove: string) => {
         const response = await postRequest("player/remove", JSON.stringify({ playerId: playerIdToRemove }));
         if (playerId === playerIdToRemove) {
-            localStorage.setItem('essentialPlayerInformation', '');
+            clearObjectFromStorage('essentialPlayerInformation');
             setPlayerId(''); 
             setPlayerColor('');
             setSessionId(0);

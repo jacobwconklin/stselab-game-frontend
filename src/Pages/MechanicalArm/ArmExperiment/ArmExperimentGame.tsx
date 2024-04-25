@@ -54,7 +54,6 @@ const ArmExperimentGame = (props: {
                     <div className='Architectures'>
                         <h3>1. Pick An Architecture</h3>
                         {
-                            // TODO add tooltip w/ descriptions
                             armArchitectures.map((architecture, index) => (
                                 <Tooltip title={architecture.description} key={index} placement='right'>
                                     <Button

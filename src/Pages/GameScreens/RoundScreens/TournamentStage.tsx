@@ -265,7 +265,7 @@ const TournamentStage = (props: {
                                         <Button
                                             key={arch.name}
                                             onClick={() => {
-                                                // TODO decide if changing architecture should clear selections or not
+                                                // Changing architecture clears selections 
                                                 clearSelectedSolvers();
                                                 // Set selecting distance to 'Drive' unless on lp then set it to long
                                                 setSelectingDistance(arch.architecture === 'lp' ? 'Long' : 'Drive');

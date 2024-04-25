@@ -1,19 +1,7 @@
 This can outline the major TODOs so they can be ordered 
 
 
-Notes from live demo:
-'''
-
-
-
-'''
-
-
-Remember) Clear all tables before demo to his class (May need another db (currently my personal) for development and testing )
-
 Could Maybe limit the # of times player can "simulate all" on experiemental page
-
-# 1 b: Maybe Change Azure SQL database plan? the 100,000 vCore seconds do not seem to be enough, just me playing through the game once with two players used 700, and most people would take longer to play and have more people playing. I don't know about 5DTU might be too little, and honestly pay as you go might be worth it for app that is rarely used. 
 
 # 1 c: potentially establish system with professor where db and backend stay OFF until he turns them off (IE other professors wanting to use the tool simply contact him first and he turns them on at that time? This would suggest using stateless backend (may overcomplicate)) REALLY would just require hitting "STOP" on stselab-games-backend and that is all. Looks like backend CAN'T be serverless, so this would only help to prevent db from costing anything... ? May not be worthwhile.
 
@@ -37,12 +25,10 @@ Could Maybe limit the # of times player can "simulate all" on experiemental page
 
 Make selector cards light up somehow so that they show which is selected
 
-Maybe add authentication for requests to backend, or make deployed backend such that it only accepts hosted front-end ?
-
 Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
 round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.
 
-Add a function in backend that will write out all data for a session, I. E. if prof plays with his class it can essentially "export" that data to csv or something. Look into python writting csv files from sql? Might be nice to have. 
+Add a function in backend that will write out all data for a session, I. E. if prof plays with his class it can essentially "export" that data to csv or something. Look into python writting csv files from sql? Might be nice to have. Currently just ran complex sql queries on Azure and saved the csv files from there. 
 
 Potential optimization:
 - websockets

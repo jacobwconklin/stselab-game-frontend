@@ -10,7 +10,7 @@ import { postRequest } from '../../Utils/Api';
 import { UserContext } from '../../App';
 import { UserContextType } from '../../Utils/Types';
 import TextArea from 'antd/es/input/TextArea';
-import { inDevMode } from '../../Utils/Utils';
+import { inDevMode, saveObjectToStorage } from '../../Utils/Utils';
 const DiceSelectGame = (props: {
     isOnboarding: boolean;
     finished: () => void;
@@ -105,9 +105,7 @@ const DiceSelectGame = (props: {
             totalNumberOfPossibilities *= die.val;
         });
 
-        // Going to do a semi-ugly brute force calculation for now.
-        // TODO find prettier solution (not found by me yet) look here from Prof: https://anydice.com/
-
+        // Going to do a semi-ugly brute force calculation.
         // for each possible value of each die check all other possible values of all other die and whenever 
         // the sum is >= the desired total increment the totalNumberOfCorrectPossibilities
         // use recursive function to do this.
@@ -149,7 +147,7 @@ const DiceSelectGame = (props: {
             }));
             if (result.success) {
                 // save results to local storgae in case user refreshes page and move on
-                localStorage.setItem("diceGameFinished", JSON.stringify({sessionId, playerId, onboarding: props.isOnboarding}))
+                saveObjectToStorage("diceGameFinished", { sessionId, playerId, onboarding: props.isOnboarding });
                 props.finished();
             } else {
                 console.error("Error saving dice results to database during: ", props.isOnboarding ? "onboarding" : "offboarding", result);

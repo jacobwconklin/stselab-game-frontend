@@ -56,7 +56,7 @@ const ModuleResults = (props: {
     // Scatter graphs:
 
     // For JUST Drive module show all shot and distance results per solver
-    // TODO would be better as different type of chart since shots doesn't change...(same with short and putt but for distance)
+    // TODO could be better as different type of chart since shots doesn't change...(same with short and putt but for distance)
     const driveOptions = {
         plugins: {
             title: {
@@ -476,7 +476,8 @@ const ModuleResults = (props: {
     // Bar graphs:
 
     // For All modules show average shots per solver 
-    // TODO could eliminate Drive as it is always 1 shot
+    // could eliminate Drive as it is always 1 shot, but leaving it in for now
+    // so players fully realize that
     const avgShotsPerSolverOptions = {
         responsive: true,
         plugins: {
@@ -702,7 +703,7 @@ const ModuleResults = (props: {
     //             result = await runPlayPutt(i);
     //             simulatedResults.push({ shots: result.shots, distance: result.distance, solver: i, module: 'Putt' });
     //         }
-    //         // TODO Do not save results to database from here
+    //         // Does not save results to database from here
     //         // saveFreeRoamResult(result.shots, result.distance);
     //         props.setAllResults([...props.results, ...simulatedResults]);
     //         setLoading(false);
@@ -718,7 +719,10 @@ const ModuleResults = (props: {
                 <div className='StaticBackgroundImages'></div>
             </div>
             <div className='ResultInformation'>
-                <h1>Your Experimental Results</h1>
+                <h1>Your Exploration Results</h1>
+                <h3>
+                    All exploration modules are on 1 hole. The tournament will be played with 5 holes per round.
+                </h3>
                 <p>
                     Shots refers to the number of shots taken to finish the module. Drives are always exactly one shot. Distance refers to the distance traveled towards the hole after the module is finished from where the module begins. Short Putt modules always finish with a distance of 450 and Putt modules always finish with a distance of 15 as the ball is put in the hole. Other modules may have instances with a distance of 0 meaning a lucky
                     shot put the ball in the hole.

@@ -11,7 +11,7 @@ import { ArmComponentResult } from '../../../Utils/Types';
 const ArmExperiment = () => {
 
     
-    // TODO need new types for mechanical arm results, solvers, etc. 
+    // New types for mechanical arm results, solvers, etc. 
     const [allResults, setAllResults] = useState<ArmComponentResult[]>([]);
     const [showResults, setShowResults] = useState(false);
     const [latestResult, setLatestResult] = useState('');

@@ -52,7 +52,7 @@ const TypedMessage = (props: {
                         onClick={ async () => {
                             props.confirm();
                         }}
-                        // disabled={currentIndex < text.length} // TODO may leave disabled until message terminates
+                        // disabled={currentIndex < text.length} // Coould leave disabled until message terminates
                         type="primary"
                     >
                         Continue

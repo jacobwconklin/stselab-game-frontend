@@ -16,6 +16,7 @@ import { UserContext } from '../../App';
 import { useNavigate, useParams } from 'react-router-dom';
 import GolfBall from '../../ReusableComponents/GolfBall';
 import { allCountriesArray } from '../../Utils/Countries';
+import { getObjectFromStorage, saveObjectToStorage } from '../../Utils/Utils';
 
 // Register
 const Register = () => {
@@ -175,7 +176,7 @@ const Register = () => {
     const experienceQuestions = ["riskAnalysisExperience", "supplierExperience", "proposalOrStatementOfWorkExperience", "bidsForRequestsExperience", "systemArchitectureExperience", "golfExperience", "systemsEngineeringExpertise",
         "statementOfWorkExpertise"];
     // how experience questions are presented to users:
-    const experienceQuestionPrompts=[
+    const experienceQuestionPrompts = [
         "How experienced are you with probabilistic reasoning and/or risk analysis?",
         "Do you have any experience with working with suppliers or contractors?",
         "Do you have any experience evaluating or creating request for proposal (RFP), or statement of work (SOW) documents?",
@@ -237,52 +238,54 @@ const Register = () => {
     }
 
 
+    // Here local storage refers to both local and session storages.
     const [pulledFromLocalStorage, setPulledFromLocalStorage] = useState(false);
 
     // if user info in localStorage, pull it out
     useEffect(() => {
-        if (localStorage.getItem('playerInformation') && !pulledFromLocalStorage) {
-            // stored education and specialization names:
-            const educationLevelsStored = ["highschoolEducation", "bachelorsEducation", "mastersEducation", "doctorateEducation", "otherEducation"];
-            const experienceQuestionsStored = ["riskAnalysisExperience", "supplierExperience", "proposalOrStatementOfWorkExperience", "bidsForRequestsExperience", "systemArchitectureExperience", "golfExperience", "systemsEngineeringExpertise",
-                "statementOfWorkExpertise"];
+        if (!pulledFromLocalStorage) {
+            const playerInformation = getObjectFromStorage('playerInformation');
+            if (playerInformation) {
+                // stored education and specialization names:
+                const educationLevelsStored = ["highschoolEducation", "bachelorsEducation", "mastersEducation", "doctorateEducation", "otherEducation"];
+                const experienceQuestionsStored = ["riskAnalysisExperience", "supplierExperience", "proposalOrStatementOfWorkExperience", "bidsForRequestsExperience", "systemArchitectureExperience", "golfExperience", "systemsEngineeringExpertise",
+                    "statementOfWorkExpertise"];
+                setName(playerInformation.name);
+                setColor(playerInformation.color);
+                setParticipationReason(playerInformation.participationReason);
+                setGender(playerInformation.gender);
+                setAge(playerInformation.age);
+                setResidence(playerInformation.residence);
+                setEthnicity(playerInformation.ethnicity ? playerInformation.ethnicity.split(', ') : []);
+                setIsCollegeStudent(playerInformation.isCollegeStudent);
+                if (playerInformation.university) setUniversity(playerInformation.university);
+                if (playerInformation.degreeProgram) setDegreeProgram(playerInformation.degreeProgram);
+                if (playerInformation.yearsInProgram) setYearsInProgram(playerInformation.yearsInProgram);
+                const newEducationalBackgroundCompleted = Array(educationLevels.length + 1).fill(0);
+                const newEducationalBackgroundSubjectArea = Array(educationLevels.length + 1).fill("N/A");
+                educationLevelsStored.forEach((educationLevel, index) => {
+                    if (playerInformation[educationLevel]) {
+                        newEducationalBackgroundCompleted[index] = playerInformation[educationLevel].startsWith("Yes") ? 1 : 2;
+                        newEducationalBackgroundSubjectArea[index]
+                            = playerInformation[educationLevel].substring(playerInformation[educationLevel].indexOf(":") + 1);
+                    } else {
+                        newEducationalBackgroundCompleted[index] = 0;
+                    }
+                });
+                setEducationalBackgroundCompleted(newEducationalBackgroundCompleted);
+                setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
+                if (playerInformation.otherEducationName) setOtherEducation(playerInformation.otherEducationName);
 
-            const playerInformation = JSON.parse(localStorage.getItem('playerInformation') as string);
-            setName(playerInformation.name);
-            setColor(playerInformation.color);
-            setParticipationReason(playerInformation.participationReason);
-            setGender(playerInformation.gender);
-            setAge(playerInformation.age);
-            setResidence(playerInformation.residence);
-            setEthnicity(playerInformation.ethnicity? playerInformation.ethnicity.split(', '): []);
-            setIsCollegeStudent(playerInformation.isCollegeStudent);
-            if (playerInformation.university) setUniversity(playerInformation.university);
-            if (playerInformation.degreeProgram) setDegreeProgram(playerInformation.degreeProgram);
-            if (playerInformation.yearsInProgram) setYearsInProgram(playerInformation.yearsInProgram);
-            const newEducationalBackgroundCompleted = Array(educationLevels.length + 1).fill(0);
-            const newEducationalBackgroundSubjectArea = Array(educationLevels.length + 1).fill("N/A");
-            educationLevelsStored.forEach((educationLevel, index) => {
-                if (playerInformation[educationLevel]) {
-                    newEducationalBackgroundCompleted[index] = playerInformation[educationLevel].startsWith("Yes") ? 1 : 2;
-                    newEducationalBackgroundSubjectArea[index] 
-                        = playerInformation[educationLevel].substring(playerInformation[educationLevel].indexOf(":") + 1);
-                } else {
-                    newEducationalBackgroundCompleted[index] = 0;
-                }
-            });
-            setEducationalBackgroundCompleted(newEducationalBackgroundCompleted);
-            setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
-            if (playerInformation.otherEducationName) setOtherEducation(playerInformation.otherEducationName);
+                const newExperienceValues = [...experienceValues];
+                experienceQuestionsStored.forEach((experienceQuestion, index) => {
+                    if (playerInformation[experienceQuestion]) {
+                        newExperienceValues[index] = parseInt(playerInformation[experienceQuestion]);
+                    }
+                });
+                setExperienceValues(newExperienceValues);
 
-            const newExperienceValues = [...experienceValues];
-            experienceQuestionsStored.forEach((experienceQuestion, index) => {
-                if (playerInformation[experienceQuestion]) {
-                    newExperienceValues[index] = playerInformation[experienceQuestion];
-                }
-            });
-            setExperienceValues(newExperienceValues);
-
-            setPulledFromLocalStorage(true);
+                setPulledFromLocalStorage(true);
+            }
         }
     }, [pulledFromLocalStorage, experienceValues, educationLevels.length]);
 
@@ -312,34 +315,34 @@ const Register = () => {
 
                     // TODO may be better to just send arrays? Instead of so many ungrouped fields for education levels and specializations ... 
                     // All selected education values begin with "Yes:" or "Current:".
-                    highschoolEducation: educationalBackgroundCompleted[0] ? 
-                    ((educationalBackgroundCompleted[0] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[0])  : undefined,
-                    bachelorsEducation: educationalBackgroundCompleted[1] ? 
-                    ((educationalBackgroundCompleted[1] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[1])  : undefined,
-                    mastersEducation: educationalBackgroundCompleted[2] ? 
-                    ((educationalBackgroundCompleted[2] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[2])  : undefined,
-                    doctorateEducation: educationalBackgroundCompleted[3] ? 
-                    ((educationalBackgroundCompleted[3] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[3])  : undefined,
+                    highschoolEducation: educationalBackgroundCompleted[0] ?
+                        ((educationalBackgroundCompleted[0] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[0]) : undefined,
+                    bachelorsEducation: educationalBackgroundCompleted[1] ?
+                        ((educationalBackgroundCompleted[1] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[1]) : undefined,
+                    mastersEducation: educationalBackgroundCompleted[2] ?
+                        ((educationalBackgroundCompleted[2] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[2]) : undefined,
+                    doctorateEducation: educationalBackgroundCompleted[3] ?
+                        ((educationalBackgroundCompleted[3] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[3]) : undefined,
                     otherEducationName: educationalBackgroundCompleted[educationLevels.length] ? otherEducation : null,
                     otherEducation: educationalBackgroundCompleted[educationLevels.length]
-                        ? ((educationalBackgroundCompleted[educationLevels.length] === 1 ? "Yes:" : "Current:") 
-                        + educationalBackgroundSubjectArea[educationLevels.length])  : undefined,
+                        ? ((educationalBackgroundCompleted[educationLevels.length] === 1 ? "Yes:" : "Current:")
+                            + educationalBackgroundSubjectArea[educationLevels.length]) : undefined,
 
-                    riskAnalysisExperience: experienceValues[0],
-                    supplierExperience: experienceValues[1],
-                    proposalOrStatementOfWorkExperience: experienceValues[2],
-                    bidsForRequestsExperience: experienceValues[3],
-                    systemArchitectureExperience: experienceValues[4],
-                    golfExperience: experienceValues[5],
-                    systemsEngineeringExpertise: experienceValues[6],
-                    statementOfWorkExpertise: experienceValues[7],
+                    riskAnalysisExperience: '' + experienceValues[0],
+                    supplierExperience: '' + experienceValues[1],
+                    proposalOrStatementOfWorkExperience: '' + experienceValues[2],
+                    bidsForRequestsExperience: '' + experienceValues[3],
+                    systemArchitectureExperience: '' + experienceValues[4],
+                    golfExperience: '' + experienceValues[5],
+                    systemsEngineeringExpertise: '' + experienceValues[6],
+                    statementOfWorkExpertise: '' + experienceValues[7],
                 }
 
                 // Save to context whether a player is joining or hosting the session. The Player's unique playerId
                 // will also need to be saved.
 
-                // Save player information to localStorage and retreive it if it is there on start
-                localStorage.setItem('playerInformation', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation }));
+                // Save player information to localStorage to be able to retreive it if it is there on future starts
+                saveObjectToStorage('playerInformation', { ...newPlayerBrief, ...newPlayerInformation });
 
                 if (playerType === 'host') {
                     const submitResult = await postRequest('player/host', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation }))
@@ -350,14 +353,14 @@ const Register = () => {
                         setPlayerId(submitResult.playerId);
                         setPlayerColor(color);
                         // save essential information to local storage
-                        const essentialPlayerInformation: EssentialPlayerInformation = 
+                        const essentialPlayerInformation: EssentialPlayerInformation =
                         {
                             isHost: true,
                             sessionId: submitResult.joinCode,
                             playerId: submitResult.playerId,
                             playerColor: color
                         }
-                        localStorage.setItem('essentialPlayerInformation', JSON.stringify(essentialPlayerInformation))
+                        saveObjectToStorage('essentialPlayerInformation', essentialPlayerInformation);
 
                         navigate('/game');
                     } else {
@@ -374,14 +377,14 @@ const Register = () => {
                         setPlayerId(submitResult.playerId);
                         setPlayerColor(color);
                         // save essential information to local storage
-                        const essentialPlayerInformation: EssentialPlayerInformation = 
+                        const essentialPlayerInformation: EssentialPlayerInformation =
                         {
                             isHost: false,
                             sessionId: Number(joinCode),
                             playerId: submitResult.playerId,
                             playerColor: color
                         }
-                        localStorage.setItem('essentialPlayerInformation', JSON.stringify(essentialPlayerInformation))
+                        saveObjectToStorage('essentialPlayerInformation', essentialPlayerInformation);
 
                         navigate('/game');
                     } else if (submitResult.error === "Session has already started") {
@@ -606,51 +609,51 @@ const Register = () => {
                                         </p>
                                         <div className={`ExpertiseGrid ${value === null
                                             && attemptedSubmit ? "ErrorForm" : ""}`}>
-                                                <p>Outside my field of expertise</p>
-                                                <p>.....</p>
-                                                <p>.....</p>
-                                                <p>At the boundary of my field of Expertise</p>
-                                                <p>.....</p>
-                                                <p>.....</p>
-                                                <p>Inside my field of expertise</p>
+                                            <p>Outside my field of expertise</p>
+                                            <p>.....</p>
+                                            <p>.....</p>
+                                            <p>At the boundary of my field of Expertise</p>
+                                            <p>.....</p>
+                                            <p>.....</p>
+                                            <p>Inside my field of expertise</p>
 
-                                                <Radio checked={value === 0} value={value === 0} onClick={() => {
-                                                    const newValues = [...experienceValues];
-                                                    newValues[index] = 0;
-                                                    setExperienceValues(newValues) 
-                                                }}></Radio>
-                                                <Radio checked={value === 1} value={value === 1} onClick={() => { 
-                                                    const newValues = [...experienceValues];
-                                                    newValues[index] = 1;
-                                                    setExperienceValues(newValues) 
-                                                }}></Radio>
-                                                <Radio checked={value === 2} onClick={() => { 
-                                                    const newValues = [...experienceValues];
-                                                    newValues[index] = 2;
-                                                    setExperienceValues(newValues);
-                                                }}></Radio>
-                                                <Radio checked={value === 3} onClick={() => { 
-                                                    const newValues = [...experienceValues];
-                                                    newValues[index] = 3;
-                                                    setExperienceValues(newValues) 
-                                                }}></Radio>
-                                                <Radio checked={value === 4} onClick={() => { 
-                                                    const newValues = [...experienceValues];
-                                                    newValues[index] = 4;
-                                                    setExperienceValues(newValues) 
-                                                }}></Radio>
-                                                <Radio checked={value === 5} onClick={() => { 
-                                                    const newValues = [...experienceValues];
-                                                    newValues[index] = 5;
-                                                    setExperienceValues(newValues) 
-                                                }}></Radio>
-                                                <Radio checked={value === 6} onClick={() => { 
-                                                    const newValues = [...experienceValues];
-                                                    newValues[index] = 6;
-                                                    setExperienceValues(newValues) 
-                                                }}></Radio>
+                                            <Radio checked={value === 0} value={value === 0} onClick={() => {
+                                                const newValues = [...experienceValues];
+                                                newValues[index] = 0;
+                                                setExperienceValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 1} value={value === 1} onClick={() => {
+                                                const newValues = [...experienceValues];
+                                                newValues[index] = 1;
+                                                setExperienceValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 2} onClick={() => {
+                                                const newValues = [...experienceValues];
+                                                newValues[index] = 2;
+                                                setExperienceValues(newValues);
+                                            }}></Radio>
+                                            <Radio checked={value === 3} onClick={() => {
+                                                const newValues = [...experienceValues];
+                                                newValues[index] = 3;
+                                                setExperienceValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 4} onClick={() => {
+                                                const newValues = [...experienceValues];
+                                                newValues[index] = 4;
+                                                setExperienceValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 5} onClick={() => {
+                                                const newValues = [...experienceValues];
+                                                newValues[index] = 5;
+                                                setExperienceValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 6} onClick={() => {
+                                                const newValues = [...experienceValues];
+                                                newValues[index] = 6;
+                                                setExperienceValues(newValues)
+                                            }}></Radio>
                                         </div>
-                                        <br/>
+                                        <br />
                                     </div>
                                 ))
                             }
