@@ -35,8 +35,9 @@ const sizeP = 17
 const Offset = 10 // you don't typically aim at the pin (must be less than 20) - default 15
 // const FudgeFactor = 5 //this is a stroke on sweetspot
 const Sink = 0.5 //This hopefully ensures that the loop closes.
-// const zone = 5 //you can ha
-
+const zone = 5 //you can ha
+const GreenTransition = 15
+ const FairwayTransition = (HoleLength) => { return HoleLength - 200 }
 
 const Cost = (Modules,Exp1,Exp2,Exp3,Size1,Size2,Size3,Work1,Work2,Work3,RuleD1,RuleD2) => {
 
@@ -120,8 +121,8 @@ const Solver = [
     Drive_mean: 250,
     Drive_sd: 15,
     Drive_Fairway_handoff: 40,
-    Fairway_mean: 200,  
-    Fairway_sd: 10,
+    LFairway_mean: 200,  
+    LFairway_sd: 10,
     AFairway_sd_factor: 0.05, //accuracy is a function of distance
     AFairway_sd_sweetspot: 0.03, //accuracy is a function of distance
     Fairway_sweetspot: 75,
@@ -136,8 +137,8 @@ const Solver = [
     Drive_mean: 150,
     Drive_sd: 30,
     Drive_Fairway_handoff: 40,
-    Fairway_mean: 100,  
-    Fairway_sd: 20,
+    LFairway_mean: 100,  
+    LFairway_sd: 20,
     AFairway_sd_factor: 0.2, //accuracy is a function of distance
     AFairway_sd_sweetspot: 0.05, //accuracy is a function of distance
     Fairway_sweetspot: 0,
@@ -152,8 +153,8 @@ const Solver = [
     Drive_mean: 450,
     Drive_sd: 30,
     Drive_Fairway_handoff: 40,
-    Fairway_mean: 100,  
-    Fairway_sd: 20,
+    LFairway_mean: 100,  
+    LFairway_sd: 20,
     AFairway_sd_factor: 0.2, //accuracy is a function of distance
     AFairway_sd_sweetspot: 0.05, //accuracy is a function of distance
     Fairway_sweetspot: 0,
@@ -264,7 +265,7 @@ export const PlayPutt = (BallNow, Expertise, N, size) => {
     while (Math.abs(BallNow) > size){
       BallNow =  Putt(BallNow,Expertise)
       NumStrokes = NumStrokes + 1
-      //cat ("when i is",i, "NumStrokes is", NumStrokes, "and j is", j, "\n")
+      //cat ("when i is", "NumStrokes is", NumStrokes, "and j is", j, "\n")
       if(NumStrokes > 14){ // Mercy rule
         BallNow = 0
         NumStrokes = NumStrokes +1
@@ -295,7 +296,6 @@ export const PlayPutt = (BallNow, Expertise, N, size) => {
 //* @param rule value of 1 tries to get closest to hole, value of 2 tries to minimize strokes. default 1
 //* @param strategy default 0
 export const PlayFairway = (BallNow,Expertise,N,rule,strategy) => {
-  
   //strategy = 0 // removing strategy
   let Start = BallNow
   let PathTaken = Array(1+ sizeF).fill(1000)
@@ -303,9 +303,9 @@ export const PlayFairway = (BallNow,Expertise,N,rule,strategy) => {
     let PathTakenAlt = Array(1+ sizeF).fill(0.1);
     let NumStrokes = 0
     BallNow = Start
-    while (BallNow > Solver[Expertise]['Fairway_Putt_handoff']){
+    while (BallNow > Solver[Expertise]['Fairway_Putt_handoff']){ 
       if (BallNow > (Solver[Expertise]['LFairway_mean'])){
-        BallNow = LFairway(BallNow, Expertise,strategy)
+        BallNow = LFairway(BallNow,Expertise,strategy)
       } else {
         BallNow = AFairway(BallNow,Expertise,1,strategy)
       }
@@ -560,14 +560,9 @@ export const H_Arch = (HoleLength,Expertise,TournamentSize,Holes) => {
         Result[copyIndex] = wholeHoleResult[wholeHoleIndex];
         wholeHoleIndex++;
       }
-
-      // console.log(wholeHoleResult);
-      console.log("hole number: ", j);
-      console.log("Prev result 1 = ", Result[1]);
-      console.log("curr end - 1 = ", wholeHoleResult[wholeHoleResult.length-2]);
       Result[1] = Result[1] + wholeHoleResult[wholeHoleResult.length-2]
       Result[2] = Result[1]
-      //Result[6,i] = Result[6,i] + max(Result[2:4,i])
+      //Result[6] = Result[6] + max(Result[2:4])
     }
     
     Result[5] = Cost(1,Expertise,0,0,TournamentSize,0,0,Result[2]/Holes,Result[3]/Holes,Result[4]/Holes,0,0)
@@ -605,82 +600,89 @@ export const H_Arch = (HoleLength,Expertise,TournamentSize,Holes) => {
 // //* @param Rule
 // //* @param Holes
 // //* @param runs
-// LP_Arch = function(HoleLength, Expertise_L, Expertise_P, TournamentSize_L, TournamentSize_P,Rule,Holes,runs){
-  
-//   Result = matrix(0,buffer*Holes+head,runs)
-//   cat(Result)
-//   //NumStrokes = 0
-//   for (i in 1:runs){
-//     for (j in 1:Holes){
-//       Long = rep(0,(sizeD+sizeF))
-//       Temp = rep(0,buffer)
-//       if(Rule === 1){
-//         Long = PlayLong(HoleLength,Expertise_L,TournamentSize_L,1)
-//         LongStrokes = Long[sizeD+sizeF-1]
-//         BallNow = Long[sizeD+sizeF]
-//       } else if(Rule === 2){
-//         Long = PlayLong(HoleLength,Expertise_L,TournamentSize_L,2)
-//         LongStrokes = Long[sizeD+sizeF-1]
-//         BallNow = Long[sizeD+sizeF]
-//       } else {
-//         NewTarget = HoleLength - GreenTransition
-//         // Find my issue!!!!!!!
-//         Temp = PlayWholeHole(NewTarget,Expertise_L,TournamentSize_L,zone)
-//         //cat("Temp is:",Temp,"\n")
-//         LongStrokes = Temp[buffer-1]
-//         //cat("strokes is:",LongStrokes,"\n")
-//         //////////////// does this need to be Temp[buffer]
-//         BallNow = Temp[buffer]+GreenTransition
-//         //cat("ball now is:",BallNow,"\n")
-//         Long = Temp + GreenTransition
-//         //cat("long is:",Long,"\n")
-//       }
-//       //cat("long is:",Long,"\n")
-//       start = (j-1)*buffer+head+1
-//       end = start+LongStrokes
-//       //cat("when j is",j,"start is",start,"and end is",end,"\n")
-//       //cat("longstrokes is:",LongStrokes)
-//       Result[start:end,i] = Long[1:(LongStrokes+1)]
-//       Putt = rep(0,sizeP)
-//       Putt = PlayPutt(BallNow,Expertise_P,TournamentSize_P,Sink)
-//       //cat("putt is:",Putt,"\n")
-//       PuttStrokes = Putt[sizeP-1]
-//       start = end
-//       end = start+PuttStrokes
-//       Result[start:end,i] = Putt[1:(PuttStrokes+1)] // problem is here
-//       Result[((j-1)*(buffer)+(buffer+head-1)),i] = LongStrokes+PuttStrokes
-//       Result[((j-1)*(buffer)+(buffer+head)),i] = Putt[sizeP]
-//       Result[1,i] = Result[1,i]+ Result[((j-1)*(buffer)+(buffer+head-1)),i]
-//       if(Rule === 3){
-//         Result[6,i] = Result[6,i] + max(c(LongStrokes,PuttStrokes))// in steady state
-//         Result[7,i] = Result[6,i]
-//       } else {
-//         Result[6,i] = Result[6,i] + max(c(LongStrokes,PuttStrokes))// in steady state
-//         Result[7,i] = Result[1,i]
-//       }
-//       Result[2,i] = Result[2,i] + LongStrokes
-//       Result[3,i] = Result[3,i] + PuttStrokes
-//       // Calculating fraction of work done by experts
-//       Fraction = 0
-//       if (Expertise_L === 1){
-//         Fraction = LongStrokes
-//       }
-//       if (Expertise_P ==1){
-//         Fraction = Fraction + PuttStrokes
-//       }
-//       Result[7,i] = Fraction/(LongStrokes + PuttStrokes)
-//       //cat("result is:",Result,"\n")
-//     }
-//     Result[5,i] = Cost(2,Expertise_L,Expertise_P,0,TournamentSize_L,TournamentSize_P,0,Result[2,i]/Holes,Result[3,i]/Holes,Result[4,i]/Holes,Rule,0)
-//     Result[6,i] = Result[6,i]/Holes
-//     //Result[7,i] = Result[7,i]/Holes
-//     //print("Strokes: ")
-//     //print(Result[1,i])
-//     //print("Cost is: ")
-//     //print(Result[5, i])
-//   }
-//   return(Result)
-// }
+export const LP_Arch = (HoleLength, Expertise_L, Expertise_P, TournamentSize_L, TournamentSize_P,Rule,Holes) => {
+
+  let Result = Array(1 + (buffer*Holes+head)).fill(0)
+  let BallNow;
+  let LongStrokes;
+  //NumStrokes = 0
+  for (let j = 1; j <= Holes; j++){
+      let Long = Array(sizeD+sizeF).fill(0);
+      let Temp = Array(buffer).fill(0);
+      if(Rule === 1){
+        Long = PlayLong(HoleLength,Expertise_L,TournamentSize_L,1)
+        LongStrokes = Long[sizeD+sizeF-1]
+        BallNow = Long[sizeD+sizeF]
+      } else if(Rule === 2){
+        Long = PlayLong(HoleLength,Expertise_L,TournamentSize_L,2)
+        LongStrokes = Long[sizeD+sizeF-1]
+        BallNow = Long[sizeD+sizeF]
+      } else {
+        let NewTarget = HoleLength - GreenTransition
+        // Find my issue!!!!!!!
+        Temp = PlayWholeHole(NewTarget,Expertise_L,TournamentSize_L,zone)
+        //cat("Temp is:",Temp,"\n")
+        LongStrokes = Temp[buffer-1]
+        //cat("strokes is:",LongStrokes,"\n")
+        //////////////// does this need to be Temp[buffer]
+        BallNow = Temp[buffer]+GreenTransition
+        //cat("ball now is:",BallNow,"\n")
+        Long = Temp + GreenTransition
+        //cat("long is:",Long,"\n")
+      }
+      //cat("long is:",Long,"\n")
+      let start = (j-1)*buffer+head+1
+      let end = start+LongStrokes
+      //cat("when j is",j,"start is",start,"and end is",end,"\n")
+      //cat("longstrokes is:",LongStrokes)
+      // Result[start:end] = Long[1:(LongStrokes+1)]
+      let longIndex = 0;
+      for (let copyIndex = start; copyIndex <= end; copyIndex++){
+        Result[start+copyIndex] = Long[longIndex];
+        longIndex++;
+      }
+      let Putt = PlayPutt(BallNow,Expertise_P,TournamentSize_P,Sink)
+      //cat("putt is:",Putt,"\n")
+      let PuttStrokes = Putt[sizeP-1]
+      start = end
+      end = start+PuttStrokes
+      // Result[start:end] = Putt[1:(PuttStrokes+1)] // problem is here
+      for (let copyIndex = 0; copyIndex <= PuttStrokes; copyIndex++){
+        Result[start+copyIndex] = Putt[copyIndex];
+      }
+
+      Result[((j-1)*(buffer)+(buffer+head-1))] = LongStrokes+PuttStrokes
+      Result[((j-1)*(buffer)+(buffer+head))] = Putt[sizeP]
+      Result[1] = Result[1]+ Result[((j-1)*(buffer)+(buffer+head-1))]
+      if(Rule === 3){
+        Result[6] = Result[6] + Math.max(LongStrokes, PuttStrokes);// in steady state
+        Result[7] = Result[6]
+      } else {
+        Result[6] = Result[6] + Math.max(LongStrokes, PuttStrokes); // in steady state
+        Result[7] = Result[1]
+      }
+      Result[2] = Result[2] + LongStrokes
+      Result[3] = Result[3] + PuttStrokes
+      // Calculating fraction of work done by experts
+      let Fraction = 0
+      if (Expertise_L === 1){
+        Fraction = LongStrokes
+      }
+      if (Expertise_P === 1){
+        Fraction = Fraction + PuttStrokes
+      }
+      Result[7] = Fraction/(LongStrokes + PuttStrokes)
+      //cat("result is:",Result,"\n")
+    }
+    Result[5] = Cost(2,Expertise_L,Expertise_P,0,TournamentSize_L,TournamentSize_P,0,Result[2]/Holes,Result[3]/Holes,Result[4]/Holes,Rule,0)
+    Result[6] = Result[6]/Holes
+    //Result[7,i] = Result[7,i]/Holes
+    //print("Strokes: ")
+    //print(Result[1,i])
+    //print("Cost is: ")
+    //print(Result[5, i])
+  return(Result)
+}
 
 
 // //////////////////////////////////////////////////////
@@ -699,120 +701,116 @@ export const H_Arch = (HoleLength,Expertise,TournamentSize,Holes) => {
 // //* @param TournamentSize_P
 // //* @param Holes
 // //* @param runs
-// DAP_Arch = function(HoleLength,Expertise_D,Expertise_F,Expertise_P,TournamentSize_D,TournamentSize_F,TournamentSize_P,Holes,runs){
+export const DAP_Arch = (HoleLength,Expertise_D,Expertise_F,Expertise_P,TournamentSize_D,TournamentSize_F,TournamentSize_P,Holes) => {
   
-//   Result = matrix(0,buffer*Holes+head,runs)
-//   for (i in 1:runs){
-//     for (j in 1:Holes){
-//       // the D subproblem
-//       drive = rep(0,sizeD)
-//       Temp = rep(0,buffer)
-//       //cat("here 1")
-//       if(RuleDF === 1){
-//         //cat("here 1a")
-//         drive = PlayDrive(HoleLength,Expertise_D,TournamentSize_D,1,0)
-//         DriveStrokes = drive[sizeD-1]
-//         BallNow = drive[sizeD]
-//       } else if (RuleDF === 2){
-//         //cat("here 1b")
-//         drive = PlayDrive(HoleLength,Expertise_D,TournamentSize_D,2,0)
-//         DriveStrokes = drive[sizeD-1]
-//         BallNow = drive[sizeD]
-//       } else {
-//         //cat("here 1c")
-//         NewTarget = HoleLength - FairwayTransition
-//         Temp = PlayWholeHole(NewTarget,Expertise_D,TournamentSize_D,zone)
-//         //cat("long is:",Temp,"\n")
-//         DriveStrokes = Temp[buffer-1]
-//         //cat("strokes is:",LongStrokes,"\n")
-//         BallNow = Temp[buffer]+FairwayTransition
-//         //cat("ball now is:",BallNow,"\n")
-//         drive = Temp + FairwayTransition
-//       }
-//       // return("GOT THIS FAR")
-//       start = (j-1)*buffer+8
-//       end = start+DriveStrokes
-//       Result[start:end,i] = drive[1:(DriveStrokes+1)]
-//       ////// Approach
-//       Approach = rep(0,(sizeF))
-//       Temp = rep(0,buffer)
-//       if(RuleFP === 1){
-//         Approach = PlayFairway(BallNow,Expertise_F,TournamentSize_F,1,0) // I turned the strategy off here after speaking with Zoe
-//         ApproachStrokes = Approach[sizeF-1]
-//         BallNow = Approach[sizeF]
-//       } else if(RuleFP === 2){
-//         Approach = PlayFairway(BallNow,Expertise_F,TournamentSize_F,2,0) // I turned the strategy off here after speaking with Zoe
-//         ApproachStrokes = Approach[sizeF-1]
-//         BallNow = Approach[sizeF]
-//       } else {
-//         NewTarget = BallNow - GreenTransition
-//         // Find my issue!!!!!!!
-//         Temp = PlayWholeHole(NewTarget,Expertise_F,TournamentSize_F,zone)
-//         //cat("Temp is:",Temp,"\n")
-//         ApproachStrokes = Temp[buffer-1]
-//         //cat("strokes is:",LongStrokes,"\n")
-//         //////////////// does this need to be Temp[buffer]
-//         BallNow = Temp[buffer]+GreenTransition
-//         //cat("ball now is:",BallNow,"\n")
-//         Approach = Temp + GreenTransition
-//         //cat("long is:",Long,"\n")
-//       }
-//       start = end+1 // delete +1 if it doesn't solve anything.
-//       end = start+ApproachStrokes
-//       Result[start:end,i] = Approach[1:(ApproachStrokes+1)]
-//       //// This is where Putting stage begins
-//       Putt = rep(0,sizeP)
-//       Putt = PlayPutt(BallNow,Expertise_P,TournamentSize_P,Sink)
-//       //cat("putt is:",Putt,"\n")
-//       PuttStrokes = Putt[sizeP-1]
-//       start = end
-//       end = start+PuttStrokes
-//       Result[start:end,i] = Putt[1:(PuttStrokes+1)]
-//       Result[((j-1)*(buffer)+(buffer+head-1)),i] = DriveStrokes+ApproachStrokes+PuttStrokes
-//       //cat(((j-1)*(buffer+4)+(buffer+4)),"=", DriveStrokes, FairwayStrokes,PuttStrokes)
-//       Result[((j-1)*(buffer)+(buffer+head)),i] = Putt[sizeP]
-//       //cat(Putt[sizeP])
-//       //cat("drive is:", drive,"\n","approach is:",approach,"\n","Putt is:",Putt,"\n","Result is:",Result,"\n")
-//       Result[1,i] = Result[1,i]+Result[((j-1)*(buffer)+(buffer+head-1)),i]
-//       Result[2,i] = Result[2,i] + DriveStrokes
-//       //cat("Result is:",Result,"\n")
-//       Result[3,i] = Result[3,i] + ApproachStrokes
-//       Result[4,i] = Result[4,i] + PuttStrokes
-//       if(RuleDF === 3&&RuleFP==3){
-//         Result[6,i] = Result[6,i] + max(c(DriveStrokes,ApproachStrokes,PuttStrokes))// in steady state
-//         //Result[7,i] = Result[6,i]
-//       } else if (RuleDF === 3){
-//         Result[6,i] = Result[6,i] + max(c(DriveStrokes,ApproachStrokes,PuttStrokes))// in steady state
-//         //Result[7,i] = Result[6,i] + max(c(DriveStrokes,ApproachStrokes))+PuttStrokes
-//       } else if (RuleFP === 3){
-//         Result[6,i] = Result[6,i] + max(c(DriveStrokes,ApproachStrokes,PuttStrokes))// in steady state
-//         //Result[7,i] = Result[6,i] + max(c(PuttStrokes,ApproachStrokes))+DriveStrokes
-//       } else {
-//         Result[6,i] = Result[6,i] + max(c(DriveStrokes,ApproachStrokes,PuttStrokes))// in steady state
-//         //Result[7,i] = Result[1,i]
-//       }
-//       Fraction = 0
-//       if (Expertise_D === 1){
-//         Fraction = DriveStrokes
-//       }
-//       if (Expertise_F ==1){
-//         Fraction = Fraction + ApproachStrokes
-//       }
-//       if (Expertise_P ==1){
-//         Fraction = Fraction + PuttStrokes
-//       }
-//       Result[7,i] = Fraction/(DriveStrokes + ApproachStrokes + PuttStrokes)
-//     }
-//     Result[5,i] = Cost(3,Expertise_D,Expertise_F,Expertise_P,TournamentSize_D,TournamentSize_F,TournamentSize_P,Result[2,i]/Holes,Result[3,i]/Holes,Result[4,i]/Holes,RuleDF,RuleFP)
-//     Result[6,i] = Result[6,i]/Holes
-//     //Result[7,i] = Result[7,i]/Holes
-//     //print("Strokes: ")
-//     //print(Result[1,i])
-//     //print("Cost is: ")
-//     //print(Result[5, i])
-//   }
-//   return(Result)
-// }
+  const RuleFP = 1;
+  const RuleDF = 1;
+  let Result = Array(1 + buffer*Holes+head).fill(0);
+  for (let j = 1; j <= Holes; j++){
+      // the D subproblem
+      let drive = Array(sizeD).fill(0);
+      let Temp = Array(buffer).fill(0);
+      let DriveStrokes;
+      let BallNow;
+      if(RuleDF === 1){
+        drive = PlayDrive(HoleLength,Expertise_D,TournamentSize_D,1,0)
+        DriveStrokes = drive[sizeD-1]
+        BallNow = drive[sizeD]
+      } else if (RuleDF === 2){
+        drive = PlayDrive(HoleLength,Expertise_D,TournamentSize_D,2,0)
+        DriveStrokes = drive[sizeD-1]
+        BallNow = drive[sizeD]
+      } else {
+        let NewTarget = HoleLength - FairwayTransition(HoleLength)
+        Temp = PlayWholeHole(NewTarget,Expertise_D,TournamentSize_D,zone)
+        DriveStrokes = Temp[buffer-1]
+        BallNow = Temp[buffer]+FairwayTransition(HoleLength)
+        drive = Temp + FairwayTransition(HoleLength)
+      }
+      let start = (j-1)*buffer+8
+      let end = start+DriveStrokes
+      // Result[start:end] = drive[1:(DriveStrokes+1)]
+      for (let copyIndex = 0; copyIndex <= DriveStrokes; copyIndex++){
+        Result[start+copyIndex] = drive[copyIndex];
+      }
+      ////// Approach
+      let Approach = Array(sizeF).fill(0);
+      Temp = Array(buffer).fill(0);
+      let ApproachStrokes;
+      if(RuleFP === 1){
+        Approach = PlayFairway(BallNow,Expertise_F,TournamentSize_F,1,0) // I turned the strategy off here after speaking with Zoe
+        ApproachStrokes = Approach[sizeF-1]
+        BallNow = Approach[sizeF]
+      } else if(RuleFP === 2){
+        Approach = PlayFairway(BallNow,Expertise_F,TournamentSize_F,2,0) // I turned the strategy off here after speaking with Zoe
+        ApproachStrokes = Approach[sizeF-1]
+        BallNow = Approach[sizeF]
+      } else {
+        let NewTarget = BallNow - GreenTransition
+        // Find my issue!!!!!!!
+        Temp = PlayWholeHole(NewTarget,Expertise_F,TournamentSize_F,zone)
+        //cat("Temp is:",Temp,"\n")
+        ApproachStrokes = Temp[buffer-1]
+        //////////////// does this need to be Temp[buffer]
+        BallNow = Temp[buffer]+GreenTransition
+        Approach = Temp + GreenTransition
+      }
+      start = end+1 // delete +1 if it doesn't solve anything.
+      end = start+ApproachStrokes
+      // Result[start:end] = Approach[1:(ApproachStrokes+1)]\
+      for (let copyIndex = 0; copyIndex <= ApproachStrokes; copyIndex++){
+        Result[start+copyIndex] = Approach[copyIndex];
+      }
+      //// This is where Putting stage begins
+      // Putt = rep(0,sizeP)
+      let Putt = PlayPutt(BallNow,Expertise_P,TournamentSize_P,Sink)
+      let PuttStrokes = Putt[sizeP-1]
+      start = end
+      end = start+PuttStrokes
+      // Result[start:end] = Putt[1:(PuttStrokes+1)]
+      for (let copyIndex = 0; copyIndex <= PuttStrokes; copyIndex++){
+        Result[start+copyIndex] = Putt[copyIndex];
+      }
+      Result[((j-1)*(buffer)+(buffer+head-1))] = DriveStrokes+ApproachStrokes+PuttStrokes
+      Result[((j-1)*(buffer)+(buffer+head))] = Putt[sizeP]
+      Result[1] = Result[1]+Result[((j-1)*(buffer)+(buffer+head-1))]
+      Result[2] = Result[2] + DriveStrokes
+      Result[3] = Result[3] + ApproachStrokes
+      Result[4] = Result[4] + PuttStrokes
+      if(RuleDF === 3 && RuleFP === 3){
+        Result[6] = Result[6] + Math.max(DriveStrokes, ApproachStrokes, PuttStrokes);// in steady state
+        //Result[7] = Result[6]
+      } else if (RuleDF === 3){
+        Result[6] = Result[6] + Math.max(DriveStrokes, ApproachStrokes, PuttStrokes);// in steady state
+        //Result[7] = Result[6] + max(c(DriveStrokes,ApproachStrokes))+PuttStrokes
+      } else if (RuleFP === 3){
+        Result[6] = Result[6] + Math.max(DriveStrokes, ApproachStrokes, PuttStrokes);// in steady state
+        //Result[7] = Result[6] + max(c(PuttStrokes,ApproachStrokes))+DriveStrokes
+      } else {
+        Result[6] = Result[6] + Math.max(DriveStrokes, ApproachStrokes, PuttStrokes);// in steady state
+        //Result[7] = Result[1]
+      }
+      let Fraction = 0
+      if (Expertise_D === 1){
+        Fraction = DriveStrokes
+      }
+      if (Expertise_F === 1){
+        Fraction = Fraction + ApproachStrokes
+      }
+      if (Expertise_P === 1){
+        Fraction = Fraction + PuttStrokes
+      }
+      Result[7] = Fraction/(DriveStrokes + ApproachStrokes + PuttStrokes)
+    }
+    Result[5] = Cost(3,Expertise_D,Expertise_F,Expertise_P,TournamentSize_D,TournamentSize_F,TournamentSize_P,Result[2]/Holes,Result[3]/Holes,Result[4]/Holes,RuleDF,RuleFP)
+    Result[6] = Result[6]/Holes
+    //Result[7] = Result[7]/Holes
+    //print("Strokes: ")
+    //print(Result[1])
+    //print("Cost is: ")
+    //print(Result[5, i])
+  return(Result)
+}
 
 // //////////////////////////////////////////////////////////
 // // The runs Drive-Short (DS)
@@ -827,76 +825,70 @@ export const H_Arch = (HoleLength,Expertise,TournamentSize,Holes) => {
 // //* @param Rule
 // //* @param Holes
 // //* @param runs
-// DS_Arch = function(HoleLength,Expertise_D,Expertise_S,TournamentSize_D,TournamentSize_S,Holes,runs){
+export const DS_Arch = (HoleLength,Expertise_D,Expertise_S,TournamentSize_D,TournamentSize_S,Holes) => {
   
-//   Result = matrix(0,buffer*Holes+7,runs)
-//   for (i in 1:runs){
-//     for (j in 1:Holes){
-//       drive = rep(0,sizeD)
-//       Temp = rep(0,buffer)
-//       //cat("here 1")
-//       if(Rule === 1){
-//         //cat("here 1a")
-//         drive = PlayDrive(HoleLength,Expertise_D,TournamentSize_D,1,0)
-//         DriveStrokes = drive[sizeD-1]
-//         BallNow = drive[sizeD]
-//       } else if (Rule === 2){
-//         //cat("here 1b")
-//         drive = PlayDrive(HoleLength,Expertise_D,TournamentSize_D,2,0)
-//         DriveStrokes = drive[sizeD-1]
-//         BallNow = drive[sizeD]
-//       } else {
-//         //cat("here 1c")
-//         NewTarget = HoleLength - FairwayTransition
-//         Temp = PlayWholeHole(NewTarget,Expertise_D,TournamentSize_D,zone)
-//         //cat("long is:",Temp,"\n")
-//         DriveStrokes = Temp[buffer-1]
-//         //cat("strokes is:",LongStrokes,"\n")
-//         BallNow = Temp[buffer]+FairwayTransition
-//         //cat("ball now is:",BallNow,"\n")
-//         drive = Temp + FairwayTransition
-//       }
-//       //cat(drive)
-//       //cat("here 2")
-//       start = (j-1)*buffer+8
-//       end = start+DriveStrokes
-//       //cat("when j is",j,"start is",start,"DriveStrokes is:", DriveStrokes,"and end is",end,"\n")
-//       Result[start:end,i] = drive[1:(DriveStrokes+1)]
-//       short = rep(0,(sizeF+sizeP))
-//       short = PlayShort(BallNow,Expertise_S,TournamentSize_S,Sink)
-//       ShortStrokes = short[sizeF+sizeP-1] 
-//       BallNow = short[sizeF+sizeP]
-//       start = end
-//       end = start+ ShortStrokes
-//       //cat("here 1:", ShortStrokes)
-//       Result[start:end,i] = short[1:(ShortStrokes+1)]
-//       //cat("here 2")
-//       Result[((j-1)*buffer+buffer+6),i] = DriveStrokes+ShortStrokes
-//       Result[((j-1)*buffer+buffer+7),i] = BallNow
-//       Result[1,i] = Result[1,i]+Result[((j-1)*buffer+buffer+6),i]
-//       Result[2,i] = Result[2,i] + DriveStrokes
-//       Result[3,i] = Result[3,i] + ShortStrokes
-//       if(Rule === 3){
-//         Result[6,i] = Result[6,i] + max(c(DriveStrokes,ShortStrokes))// in steady state
-//         //Result[7,i] = Result[6,i] //for a given hole
-//       } else {
-//         Result[6,i] = Result[6,i] + max(c(DriveStrokes,ShortStrokes))// in steady state
-//         //Result[7,i] = Result[1,i]
-//       }
-//       Fraction = 0
-//       if (Expertise_D === 1){
-//         Fraction = DriveStrokes
-//       }
-//       if (Expertise_S ==1){
-//         Fraction = Fraction + ShortStrokes
-//       }
-//       Result[7,i] = Fraction/(DriveStrokes + ShortStrokes)
-//       //cat("result is:",Result,"\n")
-//     }
-//     Result[5,i] = Cost(2,Expertise_D,Expertise_S,0,TournamentSize_D,TournamentSize_S,0,Result[2,i]/Holes,Result[3,i]/Holes,Result[4,i]/Holes,Rule,0)
-//     Result[6,i] = Result[6,i]/Holes
-//     //Result[7,i] = Result[7,i]/Holes
-//   }
-//   return(Result)
-// }
+  const Rule = 1;
+  let Result = Array(1 + buffer*Holes+7).fill(0);
+  for (let j = 1; j <= Holes; j++){
+      let drive = Array(sizeD).fill(0);
+      let Temp = Array(buffer).fill(0); 
+      let DriveStrokes;
+      let BallNow;
+      if(Rule === 1){
+        drive = PlayDrive(HoleLength,Expertise_D,TournamentSize_D,1,0)
+        DriveStrokes = drive[sizeD-1]
+        BallNow = drive[sizeD]
+      } else if (Rule === 2){
+        drive = PlayDrive(HoleLength,Expertise_D,TournamentSize_D,2,0)
+        DriveStrokes = drive[sizeD-1]
+        BallNow = drive[sizeD]
+      } else {
+        let NewTarget = HoleLength - FairwayTransition(HoleLength)
+        Temp = PlayWholeHole(NewTarget,Expertise_D,TournamentSize_D,zone)
+        DriveStrokes = Temp[buffer-1]
+        BallNow = Temp[buffer]+FairwayTransition(HoleLength)
+        drive = Temp + FairwayTransition(HoleLength)
+      }
+      let start = (j-1)*buffer+8
+      let end = start+DriveStrokes
+      // Result[start:end] = drive[1:(DriveStrokes+1)]
+      for (let copyIndex = 0; copyIndex <= DriveStrokes; copyIndex++){
+        Result[start+copyIndex] = drive[copyIndex];
+      }
+      // let short = Array(sizeF+sizeP).fill(0);
+      let short = PlayShort(BallNow,Expertise_S,TournamentSize_S,Sink)
+      let ShortStrokes = short[sizeF+sizeP-1] 
+      BallNow = short[sizeF+sizeP]
+      start = end
+      end = start+ ShortStrokes
+      // Result[start:end,i] = short[1:(ShortStrokes+1)]
+      for (let copyIndex = 0; copyIndex <= ShortStrokes; copyIndex++){
+        Result[start+copyIndex] = short[copyIndex];
+      }
+      Result[((j-1)*buffer+buffer+6)] = DriveStrokes+ShortStrokes
+      Result[((j-1)*buffer+buffer+7)] = BallNow
+      Result[1] = Result[1]+Result[((j-1)*buffer+buffer+6)]
+      Result[2] = Result[2] + DriveStrokes
+      Result[3] = Result[3] + ShortStrokes
+      if(Rule === 3){
+        Result[6] = Result[6] + Math.max(DriveStrokes, ShortStrokes);// in steady state
+        //Result[7] = Result[6] //for a given hole
+      } else {
+        Result[6] = Result[6] + Math.max(DriveStrokes, ShortStrokes);// in steady state
+        //Result[7] = Result[1]
+      }
+      let Fraction = 0
+      if (Expertise_D === 1){
+        Fraction = DriveStrokes
+      }
+      if (Expertise_S === 1){
+        Fraction = Fraction + ShortStrokes
+      }
+      Result[7] = Fraction/(DriveStrokes + ShortStrokes)
+    }
+    Result[5] = Cost(2,Expertise_D,Expertise_S,0,TournamentSize_D,TournamentSize_S,0,Result[2]/Holes,Result[3]/Holes,Result[4]/Holes,Rule,0)
+    Result[6] = Result[6]/Holes
+    //Result[7] = Result[7]/Holes
+  return(Result)
+}
 
