@@ -30,7 +30,7 @@ const Register = () => {
     // (which should be 'join') then the user is joining a session.
     const { playerType, joinCodeUrl } = useParams();
 
-    const [isSuccesfullySubmitted, setIsSuccesfullySubmitted] = useState(false);
+    const [isSuccessfullySubmitted, setIsSuccessfullySubmitted] = useState(false);
     const [name, setName] = useState('');
     const [participationReason, setParticipationReason] = useState('');
     const [gender, setGender] = useState('');
@@ -347,7 +347,7 @@ const Register = () => {
                 if (playerType === 'host') {
                     const submitResult = await postRequest('player/host', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation }))
                     if (submitResult.success) {
-                        setIsSuccesfullySubmitted(true);
+                        setIsSuccessfullySubmitted(true);
                         setIsHost(true);
                         setSessionId(submitResult.joinCode);
                         setPlayerId(submitResult.playerId);
@@ -371,7 +371,7 @@ const Register = () => {
                 } else {
                     const submitResult = await postRequest('player/join', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation, joinCode }))
                     if (submitResult.success) {
-                        setIsSuccesfullySubmitted(true);
+                        setIsSuccessfullySubmitted(true);
                         setIsHost(false);
                         setSessionId(Number(joinCode));
                         setPlayerId(submitResult.playerId);
@@ -413,7 +413,7 @@ const Register = () => {
             <div className='Login'>
                 <h1>{playerType === 'host' ? "Register to Create and Host a Session" : "Register to Join an Ongoing Session"}</h1>
                 {
-                    isSuccesfullySubmitted ?
+                    isSuccessfullySubmitted ?
                         <div className='SuccessfulSubmit'>
                             <h3>Congratulations your form has successfully been submitted!</h3>
                             <img src='https://media.tenor.com/LEhC5W9BQBIAAAAj/svtl-transparent.gif' alt='Success' />

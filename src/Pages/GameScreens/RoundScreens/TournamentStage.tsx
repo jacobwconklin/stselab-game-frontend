@@ -416,7 +416,7 @@ const TournamentStage = (props: {
                             maxLength={240}
                             value={reasoning}
                             onChange={(event) => {
-                                setReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 240) : event.target.value);
+                                setReasoning(event.target.value && event.target.value.length > 240 ? event.target.value.substring(0, 240) : event.target.value);
                             }}
                         />
                         <br></br>
