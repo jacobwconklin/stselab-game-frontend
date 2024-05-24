@@ -8,7 +8,14 @@ then navigating to https://stselab-games.scm.azurewebsites.net/DebugConsole,
 then navigate into site, and then wwwroot, and then drag and drop the zip file onto the screen where the message, unzip appears.
 Viola. 
 
+Make sure to update the git repo by adding, commiting, and pushing changes, especially when a new build is created, so the code is documented and saved.
+
 # Running project locally:
+
+Pull any changes from the repository first to avoid merge conflicts (unless you are the sole contributor, but even then it is best practice)
+```
+git pull
+```
 
 To run locally for the first time you must have node installed. first run: 
 ```
@@ -16,7 +23,8 @@ npm i
 ```
 
 Then you can run the following to run the server locally in development mode. All subsequent times that
-you would like to run the code you do not need to npm i again, you can simply run this command:
+you would like to run the code you do not need to npm i again, unless new packages have been added. Running npm i is harmless so
+you may run it each time, or you can simply run this command:
 ```
 npm run start
 ```

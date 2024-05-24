@@ -206,7 +206,6 @@ const AllResults = () => {
     ];
 
     const tableData: DisplayRoundResult[] = filteredResults.map((player: RoundResult, index: number) => {
-        console.log("See if I got cpw: ", player.customPerformanceWeight);
         return {
             key: player.id,
             score: {score: player.score / 100, customPerformanceWeight: player.round === RoundNames.TournamentStage4 
