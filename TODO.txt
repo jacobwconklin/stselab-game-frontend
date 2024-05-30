@@ -33,3 +33,8 @@ Add a function in backend that will write out all data for a session, I. E. if p
 Potential optimization:
 - websockets
 - image hosting (flickr)
+
+
+BUG:
+
+Professional only round has 'waiting' perpetually under solvers
