@@ -98,7 +98,7 @@ const AllResults = () => {
             key: 'score',
             defaultSortOrder: 'descend' as any,
             sorter: (a: DisplayRoundResult, b: DisplayRoundResult) => {
-                const scoreA = Number(a.score? a.score.score : '');
+                const scoreA = Number(a.score ? a.score.score : '');
                 const scoreB = Number(b.score ? b.score.score : '');
                 if (isNaN(scoreA) && !isNaN(scoreB)) {
                     return -1;

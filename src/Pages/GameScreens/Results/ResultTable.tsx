@@ -105,7 +105,9 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             title: 'Solvers',
             key: 'solvers',
             dataIndex: 'solvers',
-            render: (solvers: [Solver]) => (
+            render: (solvers: [Solver]) => {
+                console.log(solvers);
+                return (
                 solvers.length > 0 ?
                     <div className="SolversHolder">
                         {
@@ -121,7 +123,7 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
                     <div>
                         waiting ...
                     </div>
-            ),
+            )}
         },
     ];
 

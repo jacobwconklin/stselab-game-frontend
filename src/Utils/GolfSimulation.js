@@ -706,7 +706,7 @@ export const DAP_Arch = (HoleLength,Expertise_D,Expertise_F,Expertise_P,Tourname
   const RuleFP = 1;
   const RuleDF = 1;
   let Result = Array(1 + buffer*Holes+head).fill(0);
-  for (let j = 1; j <= Holes; j++){
+  for (let j = 1; j <= Holes; j++) {
       // the D subproblem
       let drive = Array(sizeD).fill(0);
       let Temp = Array(buffer).fill(0);

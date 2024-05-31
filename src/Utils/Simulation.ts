@@ -1,4 +1,4 @@
-import { getBackendUrl } from "./Api";
+import { DAP_Arch, DS_Arch, H_Arch, LP_Arch, PlayDrive, PlayFairway, PlayLong, PlayPutt, PlayShort } from "./GolfSimulation";
 
 // Handles calling simulation written in R
 // const SimulationUrl = "http://64.23.136.232/date/";
@@ -25,40 +25,16 @@ export const moduleDescriptions = [
     "Playing the entire hole involves driving off the tee and then hitting the ball until it is in the hole. The full distance of 700 units will be covered."
 ]
 
-// use for post requests to simulation
-const simulationPostRequest = async (endpoint: string, payload: string) => {
-    // for now must hit back-end for access to simulation, 
-    // cannot hit simulation directly
-    // # Deployed Simulation is only avialable via http, so the front-end cannot make requests to it 
-    // # as it would be mixed content. Without a registered domain name and SSL certificate the droplet
-    // # it is hosted on cannot be made into an https API. Therefore calls must come from the backend, so 
-    // # the front end will make requests here just to pass them on to the simulation.
-    const response = await fetch(getBackendUrl() + endpoint, {
-        method: 'POST',
-        headers: {
-            'Accept': '*/*',
-            'Content-Type': 'application/json'
-        },
-        body: payload
-    });
-    const data = await response.json();
-    return data;
-}
-
 // methods for each specific simulation run
 // TODO can set up hole length, holes, and runs to be dynamic if desired and changable by host on a settings page
 
 // run h_arch simulation where one solver handles entire course
 export const runSimEntireHole = async(solver: Solver, overwriteSolverSize?: number, numberOfHoles?: number) => {
     try {
-        const response = await simulationPostRequest('h_arch', JSON.stringify({
-            HoleLength: 700,
-            Expertise: solver, 
-            TournamentSize: overwriteSolverSize ? overwriteSolverSize : groupSizePerSolver[solver - 1],
-            Holes: numberOfHoles ? numberOfHoles : holesPerArchitecture,
-            runs: 1
-        }));
-        return {shots: response[0][0], cost: response[4][0]};
+        const response =  H_Arch(700, solver, overwriteSolverSize ? overwriteSolverSize : groupSizePerSolver[solver - 1], numberOfHoles ? numberOfHoles : holesPerArchitecture)
+        console.log(response)
+
+        return {shots: response[1], cost: response[5]};
     } catch (error) {
         // generate random value to not break deployed
         console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
@@ -69,17 +45,10 @@ export const runSimEntireHole = async(solver: Solver, overwriteSolverSize?: numb
 // run lp_arch simulation where one solver handles far away and one solver putts on the green
 export const runLP = async(solverLong: Solver, solverClose: Solver) => {
     try {
-        const response = await simulationPostRequest('lp_arch', JSON.stringify({
-            HoleLength: 700,
-            Expertise_L: solverLong,
-            Expertise_P: solverClose,
-            TournamentSize_L: groupSizePerSolver[solverLong - 1],
-            TournamentSize_P: groupSizePerSolver[solverClose - 1],
-            Rule: 1,
-            Holes: holesPerArchitecture,
-            runs: 1
-        }));
-        return {shots: response[0][0], cost: response[4][0]};
+        const response = LP_Arch(700, solverLong, solverClose, groupSizePerSolver[solverLong - 1], groupSizePerSolver[solverClose - 1], 1, holesPerArchitecture)
+        console.log(response)
+
+        return {shots: response[1], cost: response[5]};
     } catch (error) {
         // generate random value to not break deployed
         console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
@@ -91,18 +60,10 @@ export const runLP = async(solverLong: Solver, solverClose: Solver) => {
 // one solver putts on the green.
 export const runDAP = async(solverDrive: Solver, solverFairway: Solver, solverPutt: Solver) => {
     try {
-        const response = await simulationPostRequest('dap_arch', JSON.stringify({
-            HoleLength: 700,
-            Expertise_D: solverDrive,
-            Expertise_F: solverFairway,
-            Expertise_P: solverPutt,
-            TournamentSize_D: groupSizePerSolver[solverDrive - 1],
-            TournamentSize_F: groupSizePerSolver[solverFairway - 1],
-            TournamentSize_P: groupSizePerSolver[solverPutt - 1],
-            Holes: holesPerArchitecture,
-            runs: 1
-        }));
-        return {shots: response[0][0], cost: response[4][0]};
+        const response = DAP_Arch(700, solverDrive, solverFairway, solverPutt, groupSizePerSolver[solverDrive - 1], groupSizePerSolver[solverFairway - 1], groupSizePerSolver[solverPutt - 1], holesPerArchitecture);
+        console.log(response)
+
+        return {shots: response[1], cost: response[5]};
     } catch (error) {
         // generate random value to not break deployed
         console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
@@ -113,16 +74,12 @@ export const runDAP = async(solverDrive: Solver, solverFairway: Solver, solverPu
 // run ds_arch simulation where one solver drives (hitting it only once) and another solver handles the rest
 export const runDS = async(solverDrive: Solver, solverShort: Solver) => {
     try {
-        const response = await simulationPostRequest('ds_arch', JSON.stringify({
-            HoleLength: 700,
-            Expertise_D: solverDrive,
-            Expertise_S: solverShort,
-            TournamentSize_D: groupSizePerSolver[solverDrive - 1],
-            TournamentSize_S: groupSizePerSolver[solverShort - 1],
-            Holes: 5,
-            runs: 1
-        }));
-        return {shots: response[0][0], cost: response[4][0]};
+        const response = DS_Arch (700, solverDrive, solverShort, groupSizePerSolver[solverDrive-1],groupSizePerSolver[solverShort - 1], 5)  
+        console.log(response)  
+
+        // change access to response
+        return {shots: response[1], cost: response[5]};
+
     } catch (error) {
         // generate random value to not break deployed
         console.error("UNABLE TO HIT R SIMULATION, MAKING UP RANDOM VALUES")
@@ -137,13 +94,9 @@ export const runDS = async(solverDrive: Solver, solverShort: Solver) => {
 // run playDrive module giving players back the number of strokes and the remaining distance to the hole
 export const runPlayDrive = async(solver: Solver) => {
     try {
-        const response = await simulationPostRequest('playDrive', JSON.stringify({
-            HoleDist: 700,
-            Expertise: solver,
-            N: groupSizePerSolver[solver - 1],
-            rule: 1,
-            strategy: 1
-        }));
+        const response = PlayDrive(700, solver, groupSizePerSolver[solver - 1], 1, 1);
+        console.log(response)
+
         // Save distance traveled to two decimal places
         return {shots: response[response.length - 2], distance: Math.floor((700 - response[response.length - 1]) * 100) / 100};
     } catch (error) {
@@ -156,12 +109,9 @@ export const runPlayDrive = async(solver: Solver) => {
 // run playLong module giving players back the number of strokes and the remaining distance to the hole
 export const runPlayLong = async(solver: Solver) => {
     try {
-        const response = await simulationPostRequest('playLong', JSON.stringify({
-            BallNow: 700,
-            Expertise: solver,
-            N: groupSizePerSolver[solver - 1],
-            rule: 2,
-        }));
+        const response = PlayLong(700, solver, groupSizePerSolver[solver - 1], 2);
+        console.log(response)
+
         return {shots: response[response.length - 2], distance: Math.floor((700 - response[response.length - 1]) * 100) / 100};
     } catch (error) {
         // generate random value to not break deployed
@@ -173,13 +123,9 @@ export const runPlayLong = async(solver: Solver) => {
 // run playFairway module giving players back the number of strokes and the remaining distance to the hole
 export const runPlayFairway = async(solver: Solver) => {
     try {
-        const response = await simulationPostRequest('playFairway', JSON.stringify({
-            BallNow: 450,
-            Expertise: solver,
-            N: groupSizePerSolver[solver - 1],
-            rule: 2,
-            strategy: 0
-        }));
+        const response = PlayFairway(450, solver, groupSizePerSolver[solver - 1], 2, 0);
+        console.log(response)
+
         return {shots: response[response.length - 2], distance: Math.floor((450 - response[response.length - 1]) * 100) / 100};
     } catch (error) {
         // generate random value to not break deployed
@@ -191,12 +137,9 @@ export const runPlayFairway = async(solver: Solver) => {
 // run playShort module giving players back the number of strokes. Will end with ball in hole.
 export const runPlayShort = async(solver: Solver) => {
     try {
-        const response = await simulationPostRequest('playShort', JSON.stringify({
-            BallNow: 100,
-            Expertise: solver,
-            N: groupSizePerSolver[solver - 1],
-            size: 0.5
-        }));
+        const response = PlayShort(450, solver, groupSizePerSolver[solver - 1], 0.5);
+        console.log(response)
+
         return {shots: response[response.length - 2], distance: 450};
     } catch (error) {
         // generate random value to not break deployed
@@ -208,12 +151,9 @@ export const runPlayShort = async(solver: Solver) => {
 // run playPutt module giving players back the number of strokes. Will end with ball in hole.
 export const runPlayPutt = async(solver: Solver) => {
     try {
-        const response = await simulationPostRequest('playPutt', JSON.stringify({
-            BallNow: 15,
-            Expertise: solver,
-            N: groupSizePerSolver[solver - 1],
-            size: 0.5
-        }));
+        const response = PlayPutt(15, solver, groupSizePerSolver[solver - 1], 0.5);
+        console.log(response)
+        
         return {shots: response[response.length - 2], distance: 15};
     } catch (error) {
         // generate random value to not break deployed
