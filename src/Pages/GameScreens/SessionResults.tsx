@@ -21,14 +21,17 @@ import { RoundNames, clearObjectFromStorage, getObjectFromStorage } from '../../
 import VerificationModal from '../../ReusableComponents/VerificationModal';
 // import { advanceSession } from '../../Utils/Api';
 import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
-import { postRequest } from '../../Utils/Api';
+import { advanceSession, postRequest } from '../../Utils/Api';
 
 // SessionResults
 // Only show for tournament stage results (not professional only or h_arch)
-const SessionResults = (props: { players: FinalResult[] }) => {
+const SessionResults = (props: { 
+    players: FinalResult[],
+    sessionEnded: boolean,
+}) => {
 
     const { playerId, sessionId, setPlayerColor, setPlayerId, setSessionId, isHost } = useContext(UserContext) as UserContextType;
-    
+
     // make user play dice onboarding game before they can join the session
     const [finishedDiceGame, setFinishedDiceGame] = useState(false);
 
@@ -42,18 +45,8 @@ const SessionResults = (props: { players: FinalResult[] }) => {
         }
     }, [playerId, sessionId])
 
-    useEffect(() => {
-        if (isHost) {
-            try {
-                postRequest("session/end", JSON.stringify({ sessionId }));
-            } catch (error) {
-                console.error("Error ending session: ", error);
-            }
-        }
-    }, [sessionId, isHost])
-
     const [showVerificationModal, setShowVerificationModal] = useState(false);
-    // const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false) 
+    const [hostClickedButton, setHostClickedButton] = useState<Boolean>(false) 
     const [leaveTo, setLeaveTo] = useState('/');
     const navigate = useNavigate();
 
@@ -119,7 +112,7 @@ const SessionResults = (props: { players: FinalResult[] }) => {
                         weight: "bold" as any,
                         size: 14,
                     }
-                },  
+                },
                 ticks: {
                     font: {
                         size: 14,
@@ -136,7 +129,7 @@ const SessionResults = (props: { players: FinalResult[] }) => {
                         weight: "bold" as any,
                         size: 14,
                     }
-                },  
+                },
                 ticks: {
                     font: {
                         size: 14,
@@ -381,30 +374,78 @@ const SessionResults = (props: { players: FinalResult[] }) => {
                         <div className='Instructions'>
                             <h1>Tournament Results </h1>
                             <h2>{getPlacement()}</h2>
+                            {
+                                props.sessionEnded ?
+                                <p>Host has concluded this session, feel free to navigate away from this page. Use the buttons below to view the aggregate results page or home page</p>
+                                :
+                                <p>Host has not yet ended the session, please do not close this tab or leave this page yet.</p>
+                            }
                             <div className='EndTournamentButtons'>
-                                <Button onClick={() => {
-                                    setLeaveTo('/');
-                                    setShowVerificationModal(true);
-                                }}>Return Home</Button>
-                                <Button onClick={() => {
-                                    setLeaveTo('/results');
-                                    setShowVerificationModal(true);
-                                }}>View Historical Results</Button>
+                                {
+                                    props.sessionEnded &&
+                                    <Button onClick={() => {
+                                        setLeaveTo('/');
+                                        setShowVerificationModal(true);
+                                    }}>Return Home</Button>
+                                }
+                                {
+                                    props.sessionEnded &&
+                                    <Button onClick={() => {
+                                        setLeaveTo('/results');
+                                        setShowVerificationModal(true);
+                                    }}>View Historical Results</Button>
+                                }
                                 <Button onClick={() => handlePrint(null, () => contentToPrint.current)}>Save Results</Button>
                                 <Button onClick={() => saveGraphs()}>Save Graphs</Button>
                             </div>
                         </div>
+
+                        {
+                            isHost &&
+                            <div className='Instructions'>
+                                <h1>Begin Mechanical Arm Mission Game?</h1>
+                                <p>
+                                    As host you now have the option to take all players in the session to the mechanical arm mission game.
+                                    Click Play Mission when you are done viewing the results of the golf tournament to start the game. Alternatively click
+                                    End Session to end the session for all players leaving them on this screen and allowing them to navigate to the
+                                    historical results page and back to the home page at will.
+                                </p>
+                                <div className="EndTournamentButtons">
+                                    <Button
+                                        disabled={!!hostClickedButton || props.sessionEnded}
+                                        onClick={(() => {
+                                            advanceSession(sessionId, setHostClickedButton)
+                                        })}
+                                    >
+                                        Play Mission
+                                    </Button>
+                                    <Button
+                                        danger
+                                        disabled={!!hostClickedButton || props.sessionEnded}
+                                        onClick={(() => {
+                                            try {
+                                                postRequest("session/end", JSON.stringify({ sessionId }));
+                                            } catch (error) {
+                                                console.error("Error ending session: ", error);
+                                            }
+                                        })}
+                                    >
+                                        End Session
+                                    </Button>
+                                </div>
+                            </div>
+                        }
 
                         <br></br>
 
                         <div className='ResultTable'>
                             <Table
                                 pagination={isPrinting ? { pageSize: props.players.length, position: ['none', 'none'] } :
-                                { 
-                                    position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"],
-                                    showSizeChanger: true,
-                                    defaultPageSize: 10,
-                                }}
+                                    {
+                                        position: ['none', props.players.length > 10 ? 'bottomCenter' : "none"],
+                                        showSizeChanger: true,
+                                        defaultPageSize: 10,
+                                    }}
                                 columns={tableColumns}
                                 dataSource={tableData}
                                 rowKey={(record) => record.key}
@@ -427,29 +468,8 @@ const SessionResults = (props: { players: FinalResult[] }) => {
                             !isPrinting &&
                             <Scatter className='ScatterCanvas' options={scoreRoundOptions} data={scoreRoundData} />
                         }
-                        <br></br>
 
                         <br></br>
-                        <br></br>
-                        <br></br>
-
-                        {/* <div className='Instructions'>
-                    <h1>Play Mechanical Arm Mission</h1>
-                    <p>--- still under development ---</p>
-                    {
-                        isHost ?
-                        <Button
-                            disabled={!!hostClickedButton}
-                            onClick={(() => {
-                                advanceSession(sessionId, setHostClickedButton)
-                            })}
-                        >
-                            Play Mission
-                        </Button>
-                        :
-                        <p>Host must begin the game</p>
-                    }
-            </div> */}
 
                         <FullScreenConfetti />
 

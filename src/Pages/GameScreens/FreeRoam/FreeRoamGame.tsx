@@ -69,9 +69,8 @@ const FreeRoamGame = (props: {
             setLatestDistance(result.distance);
             setLoading(false);
             props.setAllResults([...props.allResults, { shots: result.shots, distance: result.distance, solver: selectedSolver, module: selectedModule }]);
-            // For now do not save free roam results to database only for all 
-            // only save it for those in tournaments
             if (playerId) {
+                // save free roam result to database
                 saveFreeRoamResult(result.shots, result.distance);
             }
             // saveFreeRoamResult(result.shots, result.distance);

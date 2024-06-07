@@ -215,7 +215,6 @@ const ArmResultTable = (props: {
                     message={modalMessage}
                 />
             }
-
         </div>
     )
 }

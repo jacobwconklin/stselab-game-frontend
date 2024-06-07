@@ -1,6 +1,11 @@
 This can outline the major TODOs so they can be ordered 
 
 
+In order for mechanical arm mission game to be toggleable (and golf game), need to add a field to session to record what games will be played so all players will know. Actually, don't NEED to because host can just push round number to be the mechanical arm round numbers as long as host knows, so that should be easier... May want a variation of the final golf results that doesn't have return home and see aggregate results buttons so that no one leaves the session WHEN going to a mechanical arm game, this could be done by having another round number for if it really is the end of the session or not. Then the component could be copied and those buttons removed. (and move all mechanical arm round numbers up by one)  advanceSession method can handle all of this logic ideally. 
+
+Also big TODO: Save user choices with timestamps and foreign key to players in exploration round.
+
+
 Could Maybe limit the # of times player can "simulate all" on experiemental page
 
 # 1 c: potentially establish system with professor where db and backend stay OFF until he turns them off (IE other professors wanting to use the tool simply contact him first and he turns them on at that time? This would suggest using stateless backend (may overcomplicate)) REALLY would just require hitting "STOP" on stselab-games-backend and that is all. Looks like backend CAN'T be serverless, so this would only help to prevent db from costing anything... ? May not be worthwhile.

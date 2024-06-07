@@ -22,9 +22,9 @@ import { postRequest } from "../../Utils/Api";
 import DiceSelectGame from "../DiceSelectGame/DiceSelectGame";
 
 
-const ArmFinalResults = (props: {
-    results: ArmFinalResult[];
-}) => {
+const ArmFinalResults = () => {
+
+    const [results, setResults] = useState<ArmFinalResult[]>([]);
 
     const [showVerificationModal, setShowVerificationModal] = useState(false);
     const [leaveTo, setLeaveTo] = useState('/');
@@ -37,17 +37,35 @@ const ArmFinalResults = (props: {
         navigate(leaveTo);
     }
 
-    const { playerId, sessionId } = useContext(UserContext) as UserContextType;
+    const { isHost, playerId, sessionId } = useContext(UserContext) as UserContextType;
+
+    // TODO add useEffect to check if player has already done offboarding for the dice game
 
     // call "session/end" endpoint to end the session since the final results page has been reached,
     // this will allow players to stop querying the server and store the time that the session ended.
+    // For now I am giving it a few seconds so that the host themselves 
     useEffect(() => {
-        try {
-            postRequest("session/end", JSON.stringify({ sessionId }));
-        } catch (error) {
-            console.error("Error ending session: ", error);
+        const getResults = async () => {
+            try {
+                // Pull final results here for Mechanical Arm game
+                const resultsResponse = await postRequest('/session/armfinalresults', JSON.stringify({
+                    sessionId
+                }));
+                if (resultsResponse.success) {
+                    setResults(resultsResponse.results);
+                }
+                else {
+                    console.error(`Error fetching results for final Mechical Arm Round received: `, resultsResponse);
+                }
+                if (isHost) {
+                    postRequest("session/end", JSON.stringify({ sessionId }));
+                }
+            } catch (error) {
+                console.error("Error ending session: ", error);
+            }
         }
-    }, [sessionId])
+        getResults();
+    }, [isHost, sessionId])
 
     const sumWeights = (scores: ArmScore[]) => {
         let total = 0;
@@ -115,7 +133,7 @@ const ArmFinalResults = (props: {
     };
 
     const shotsCostData = {
-        datasets: props?.results?.map((result: ArmFinalResult) => {
+        datasets: results?.map((result: ArmFinalResult) => {
             return {
                 label: result.name,
                 data: result.scores.map((round: ArmScore) => {
@@ -170,7 +188,7 @@ const ArmFinalResults = (props: {
     };
 
     const scoreRoundData = {
-        datasets: props?.results?.map((result: ArmFinalResult) => {
+        datasets: results?.map((result: ArmFinalResult) => {
             return {
                 label: result.name,
                 data: result.scores.map((round: ArmScore) => {
@@ -257,7 +275,7 @@ const ArmFinalResults = (props: {
         },
     ];
 
-    const tableData: any[] = props?.results?.map((player: ArmFinalResult, index: number) => (
+    const tableData: any[] = results?.map((player: ArmFinalResult, index: number) => (
         {
             key: player.id,
             name: player.name,
@@ -269,7 +287,7 @@ const ArmFinalResults = (props: {
     ));
 
     const getPlacement = () => {
-        let sortedPlayers = props.results.sort((a: ArmFinalResult, b: ArmFinalResult) => {
+        let sortedPlayers = results.sort((a: ArmFinalResult, b: ArmFinalResult) => {
             return sumScore(b.scores) - sumScore(a.scores);
         });
 
@@ -341,12 +359,12 @@ const ArmFinalResults = (props: {
 
                         <div className='ResultTable'>
                             <Table
-                                pagination={isPrinting ? { pageSize: props.results.length, position: ['none', 'none'] } :
-                                { 
-                                    position: ['none', props.results.length > 10 ? 'bottomCenter' : "none"],
-                                    showSizeChanger: true,
-                                    defaultPageSize: 10,
-                                }}
+                                pagination={isPrinting ? { pageSize: results.length, position: ['none', 'none'] } :
+                                    {
+                                        position: ['none', results.length > 10 ? 'bottomCenter' : "none"],
+                                        showSizeChanger: true,
+                                        defaultPageSize: 10,
+                                    }}
                                 columns={tableColumns}
                                 dataSource={tableData}
                                 rowKey={(record) => record.key ? record.key : record.score}

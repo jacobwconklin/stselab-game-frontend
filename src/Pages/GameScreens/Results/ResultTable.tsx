@@ -106,7 +106,6 @@ const ResultTable = (props: { players: Array<RoundResult>, round: number }) => {
             key: 'solvers',
             dataIndex: 'solvers',
             render: (solvers: [Solver]) => {
-                console.log(solvers);
                 return (
                 solvers.length > 0 ?
                     <div className="SolversHolder">

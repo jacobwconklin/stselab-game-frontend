@@ -38,12 +38,12 @@ export const advanceSession = async (sessionId: number | null, setAdvancingTourn
         setAdvancingTournament(true);
         const response = await postRequest("session/advance", JSON.stringify({ sessionId }));
         if (!response.success) {
-            setAdvancingTournament(false);
             alert("Error beginning tournament, please try again.");
             console.error(response);
         }
     } catch (error) {
-        setAdvancingTournament(false);
         console.error(error);
+    } finally {
+        setAdvancingTournament(false);
     }
 }

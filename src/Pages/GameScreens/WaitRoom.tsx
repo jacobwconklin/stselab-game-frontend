@@ -15,7 +15,6 @@ import { clearObjectFromStorage, getObjectFromStorage } from '../../Utils/Utils'
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
 // can invite players to join their session.
 const WaitRoom = (props: { 
-    setJumpToMechanicalArmMission: (val: boolean) => void,
     onboardingCompleted: () => void
 }) => {
 
@@ -89,6 +88,7 @@ const WaitRoom = (props: {
     const [playerIdToRemove, setPlayerIdToRemove] = useState('');
     const [removeModalTitle, setRemoveModalTitle] = useState('Are you sure?');
     const [removeModalMessage, setRemoveModalMessage] = useState('Action cannot be undone');
+    const [showJumpToMechanicalArmMission, setShowJumpToMechanicalArmMission] = useState(false);
 
     const cancelRemoveModal = () => {
         setShowRemoveModal(false);
@@ -206,16 +206,12 @@ const WaitRoom = (props: {
                                         Begin STSELab Golf
                                     </Button>
                                     <br></br>
-                                    {/* <Button
+                                    <Button
                                         disabled={!!beginningTournament}
-                                        onClick={() => {
-                                            props.setJumpToMechanicalArmMission(true);
-                                            advanceSession(sessionId, setBeginningTournament)
-                                        }
-                                        }
+                                        onClick={() => {setShowJumpToMechanicalArmMission(true)}}
                                     >
-                                        Jump To Mechanical Arm Mission
-                                    </Button> */}
+                                        Skip Golf and Jump To Mechanical Arm Mission
+                                    </Button>
                                 </div>
                                 :
                                 <div className='Instructions'>
@@ -326,6 +322,21 @@ const WaitRoom = (props: {
                                 confirm={() => advanceSession(sessionId, setBeginningTournament)}
                                 title={"Ready to Begin the Game?"}
                                 message={"Are you sure you want to begin the game? Players will still be able to join using the join code at in the header at the top of your screen. However, they will jump to where you are in the game after completing the onboarding dice game."}
+                            />
+                        }
+                        {
+                            showJumpToMechanicalArmMission &&
+                            <VerificationModal
+                                cancel={() => setShowJumpToMechanicalArmMission(false)}
+                                confirm={ async () => {
+                                    const response = await postRequest("session/jumptoarmmission", JSON.stringify({ sessionId }));
+                                    if (!response.success) {
+                                        alert("Error  jumping to mechanical arm game, please try again.");
+                                        console.error(response);
+                                    }
+                                }}
+                                title={"Begin the Mechanical Arm Mission Game?"}
+                                message={"This will skip the Golf Simulation game. Alternatively you can play the Golf Simulation first and the Mechanical Arm Mission game will be available at the end. Are you sure you want to begin the game? Players will still be able to join using the join code at in the header at the top of your screen. However, they will jump to where you are in the game after completing the onboarding dice game."}
                             />
                         }
                     </div>

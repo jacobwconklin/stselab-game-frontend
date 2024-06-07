@@ -24,9 +24,6 @@ import { Spin } from 'antd';
 // TODO may switch to web-socket connection with https://www.npmjs.com/package/react-use-websocket
 const GameController = () => {
 
-    // Developer tool! flip this bool to jump straight to mechaical arm game from wait room
-    const [jumpToMechanicalArm, setJumpToMechanicalArmMission] = useState<Boolean>(false);
-
     // use to make sure user is in a valid session
     const [inValidSession, setInValidSession] = useState(true);
 
@@ -49,6 +46,9 @@ const GameController = () => {
 
     // force player to complete onboarding even if they enter a game late
     const [completedOnboarding, setCompletedOnboarding] = useState(false);
+
+    // simply lets players see the return home and view historical results buttons from the session results page if host says the golf game session is over
+    const [sessionEnded, setSessionEnded] = useState(false);
 
     useEffect(() => {
         // Pull all session information from the server, which checks the database, which is the Single Source of Truth.
@@ -110,31 +110,18 @@ const GameController = () => {
                         // TODO may need to attempt to exit player from session they are in then redirect them home?
                         alert("Error getting session: " + response.error);
                     } else if (response?.session?.endDate) {
-                        // on receiving a session with an end date we know we are on the final results page of Mechanical Arm Mission and 
-                        // no longer need to poll the BE for updates to round number)
-                        setCurrRound(RoundNames.FinalResults);
+                        // on receiving a session with an end date we know we are on the final results page of Mechanical Arm Mission 
+                        // or the host has ended the session and we no longer need to poll the BE for updates to round number)
                         // pull results once then clear interval
-                        const resultsResponse = await postRequest('/session/finalresults', JSON.stringify({
-                            sessionId
-                        }));
-                        if (resultsResponse.success) {
-                            // Only update state if the length of results changed (new player info came)
-                            setFinalResults(resultsResponse.results);
-                        }
-                        else {
-                            console.error(`Error fetching results for final round received: `, resultsResponse);
-                        }
+                        // make sure round number is also updated
+                        setCurrRound(response?.session?.round);
+                        setSessionEnded(true);
                         clearInterval(interval);
                     } else {
                         // if we changed rounds reset currentResults
                         if (currRound !== response?.session?.round) {
                             setCurrentResults([]);
-                            // Allows jumping to mechanical arm game, remove in prod
-                            if (jumpToMechanicalArm) {
-                                setCurrRound(RoundNames.ArmExperiment + response?.session?.round - 1);
-                            } else {
-                                setCurrRound(response?.session?.round);
-                            }
+                            setCurrRound(response?.session?.round);
                         }
                     }
                     // Rounds where OTHER player results want to be seen will pull round results and include:
@@ -175,18 +162,7 @@ const GameController = () => {
                         else {
                             console.error(`Error fetching results for round${currRound} received: `, resultsResponse);
                         }
-                    } else if (currRound === RoundNames.ArmFinalResults && finalArmResults.length === 0) {
-                        // Pull final results here for Mechanical Arm game
-                        const resultsResponse = await postRequest('/session/armfinalresults', JSON.stringify({
-                            sessionId
-                        }));
-                        if (resultsResponse.success) {
-                            setFinalArmResults(resultsResponse.results);
-                        }
-                        else {
-                            console.error(`Error fetching results for final Mechical Arm Round received: `, resultsResponse);
-                        }
-                    }
+                    } 
                 }
             } catch (error) {
                 console.error("Error fetching session status: ", error);
@@ -197,18 +173,7 @@ const GameController = () => {
         return () => {
             clearInterval(interval);
         }
-    }, [sessionId, playerId, setCurrentResults, setFinalResults, currentResults.length, finalResults.length, finishedRound, jumpToMechanicalArm, currRound, finalArmResults.length, setSessionId, setPlayerId, setPlayerColor, setIsHost]);
-
-
-    // useBeforeUnload(
-    //     React.useCallback(() => {
-    //         // removes player if they navigate away from game
-    //         if (playerId) postRequest("player/remove", JSON.stringify({ playerId }));
-    //         // TODO SPECIFICALLY if host leaves, could "end" the session for everyone (or try to assign new host). 
-    //         // For now they just have to leave themselves
-    //         // as they get stuck without a host. 
-    //     }, [playerId])
-    // );
+    }, [sessionId, playerId, setCurrentResults, setFinalResults, currentResults.length, finalResults.length, finishedRound, currRound, finalArmResults.length, setSessionId, setPlayerId, setPlayerColor, setIsHost]);
 
     // Rounds allow the host to move the game forward and change the screen displayed for all players.
     // Rounds will work like this: 
@@ -223,6 +188,11 @@ const GameController = () => {
     // Ninth: round 8 -> Play Tournament Stage 3 (balance)
     // Tenth: round 9 -> Play Tournament Stage 4 (custom reward function)
     // Eleventh: round 10 -> Show final Tournament Results
+    // Twelfth: round 11 -> Mechanical Arm Round 1
+    // Thirteenth: round 12 -> Mechanical Arm Round 2
+    // Fourteenth: round 13 -> Mechanical Arm Round 3
+    // Fifteenth: round 14 -> Mechanical Arm Round 4
+    // Sixteenth: round 15 -> Mechanical Arm Final Results TODO include dice game offboarding here if ONLY mech arm mission is played
 
     // Rounds where OTHER player results want to be seen will pull round results and include:
     // 1, 3, 6, 7, 8, 9, 10
@@ -250,7 +220,6 @@ const GameController = () => {
         return (
             <div className='GameController'>
                 <WaitRoom 
-                    setJumpToMechanicalArmMission={setJumpToMechanicalArmMission} 
                     onboardingCompleted={() => setCompletedOnboarding(true)} 
                 />
             </div>
@@ -284,7 +253,7 @@ const GameController = () => {
     else if (currRound === RoundNames.FinalResults) {
         return (
             <div className='GameController'>
-                <SessionResults players={finalResults} />
+                <SessionResults players={finalResults} sessionEnded={sessionEnded} />
             </div>
         )
     } else if (currRound === RoundNames.ArmExperiment) {
@@ -317,7 +286,7 @@ const GameController = () => {
     } else {
         return (
             <div className='GameController'>
-                <ArmFinalResults results={finalArmResults} />
+                <ArmFinalResults />
             </div>
         )
     }
