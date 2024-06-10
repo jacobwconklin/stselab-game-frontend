@@ -169,9 +169,9 @@ const DiceSelectGame = (props: {
                 <p>
                     {
                         props.isOnboarding ?
-                            "Play the Dice Game to join your session! You have 8 credits to spend by selecting die to roll. Your goal is for the sum of all die you roll to be at least 12. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
+                            "Play the Dice Game to join your session! You have " + credits + " credits to spend by selecting die to roll. Your goal is for the sum of all die you roll to be at least " + totalToReach + ". You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
                             :
-                            "Play the Dice Game to view your final results! You now have 10 credits to spend by selecting die to roll. Your new goal is for the sum of all die you roll to be at least 20. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
+                            `Play the Dice Game to view your final results! You now have ${credits} credits to spend by selecting die to roll. Your new goal is for the sum of all die you roll to be at least ${totalToReach}. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection.`
                     }
                 </p>
                 <div className='SelectedDie'>
