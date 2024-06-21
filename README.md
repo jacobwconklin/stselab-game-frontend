@@ -21,6 +21,8 @@ npm run build
 
 4) Then navigate into site, and then wwwroot, and then drag and drop the zip file onto the screen where the message, unzip appears.
 
+5) Push all changes to github so that the github code will match the deployed code. Can use VS code or terminal commands.
+
 Viola. Visit the deployed url to see the changes (May take a few minutes and you may have the old version cached, hold shift and click refresh to do a hard refresh)
 
 # Running project locally:
