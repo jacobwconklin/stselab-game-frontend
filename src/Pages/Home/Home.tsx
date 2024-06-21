@@ -81,7 +81,7 @@ const Home = () => {
                         </p>
                         <h3>Mechanical Arm Mission:</h3>
                         <p>
-                            Coming Soon ...
+                            Play as agents designing a Mechanical Arm for NASA for the ISS. Currently a work in progress ...
                         </p>
                     </div>
                 </div>
