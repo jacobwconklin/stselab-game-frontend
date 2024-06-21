@@ -1,16 +1,14 @@
 import './ArmGameScreen.scss';
 import { Button, Slider, Tooltip } from "antd";
-import computerScientistIcon from '../../Assets/MechArm/laptop-woman.svg';
-import industrialSystemsEngineerIcon from '../../Assets/MechArm/web-developer.svg';
-import mechanicalEngineerIcon from '../../Assets/MechArm/construction-worker.svg';
-import materialsScientistIcon from '../../Assets/MechArm/chemist.svg';
 import FactoryBackground from '../../ReusableComponents/FactoryBackground';
-import { ArmSolver, armArchitectures, armSolverImages, armSolverNames, runArmArchitectureSimulation } from '../../Utils/ArmSimulation';
+import { ArmSolver, armArchitectures, armSolverImages, runArmArchitectureSimulation } from '../../Utils/ArmSimulation';
 import { useContext, useState } from 'react';
 import { RoundNames, getDisplayRound } from '../../Utils/Utils';
 import { UserContextType } from '../../Utils/Types';
 import { UserContext } from '../../App';
 import { postRequest } from '../../Utils/Api';
+import ArmSolverCards from './ArmSolverCards/ArmSolverCards';
+import rightChevron from '../../Assets/chevron-right.svg';
 // The screen shown while playing the Mechanical Arm game
 const ArmGameScreen = (props: {
     setFinishedRound: (val: Array<Boolean>) => void,
@@ -163,9 +161,9 @@ const ArmGameScreen = (props: {
                         </Button>
                     </h1>
                     {
-                        selectedSolvers.map((solver, index) => (
-                            <img className='HeaderSolverIcon' src={armSolverImages[solver - 1]} alt='Solver Icon' key={index} />
-                        ))
+                        // selectedSolvers.map((solver, index) => (
+                        //     <img className='HeaderSolverIcon' src={armSolverImages[solver - 1]} alt='Solver Icon' key={index} />
+                        // ))
                     }
                 </div>
                 <h2>
@@ -192,7 +190,7 @@ const ArmGameScreen = (props: {
                 {/** Horizontal layout */}
                 <div className='HorizontalSections'>
                     <div className='Architectures'>
-                        <h3>Choose One Architecture</h3>
+                        <h3>Choose One Decomposition</h3>
                         {
                             // TODO add tooltip w/ descriptions
                             armArchitectures.map((architecture, index) => (
@@ -210,7 +208,7 @@ const ArmGameScreen = (props: {
                     </div>
 
                     <div className='Components'>
-                        <h3>Select Components</h3>
+                        <h3>Select Subproblems</h3>
                         {
                             selectedArchitecture &&
                             armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
@@ -230,27 +228,30 @@ const ArmGameScreen = (props: {
                     <div className='SolverSelection'>
                         <h3>Select Solvers Below</h3>
                         {
-                            // selectedArchitecture && 
-                            // armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
-                            //     <p
-                            //         className='SelectedSolverNames'
-                            //     >
-                            //         {
-                            //             selectedSolvers[index] ? 
-                            //             armSolverNames[selectedSolvers[index] - 1]
-                            //             : 
-                            //             " "
-                            //         }
+                            // we are going to show icons for all of the subproblems, and icons for the selected solvers
+                            selectedArchitecture &&
+                            armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.map((component, index) => (
+                                <div className='ComponentAndSolver' style={{border: component.component === selectedComponent ? '1px solid blue' : '1px solid transparent'}}>
+                                    <img className='ComponentIcon' src={component.image} alt='Component Icon' />
+                                    <img src={rightChevron} className='Chevron' alt='Right Arrow' />
+                                    {
+                                        selectedSolvers[index] ?
+                                            <img className='SolverIcon' src={armSolverImages[selectedSolvers[index] - 1]} alt='Solver Icon' />
+                                            :
+                                            <div className='SolverIconPlaceholder' />
+                                    }
+                                </div>
+                            ))
+
+
+                            // currSelectedSolver &&
+                            // <>
+                            //     <p>
+                            //         You selected {armSolverNames[currSelectedSolver - 1]}
+                            //         {selectedComponent && ` to build the ${selectedComponent}`}
                             //     </p>
-                            // ))
-                            currSelectedSolver &&
-                            <>
-                                <p>
-                                    You selected {armSolverNames[currSelectedSolver - 1]}
-                                    {selectedComponent && ` to build the ${selectedComponent}`}
-                                </p>
-                                <img className='SelectedSolverImage' src={armSolverImages[currSelectedSolver - 1]} alt='Solver Selected to build component' />
-                            </>
+                            //     <img className='SelectedSolverImage' src={armSolverImages[currSelectedSolver - 1]} alt='Solver Selected to build component' />
+                            // </>
                         }
                     </div>
                 </div>
@@ -267,58 +268,12 @@ const ArmGameScreen = (props: {
                 </div>
             </div>
 
-            <div className='SolverCards'>
-                <div className='SolverCard'>
-                    <h2>Mechanical Engineer</h2>
-                    <img className='SolverImage' src={mechanicalEngineerIcon} alt='Mechanical Engineer' />
-                    <p>High voltage hero.</p>
-                    <Button
-                        onClick={() => selectNewSolver(ArmSolver.MechanicalEngineer)}
-                        disabled={!selectedArchitecture || !selectedComponent}
-                        type={currSelectedSolver === ArmSolver.MechanicalEngineer ? "primary" : "default"}
-                    >
-                        Select
-                    </Button>
-                </div>
-                <div className='SolverCard'>
-                    <h2>Materials Scientist</h2>
-                    <img className='SolverImage' src={materialsScientistIcon} alt='Materials Scientist' />
-                    <p>The stuff that matters.</p>
-                    <Button
-                        onClick={() => selectNewSolver(ArmSolver.MaterialsScientist)}
-                        disabled={!selectedArchitecture || !selectedComponent}
-                        type={currSelectedSolver === ArmSolver.MaterialsScientist ? "primary" : "default"}
-                    >
-                        Select
-                    </Button>
-                </div>
+            <ArmSolverCards 
+                selectSolver={(solver) => {
+                    if (selectedArchitecture && selectedComponent) selectNewSolver(solver)
+                    }}
+            />
 
-                <div className='SolverCard'>
-                    <h2>Computer Scientist</h2>
-                    <img className='SolverImage' src={computerScientistIcon} alt='Computer Scientist' />
-                    <p>Virtually an engineer.</p>
-                    <Button
-                        onClick={() => selectNewSolver(ArmSolver.ComputerScientist)}
-                        disabled={!selectedArchitecture || !selectedComponent}
-                        type={currSelectedSolver === ArmSolver.ComputerScientist ? "primary" : "default"}
-                    >
-                        Select
-                    </Button>
-                </div>
-
-                <div className='SolverCard'>
-                    <h2>Industrial Systems Engineer</h2>
-                    <img className='SolverImage' src={industrialSystemsEngineerIcon} alt='Industrial Systems Engineer' />
-                    <p>Logistical legend.</p>
-                    <Button
-                        onClick={() => selectNewSolver(ArmSolver.IndustrialSystemsEngineer)}
-                        disabled={!selectedArchitecture || !selectedComponent}
-                        type={currSelectedSolver === ArmSolver.IndustrialSystemsEngineer ? "primary" : "default"}
-                    >
-                        Select
-                    </Button>
-                </div>
-            </div>
             {
                 showMissionBeginModal &&
                 <div className='Modal'
@@ -327,7 +282,7 @@ const ArmGameScreen = (props: {
                     <div className='ModalBody'>
                         <h2>The Mission Has Begun!</h2>
                         <p>
-                            Here you will complete four rounds each with a unique objective. In each round you may select one architecture and any solver types you would like. Points are awarded for acheiving the objectives. The winner will be the agent with the most total points at the end of the mission.
+                            Here you will complete four rounds each with a unique objective. In each round you may select one decomposition and any solver types for each subproblem that you would like. Points are awarded out of 100 for each round for acheiving the objectives. The winner will be the agent with the most total points at the end of the mission.
                         </p>
                         <div className='ModalButtons'>
                             <Button onClick={() => setShowMissionBeginModal(false)}>Begin</Button>

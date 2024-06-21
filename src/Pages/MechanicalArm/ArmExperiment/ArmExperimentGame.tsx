@@ -3,15 +3,12 @@ import FactoryBackground from '../../../ReusableComponents/FactoryBackground';
 import TypedMessage from '../../../ReusableComponents/TypedMessage';
 import './ArmExperimentGame.scss';
 import { Button, Tooltip } from 'antd';
-import computerScientistIcon from '../../../Assets/MechArm/laptop-woman.svg';
-import industrialSystemsEngineerIcon from '../../../Assets/MechArm/web-developer.svg';
-import mechanicalEngineerIcon from '../../../Assets/MechArm/construction-worker.svg';
-import materialsScientistIcon from '../../../Assets/MechArm/chemist.svg';
 import { ArmSolver, armArchitectures, armSolverImages, armSolverNames } from '../../../Utils/ArmSimulation';
 import { UserContext } from '../../../App';
 import { UserContextType } from '../../../Utils/Types';
 import { advanceSession } from '../../../Utils/Api';
 import VerificationModal from '../../../ReusableComponents/VerificationModal';
+import ArmSolverCards from '../ArmSolverCards/ArmSolverCards';
 
 
 // Like free roam round of golf tournament, this allows players to try all breakdowns of the mechanical arm and all solvers
@@ -19,20 +16,25 @@ import VerificationModal from '../../../ReusableComponents/VerificationModal';
 const ArmExperimentGame = (props: {
     latestResult: string,
     runSimulation: (component: string, solver: ArmSolver) => void,
-    simulateAll: () => void,
+    // simulateAll: () => void,
     showResults: () => void,
     loading: boolean,
     showTypedMessage: boolean,
     setShowTypedMessage: (show: boolean) => void,
 }) => {
 
-    const {isHost, sessionId} = useContext(UserContext) as UserContextType;
+    const { isHost, sessionId } = useContext(UserContext) as UserContextType;
 
     const [selectedSolver, setSelectedSolver] = useState<ArmSolver | null>(null);
     const [selectedComponent, setSelectedComponent] = useState<string>("");
     const [selectedArchitecture, setSelectedArchitecture] = useState<string>("");
     const [hostClickedAdvanceSession, setHostClickedAdvanceSession] = useState<Boolean>(false);
     const [showVerificationModal, setShowVerificationModal] = useState(false);
+
+    const changeArchitecture = (architecture: string) => {
+        setSelectedArchitecture(architecture);
+        setSelectedComponent("");
+    };
 
     return (
         <div className="ArmExperimentGame">
@@ -52,12 +54,12 @@ const ArmExperimentGame = (props: {
                 {/** Horizontal layout */}
                 <div className='HorizontalSections'>
                     <div className='Architectures'>
-                        <h3>1. Pick An Architecture</h3>
+                        <h3>1. Pick A Decomposition</h3>
                         {
                             armArchitectures.map((architecture, index) => (
                                 <Tooltip title={architecture.description} key={index} placement='right'>
                                     <Button
-                                        onClick={() => setSelectedArchitecture(architecture.architecture)}
+                                        onClick={() => changeArchitecture(architecture.architecture)}
                                         type={selectedArchitecture === architecture.architecture ? "primary" : "default"}
                                     >
                                         {architecture.architecture}
@@ -68,7 +70,7 @@ const ArmExperimentGame = (props: {
                     </div>
 
                     <div className='Components'>
-                        <h3>2. Pick A Component</h3>
+                        <h3>2. Pick A Subproblem</h3>
                         {
                             selectedArchitecture &&
                             <>
@@ -91,13 +93,28 @@ const ArmExperimentGame = (props: {
                     <div className='SolverSelection'>
                         <h3>3. Pick A Solver Below</h3>
                         {
-                            selectedSolver &&
+                            selectedSolver ?
                             <>
                                 <p>
                                     You selected {armSolverNames[selectedSolver - 1]}
-                                    {selectedComponent && ` to build the ${selectedComponent}`}
                                 </p>
                                 <img className='SelectedSolverImage' src={armSolverImages[selectedSolver - 1]} alt='Solver Selected to build component' />
+                            </>
+                            :
+                            <>
+                                <p>
+                                    Click on a Solver Card Below
+                                </p>
+                            </>
+                        }
+                        {
+                            
+                            selectedComponent &&
+                            <>
+                                <p>
+                                    To build the {selectedComponent}
+                                </p>
+                                <img className='ComponentImage' src={armArchitectures.find(arch => arch.architecture === selectedArchitecture)?.components.find(comp => comp.component === selectedComponent)?.image} alt='Component to build' />
                             </>
                         }
                     </div>
@@ -112,12 +129,12 @@ const ArmExperimentGame = (props: {
                     >
                         Run Experiment
                     </Button>
-                    <Button
+                    {/* <Button
                         onClick={() => props.simulateAll()}
                         disabled={props?.loading}
                     >
                         Simulate All
-                    </Button>
+                    </Button> */}
                     <Button
                         onClick={() => props.showResults()}
                     >
@@ -141,54 +158,10 @@ const ArmExperimentGame = (props: {
                 }
             </div>
 
-            <div className='SolverCards'>
-                <div className='SolverCard'>
-                    <h2>Mechanical Engineer</h2>
-                    <img className='SolverImage' src={mechanicalEngineerIcon} alt='Mechanical Engineer' />
-                    <p>High voltage hero.</p>
-                    <Button
-                        onClick={() => setSelectedSolver(ArmSolver.MechanicalEngineer)}
-                        type={selectedSolver === ArmSolver.MechanicalEngineer ? "primary" : "default"}
-                    >
-                        Select
-                    </Button>
-                </div>
-                <div className='SolverCard'>
-                    <h2>Materials Scientist</h2>
-                    <img className='SolverImage' src={materialsScientistIcon} alt='Materials Scientist' />
-                    <p>The stuff that matters.</p>
-                    <Button
-                        onClick={() => setSelectedSolver(ArmSolver.MaterialsScientist)}
-                        type={selectedSolver === ArmSolver.MaterialsScientist ? "primary" : "default"}
-                    >
-                        Select
-                    </Button>
-                </div>
+            <ArmSolverCards 
+                selectSolver={(solver: ArmSolver) => setSelectedSolver(solver)}
+            />
 
-                <div className='SolverCard'>
-                    <h2>Computer Scientist</h2>
-                    <img className='SolverImage' src={computerScientistIcon} alt='Computer Scientist' />
-                    <p>Virtually an engineer.</p>
-                    <Button
-                        onClick={() => setSelectedSolver(ArmSolver.ComputerScientist)}
-                        type={selectedSolver === ArmSolver.ComputerScientist ? "primary" : "default"}
-                    >
-                        Select
-                    </Button>
-                </div>
-
-                <div className='SolverCard'>
-                    <h2>Industrial Systems Engineer</h2>
-                    <img className='SolverImage' src={industrialSystemsEngineerIcon} alt='Industrial Systems Engineer' />
-                    <p>Logistical legend.</p>
-                    <Button
-                        onClick={() => setSelectedSolver(ArmSolver.IndustrialSystemsEngineer)}
-                        type={selectedSolver === ArmSolver.IndustrialSystemsEngineer ? "primary" : "default"}
-                    >
-                        Select
-                    </Button>
-                </div>
-            </div>
             {
                 props.showTypedMessage &&
                 <TypedMessage type={"arm"} confirm={() => props.setShowTypedMessage(false)} />

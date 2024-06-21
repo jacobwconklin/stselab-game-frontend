@@ -7,6 +7,8 @@
 
     .Instructions {
 
+        min-width: 750px;
+
         .TitleAndIcons {
             display: flex;
             align-items: center;
@@ -20,9 +22,8 @@
             }
 
             .HeaderSolverIcon {
-                width: 100px;
-                height: 100px;
-                margin: 0px -10px 0px -10px;
+                width: 60px;
+                height: 60px;
             }
         }
 
@@ -37,7 +38,7 @@
             width: 100%;
             justify-content: space-between;
             padding-bottom: 30px;
-            text-align: left;
+            text-align: center;
 
             h1, p, h3 {
                 width: 100%;
@@ -81,9 +82,31 @@
 
             
                 .SelectedSolverImage {
-                    width: 150px;
-                    height: 150px;
-                    margin-top: -40px;
+                    width: 100px;
+                    height: 100px;
+                }
+
+                .ComponentAndSolver {
+                    border: 1px solid transparent;
+                    width: 250px;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+
+                    .Chevron {
+                        width: 50px;
+                        height: 50px;
+                    }
+
+                    .ComponentIcon {
+                        width: 100px;
+                        height: 100px;
+                    }
+
+                    .SolverIcon {
+                        width: 100px;
+                        height: 100px;
+                    }
                 }
             }
         }
@@ -103,29 +126,6 @@
             display: flex;
             justify-content: center;
             gap: 20px;
-        }
-    }
-
-    .SolverCards {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding-bottom: 200px;
-
-        .SolverCard {
-            padding: 10px;
-            width: 230px;
-            margin: 20px 35px 20px 35px;
-
-            h2 {
-                max-height: 50px;
-                min-height: 50px;
-                margin-bottom: 0px;
-            }
-
-            p {
-                margin-top: -5px;
-            }
         }
     }
 

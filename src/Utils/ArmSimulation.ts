@@ -1,50 +1,64 @@
 // Handles static values for Arm simulation (meaning solvers, architectures, and componets), as
 // well as methods to run the Arm simulations per component and per architecture.
-import computerScientistIcon from '../Assets/MechArm/laptop-woman.svg';
-import industrialSystemsEngineerIcon from '../Assets/MechArm/web-developer.svg';
-import mechanicalEngineerIcon from '../Assets/MechArm/construction-worker.svg';
-import materialsScientistIcon from '../Assets/MechArm/chemist.svg';
+
+import professionalIcon from '../Assets/MechArm/architect-96.svg';
+import amateurIcon from '../Assets/MechArm/construction-worker-27.svg';
+import mechanicalDesignSpecialistIcon from '../Assets/MechArm/designer-40.svg';
+import electronicsSpecialistIcon from '../Assets/MechArm/customer-service-1-24.svg';
+import computerScienceSpecialistIcon from '../Assets/MechArm/coding-4-21.svg';
+
+import actionSoftwareIcon from '../Assets/MechArm/Subproblems/ActionSoftware.png';
+import baseIcon from '../Assets/MechArm/Subproblems/Base.png';
+import gripperIcon from '../Assets/MechArm/Subproblems/Gripper.png';
+import mechanicalSystemIcon from '../Assets/MechArm/Subproblems/MechanicalSystem.png';
+import manipulatorIcon from '../Assets/MechArm/Subproblems/Manipulator.png';
+import positioningSoftwareIcon from '../Assets/MechArm/Subproblems/PositionSoftware.png';
+import powerSupplyIcon from '../Assets/MechArm/Subproblems/PowerSupply.png';
+import armIcon from '../Assets/MechArm/Subproblems/Arm.png';
+import entireArmIcon from '../Assets/MechArm/Subproblems/EntireArm.png';
+
+
 import { ArmComponentResult, ArmRoundResult } from './Types';
 import { RoundNames } from './Utils';
 
+/**
+ * To change solver names 
+ */
+
 export enum ArmSolver {
-    MechanicalEngineer = 1,
-    MaterialsScientist = 2,
-    ComputerScientist = 3,
-    IndustrialSystemsEngineer = 4,
+    Professional = 1,
+    Amateur = 2,
+    MechanicalDesignSpecialist = 3,
+    ElectronicsSpecialist = 4,
+    ComputerScienceSpecialist = 5
 }
 
-export const armSolverNames = ['Mechanical Engineer', 'Materials Scientist', 'Computer Scientist', 'Industrial Systems Engineer'];
+export const armSolverNames = ['Professional', 'Amateur', 'Mechanical Design Specialist', 'Electronics Specialist', 'Computer Science Specialist'];
 
 export const armSolverImages = [
-    mechanicalEngineerIcon,
-    materialsScientistIcon,
-    computerScientistIcon,
-    industrialSystemsEngineerIcon
+    professionalIcon,
+    amateurIcon,
+    mechanicalDesignSpecialistIcon,
+    electronicsSpecialistIcon,
+    computerScienceSpecialistIcon
 ];
 
-export const armSolverInformation = [
+export const armSolverDescriptions = [
+    "Cross-trained experts, good at everything. Think NASA Team X.",
+    "Amateurs, explore each solution path randomly and do a mediocre job.",
+    "Amazing at solving problems involving mechanical functions, bad at everything else.",
+    "Amazing at solving problems involving electronic functions, bad at everything else.",
+    "Amazing at algorithms and coding, bad at everything else."
+];
+
+export const armSolverInformation = armSolverNames.map((name, index) => (
     {
-        armSolver: ArmSolver.MechanicalEngineer,
-        name: "Mechanical Engineer",
-        image: mechanicalEngineerIcon,
-    },
-    {
-        armSolver: ArmSolver.MaterialsScientist,
-        name: "Materials Scientist",
-        image: materialsScientistIcon,
-    },
-    {
-        armSolver: ArmSolver.ComputerScientist,
-        name: "Computer Scientist",
-        image: computerScientistIcon,
-    },
-    {
-        armSolver: ArmSolver.IndustrialSystemsEngineer,
-        name: "Industrial Systems Engineer",
-        image: industrialSystemsEngineerIcon,
+        armSolver: index + 1,
+        name,
+        image: armSolverImages[index],
+        description: armSolverDescriptions[index]
     }
-]
+));
 
 /*
     Architectures:
@@ -80,6 +94,7 @@ export const armArchitectures = [
             {
                 component: "Entire Arm",
                 description: "The entire functional mechanical arm that will be built.",
+                image: entireArmIcon
             }
         ]
     },
@@ -90,10 +105,12 @@ export const armArchitectures = [
             {
                 component: "Manipulator",
                 description: "The base and extension for the mechanical arm. Gets the arm to the right location.",
+                image: manipulatorIcon
             }, 
             {
                 component: "Gripper",
                 description: "The hand for the mechanical arm. Handles grabbing and releasing on command.",
+                image: gripperIcon
             }
         ]
     },
@@ -103,13 +120,15 @@ export const armArchitectures = [
         components: [
             {
                 component: "Arm",
-                description: "Everything above the joint connecting the arm and base. An arm that grabs and moves as instructed."
+                description: "Everything above the joint connecting the arm and base. An arm that grabs and moves as instructed.",
+                image: armIcon
             }, 
             {
                 component: "Base",
-                description: "A functional base capable of attatching the arm to the ISS and instructing the arm component."
+                description: "A functional base capable of attatching the arm to the ISS and instructing the arm component.",
+                image: baseIcon
             }
-    ]
+        ]
     },
     {
         architecture: "Structure, Power, and Software",
@@ -117,19 +136,23 @@ export const armArchitectures = [
         components: [
             {
                 component: "Mechanical System",
-                description: "The physical structure of the arm that can move and grab objects as instructed."
+                description: "The physical structure of the arm that can move and grab objects as instructed.",
+                image: mechanicalSystemIcon
             }, 
             {
                 component: "Power Supply",
-                description: "The power supply and wiring that provides energy to the arm and base components."
+                description: "The power supply and wiring that provides energy to the arm and base components.",
+                image: powerSupplyIcon
             }, 
             {
                 component: "Action Software",
-                description: "The software system that instructs the arm and base to perform basic actions such as attatch, pan, tilt, and stow."
+                description: "The software system that instructs the arm and base to perform basic actions such as attatch, pan, tilt, and stow.",
+                image: actionSoftwareIcon
             }, 
             {
                 component: "Positioning Software",
-                description: "The software system that instructs the arm to move to precise locations and avoid damaging the ISS."
+                description: "The software system that instructs the arm to move to precise locations and avoid damaging the ISS.",
+                image: positioningSoftwareIcon
             }
         ]
     }
@@ -149,8 +172,9 @@ export const armComponents = [
 
 // used for deterministic-ish evaluation, will be replaced by python simulation from Athul
 // Lower is better
+// mass will be somewhere in the range of 400 to 2000 grams
 const solverComponentWeights = [
-    // solver 1 mechanical engineer
+    // solver 1 professional
     {
         "Entire Arm": {base: 30, range: 10},
         "Manipulator": {base: 22, range: 8},
@@ -197,11 +221,24 @@ const solverComponentWeights = [
         "Power Supply": {base: 6, range: 4},
         "Action Software": {base: 5, range: 2},
         "Positioning Software": {base: 5, range: 2}
+    },
+    // copy of mech engineer from above
+    {
+        "Entire Arm": {base: 30, range: 10},
+        "Manipulator": {base: 22, range: 8},
+        "Gripper": {base: 7, range: 6},
+        "Arm": {base: 15, range: 8},
+        "Base": {base: 15, range: 8},
+        "Mechanical System": {base: 20, range: 9},
+        "Power Supply": {base: 5, range: 2},
+        "Action Software": {base: 2, range: 2},
+        "Positioning Software": {base: 2, range: 2}
     }
 ]
 
+// cost is dollars * hours worked. Estimated when problem is assigned, no RNG. 
 const solverComponentCosts = [
-    // solver 1 mechanical engineer
+    // solver 1 professional
     {
         "Entire Arm": {base: 35, range: 10},
         "Manipulator": {base: 15, range: 10},
@@ -213,7 +250,7 @@ const solverComponentCosts = [
         "Action Software": {base: 10, range: 10},
         "Positioning Software": {base: 10, range: 10}
     },
-    // materials scientist
+    // amateur
     {
         "Entire Arm": {base: 50, range: 10},
         "Manipulator": {base: 30, range: 10},
@@ -225,7 +262,7 @@ const solverComponentCosts = [
         "Action Software": {base: 10, range: 10},
         "Positioning Software": {base: 10, range: 10}
     },
-    // computer scientist
+    // mechanical design specialist
     {
         "Entire Arm": {base: 45, range: 10},
         "Manipulator": {base: 35, range: 10},
@@ -245,6 +282,18 @@ const solverComponentCosts = [
         "Arm": {base: 20, range: 10},
         "Base": {base: 20, range: 10},
         "Mechanical System": {base: 20, range: 10},
+        "Power Supply": {base: 10, range: 10},
+        "Action Software": {base: 10, range: 10},
+        "Positioning Software": {base: 10, range: 10}
+    },
+    // copy of mech engineer from above
+    {
+        "Entire Arm": {base: 35, range: 10},
+        "Manipulator": {base: 15, range: 10},
+        "Gripper": {base: 25, range: 10},
+        "Arm": {base: 20, range: 10},
+        "Base": {base: 20, range: 10},
+        "Mechanical System": {base: 15, range: 10},
         "Power Supply": {base: 10, range: 10},
         "Action Software": {base: 10, range: 10},
         "Positioning Software": {base: 10, range: 10}
@@ -275,6 +324,8 @@ const evaluateArmRound = (
     }
 
 const scoreArmRound = (round: number, weight: number, cost: number, customPerformance?: number): number => {
+    // all scores are out of 100 maximum points and 0 minimum points
+
     if (round === RoundNames.ArmGame1) {
         // On round 1 best performance is rewarded no matter the cost
         // 0 weight is perfect (and impossible) = score of 100

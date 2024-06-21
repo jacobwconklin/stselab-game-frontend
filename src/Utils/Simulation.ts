@@ -23,7 +23,7 @@ export const moduleDescriptions = [
     "Short begins wherever the ball landed from the drive and continues until successfully putting the ball in the hole.",
     "Putting is played after the ball has been placed on the Green, which is 15 units of distance from the hole, and. continues until the ball is in the hole.",
     "Playing the entire hole involves driving off the tee and then hitting the ball until it is in the hole. The full distance of 700 units will be covered."
-]
+];
 
 // methods for each specific simulation run
 // TODO can set up hole length, holes, and runs to be dynamic if desired and changable by host on a settings page

@@ -1,37 +1,17 @@
 This can outline the major TODOs so they can be ordered 
 
 
-In order for mechanical arm mission game to be toggleable (and golf game), need to add a field to session to record what games will be played so all players will know. Actually, don't NEED to because host can just push round number to be the mechanical arm round numbers as long as host knows, so that should be easier... May want a variation of the final golf results that doesn't have return home and see aggregate results buttons so that no one leaves the session WHEN going to a mechanical arm game, this could be done by having another round number for if it really is the end of the session or not. Then the component could be copied and those buttons removed. (and move all mechanical arm round numbers up by one)  advanceSession method can handle all of this logic ideally. 
+# 1 b: Major refactor could be: Folder for all core components that work for each game. Mechanical Arm folder with specific items, Golf folder with specific items. (rather than just default being golf)
 
-Also big TODO: Save user choices with timestamps and foreign key to players in exploration round.
-
-
-Could Maybe limit the # of times player can "simulate all" on experiemental page
-
-# 1 c: potentially establish system with professor where db and backend stay OFF until he turns them off (IE other professors wanting to use the tool simply contact him first and he turns them on at that time? This would suggest using stateless backend (may overcomplicate)) REALLY would just require hitting "STOP" on stselab-games-backend and that is all. Looks like backend CAN'T be serverless, so this would only help to prevent db from costing anything... ? May not be worthwhile.
-
-# 2: continue to write backend and db for Mechanical Arm Mission: In a perfect world: conjoin RoundResult and ArmRoundResult table into one inclusive table that works, can rename shots / grams to be "performance" or something and have it accept 4 solvers always. Then remove the unneccessary endpoints and begin work of making only one version of front-end pages like roundResults that can work for both games to reduce duplicate code. May also require some extra inputs sent to backend so that the same endpoints can service both games. Wouldn't change functionality at all but would clean and simplify the code. [Argument against combining RoundResult and ArmRoundResult: fields of one of the games could change, especially arm which is still less fully decided on.]
-
-# 2 b: Major refactor could be: Folder for all core components that work for each game. Mechanical Arm folder with specific items, Golf folder with specific items. (rather than just default being golf)
-
-# 3: Fix units of weight, score, and cost to be consistent IE stored in db and displayed correctly. On end of golf tournament screen either remove player ability to go home and look at results (save that for end of mech arm mission).
+# 2: Fix units of weight, score, and cost to be consistent IE stored in db and displayed correctly. (change weight to mass?)
 
 # 3 b: Can add mechanical arm mission results to "All Results" page and have players choose between seeing golf and mechanical arm results
 
-# 3 c: Add colored icon to mechanical arm mission results page that uses players color from golf game.
+# 4 in tables add "renders" for numeric values that take numbers to fixed(2) if values are numbers
 
-4 change weight to mass?
+# 5 flex direction column in instructions in mobile view. Also words stick out of buttons on my phone in mechanical arm mission architecture sections on both experiment and game rounds (although they don't do it on mobile view in browser.)
 
-5 in tables add "renders" for numeric values that take numbers to fixed(2) if values are numbers
-
-6 flex direction column in instructions in mobile view. Also words stick out of buttons on my phone in mechanical arm mission architecture sections on both experiment and game rounds (although they don't do it on mobile view in browser.)
-
-7 After clicking "play round" on mechanical arm game screen, could show modal of rocket / space shuttle or laboratory until results page takes over (like a loading screen or like how golf ball animates), or could have "conveyor" belt move mechanical arm off the screen.
-
-Make selector cards light up somehow so that they show which is selected
-
-Add information (maybe as buttons or tooltips) throughout that helps explain how the golf game is relevant to ISE and tie things back in, also maybe to explain how to play and objectives better ( could have graphic at top showing all rounds and the current )
-round players are in. Could place this in header, may also want to add "home" word to header idk. Should also improve logo.
+# 6 After clicking "play round" on mechanical arm game screen, could show modal of rocket / space shuttle or laboratory until results page takes over (like a loading screen or like how golf ball animates), or could have "conveyor" belt move mechanical arm off the screen.
 
 Add a function in backend that will write out all data for a session, I. E. if prof plays with his class it can essentially "export" that data to csv or something. Look into python writting csv files from sql? Might be nice to have. Currently just ran complex sql queries on Azure and saved the csv files from there. 
 
@@ -39,7 +19,5 @@ Potential optimization:
 - websockets
 - image hosting (flickr)
 
+Mechanical Arm Mission notes from meetin with Athul:
 
-BUG:
-
-Professional only round has 'waiting' perpetually under solvers

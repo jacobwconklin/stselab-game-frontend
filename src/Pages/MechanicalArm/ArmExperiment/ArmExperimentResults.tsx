@@ -15,15 +15,21 @@ import {
     BarElement,
 } from 'chart.js';
 import { Bar, Scatter } from 'react-chartjs-2';
+import { useState } from 'react';
 
 // Like free roam round of golf tournament, this allows players to try all breakdowns of the mechanical arm and all solvers
 // to see how they perform.
 const ArmExperimentResults = (props: {
     results: any[],
     hideResults: () => void,
-    simulateAll: () => void,
+    // simulateAll: () => void,
     loading: boolean,
 }) => {
+
+
+    const [showWeights, setShowWeights] = useState(true);
+    const [showCosts, setShowCosts] = useState(true);
+
 
     // Gets avg for type of value from props.results
     const getComponentAverage = (component: string, solver: ArmSolver, type: 'weight' | 'cost') => {
@@ -44,46 +50,53 @@ const ArmExperimentResults = (props: {
     }
 
     // Table data
-    const columns = [
-        {
-            title: 'Component',
-            dataIndex: 'component',
-            key: 'component',
-        },
-    ].concat(
-        armSolverNames.map(solverName => {
-            return {
-                title: solverName + ' Weight Average',
-                dataIndex: solverName + ' Weight Avg',
-                key: solverName + 'WeightAvg',
-            }
-        }).concat(
-            armSolverNames.map(solverName => {
-                return {
-                    title: solverName + ' Cost Average',
-                    dataIndex: solverName + ' Cost Avg',
-                    key: solverName + 'CostAvg',
-                }
-            })
-        )
-    );
+    const getColumns = () => {
 
-    const data = armComponents.map((component, index) => (
-        {
+        let columns = [
+            {
+                title: 'Component',
+                dataIndex: 'component',
+                key: 'component',
+            },
+        ];
+        if (showWeights) {
+            columns = columns.concat(
+                armSolverNames.map(solverName => {
+                    return {
+                        title: solverName + ' Weight Average',
+                        dataIndex: solverName + ' Weight Avg',
+                        key: solverName + 'WeightAvg',
+                    }
+                })
+            );
+        }
+        if (showCosts) {
+            columns = columns.concat(
+                armSolverNames.map(solverName => {
+                    return {
+                        title: solverName + ' Cost Average',
+                        dataIndex: solverName + ' Cost Avg',
+                        key: solverName + 'CostAvg',
+                    }
+                })
+            );
+        }
+        return columns;
+    }
+
+    const data = armComponents.map((component, index) => {
+        const dataObject = Object.assign({}, ...armSolverNames.map((solverName, index) => (
+            {
+                [solverName + ' Weight Avg']: getComponentAverage(component, index + 1, 'weight'),
+                [solverName + ' Cost Avg']: getComponentAverage(component, index + 1, 'cost'),
+            }
+        )));
+        return {
             key: index,
             component: component,
-            "Mechanical Engineer Weight Avg": getComponentAverage(component, ArmSolver.MechanicalEngineer, 'weight'),
-            "Mechanical Engineer Cost Avg": getComponentAverage(component, ArmSolver.MechanicalEngineer, 'cost'),
-            "Materials Scientist Weight Avg": getComponentAverage(component, ArmSolver.MaterialsScientist, 'weight'),
-            "Materials Scientist Cost Avg": getComponentAverage(component, ArmSolver.MaterialsScientist, 'cost'),
-            "Computer Scientist Weight Avg": getComponentAverage(component, ArmSolver.ComputerScientist, 'weight'),
-            "Computer Scientist Cost Avg": getComponentAverage(component, ArmSolver.ComputerScientist, 'cost'),
-            "Industrial Systems Engineer Weight Avg": getComponentAverage(component, ArmSolver.IndustrialSystemsEngineer, 'weight'),
-            "Industrial Systems Engineer Cost Avg": getComponentAverage(component, ArmSolver.IndustrialSystemsEngineer, 'cost'),
+            ...dataObject
         }
-    ))
-
-
+    })
 
 
     // Chart data
@@ -236,16 +249,40 @@ const ArmExperimentResults = (props: {
             <div className='Instructions'>
                 <h1>Experiment Results</h1>
                 <div className='ButtonRow'>
-                    <Button
+                    {/* <Button
                         onClick={() => props.simulateAll()}
                         disabled={props.loading}
                     >
                         Simulate All
-                    </Button>
+                    </Button> */}
                     <Button
                         onClick={() => props.hideResults()}
                     >
                         Back
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            if (!showCosts && showWeights) {
+                                setShowWeights(false);
+                                setShowCosts(true);
+                            } else {
+                                setShowWeights(!showWeights);
+                            }
+                        }}
+                    >
+                        {showWeights ? "Hide Weights" : "Show Weights"}
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            if (!showWeights && showCosts) {
+                                setShowCosts(false);
+                                setShowWeights(true);
+                            } else {
+                                setShowCosts(!showCosts);
+                            }
+                        }}
+                    >
+                        {showCosts ? "Hide Costs" : "Show Costs"}
                     </Button>
                 </div>
             </div>
@@ -253,8 +290,9 @@ const ArmExperimentResults = (props: {
             {/* Table of results */}
             <div className='ResultTable'>
                 <Table
+                    style={{minWidth: (showCosts && showWeights) ? '1300px' : '900px'}}
                     pagination={{ position: ['none', "none"] }}
-                    columns={columns}
+                    columns={getColumns()}
                     dataSource={data}
                 />
             </div>

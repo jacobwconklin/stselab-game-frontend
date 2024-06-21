@@ -26,24 +26,25 @@ const ArmExperiment = () => {
         setLatestResult(newResult);
         setAllResults([...allResults, armComponentResult]);
         setLoading(false);
+        // TODO save exploration results to db
     }
 
-    const simulateAll = () => {
-        setLoading(true);
-        const newResults: ArmComponentResult[] = [];
-        armArchitectures.forEach(architecture => {
-            architecture.components.forEach(component => {
-                armSolverInformation.forEach(solverInformation => {
-                    const armComponentResult = runArmComponentSimulation(solverInformation.armSolver, component.component);
-                    newResults.push(armComponentResult);
-                });
-            });
-        });
-        // Does NOT save results to db
-        setAllResults([...allResults, ...newResults]);
-        setLatestResult('All components built by each solver. Click View Results to see how they performed.');
-        setLoading(false);
-    }
+    // const simulateAll = () => {
+    //     setLoading(true);
+    //     const newResults: ArmComponentResult[] = [];
+    //     armArchitectures.forEach(architecture => {
+    //         architecture.components.forEach(component => {
+    //             armSolverInformation.forEach(solverInformation => {
+    //                 const armComponentResult = runArmComponentSimulation(solverInformation.armSolver, component.component);
+    //                 newResults.push(armComponentResult);
+    //             });
+    //         });
+    //     });
+    //     // Does NOT save results to db
+    //     setAllResults([...allResults, ...newResults]);
+    //     setLatestResult('All components built by each solver. Click View Results to see how they performed.');
+    //     setLoading(false);
+    // }
 
     return (
         <div className="ArmExperiment">
@@ -52,14 +53,14 @@ const ArmExperiment = () => {
                 <ArmExperimentResults 
                     results={allResults}
                     hideResults={() => setShowResults(false)}
-                    simulateAll={simulateAll}
+                    // simulateAll={simulateAll}
                     loading={loading}
                 />
                 :
                 <ArmExperimentGame
                     latestResult={latestResult}
                     runSimulation={runSimulation}
-                    simulateAll={simulateAll}
+                    // simulateAll={simulateAll}
                     showResults={() => setShowResults(true)}
                     loading={loading}
                     showTypedMessage={showTypedMessage}
