@@ -23,7 +23,7 @@ const DiceSelectGame = (props: {
 
     // props will tell if it is the oboarding or offboarding version of the game.
     const [credits, setCredits] = useState(props?.isOnboarding ? 8 : 10);
-    const [totalToReach] = useState(props?.isOnboarding ? 12 : 20);
+    const [totalToReach] = useState(props?.isOnboarding ? 12 : 16);
     const [randomRoll, setRandomRoll] = useState(0);
     const [selectedDie, setSelectedDie] = useState<{ val: number; cost: number; img: string; }[]>([]);
     const [clickedRoll, setClickedRoll] = useState(false);
