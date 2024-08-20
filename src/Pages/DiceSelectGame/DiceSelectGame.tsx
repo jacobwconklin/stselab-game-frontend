@@ -29,6 +29,8 @@ const DiceSelectGame = (props: {
     const [clickedRoll, setClickedRoll] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [reasoning, setReasoning] = useState('');
+    const [showSecondModal, setShowSecondModal] = useState(false);
+    const [finalReasoning, setFinalReasoning] = useState('');
 
     // player id will be pulled from context
     const { playerId, sessionId } = useContext(UserContext) as UserContextType;
@@ -143,12 +145,22 @@ const DiceSelectGame = (props: {
                 playerId,
                 onboarding: props.isOnboarding,
                 score: scoreSelectedDie(),
-                reasoning
+                reasoning,
+                finalReasoning
             }));
             if (result.success) {
                 // save results to local storgae in case user refreshes page and move on
                 saveObjectToStorage("diceGameFinished", { sessionId, playerId, onboarding: props.isOnboarding });
-                props.finished();
+                // props.finished();
+                setShowModal(false); // Hide the first modal
+                // setShowSecondModal(true);
+                if (props.isOnboarding) {
+                    // If onboarding, finish immediately
+                    props.finished();
+                } else {
+                    // If offboarding, show the second modal
+                    setShowSecondModal(true);
+                }
             } else {
                 console.error("Error saving dice results to database during: ", props.isOnboarding ? "onboarding" : "offboarding", result);
                 setClickedRoll(false);
@@ -264,6 +276,42 @@ const DiceSelectGame = (props: {
                     </div>
                 </div>
             }
+            {
+            !props.isOnboarding && showSecondModal &&
+            <div className='Modal'>
+                <div className='ModalBody'>
+                    <h2>Did this game improve your reasoning on decision making?</h2>
+                    <TextArea
+                            autoSize
+                            placeholder='Enter your reasoning here'
+                            // style={{width: '80%', margin: 'auto'}}
+                            maxLength={240}
+                            value={finalReasoning}
+                            onChange={(event) => {
+                                setFinalReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 240) : event.target.value);
+                            }}
+                        />
+                        <br></br>
+                        <Button
+                            disabled={!inDevMode() && finalReasoning.trim().length < 10}
+                            onClick={() => {
+                                saveAndContinue();
+                                setShowSecondModal(false);
+                                props.finished();
+                            }}
+                        >
+                            Continue
+                        </Button>
+                    {/* <Button onClick={() => {
+                        setShowSecondModal(false);
+                        props.finished();
+                    }}>
+                        Submit
+                    </Button> */}
+                    
+                </div>
+            </div>
+        }
         </div>
     )
 }
