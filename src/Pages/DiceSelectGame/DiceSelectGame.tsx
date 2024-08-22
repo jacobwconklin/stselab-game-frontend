@@ -280,10 +280,10 @@ const DiceSelectGame = (props: {
             !props.isOnboarding && showSecondModal &&
             <div className='Modal'>
                 <div className='ModalBody'>
-                    <h2>Did this game improve your reasoning on decision making?</h2>
+                    <h2>Compared to the first dice roll, do you think the golf game influenced your decision making for this question? If it did, could you briefly explain how?</h2>
                     <TextArea
                             autoSize
-                            placeholder='Enter your reasoning here'
+                            placeholder='Enter your input here'
                             // style={{width: '80%', margin: 'auto'}}
                             maxLength={240}
                             value={finalReasoning}

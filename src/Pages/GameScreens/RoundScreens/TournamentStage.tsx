@@ -407,9 +407,9 @@ const TournamentStage = (props: {
                             Are You Sure?
                         </h1>
                         <p style={{ width: '100%', textAlign: 'left' }} >
-                            You will only play each Tournament Round once. Are you sure you want to play 5 holes with your selected Modules and Solvers? If so provide a brief explanation of why you chose the modules and solvers you did to play the round:
+                            You will only play each Tournament Round once. Are you sure you want to play 5 holes with your selected Modules and Solvers? 
                         </p>
-                        <TextArea
+                        {/* <TextArea
                             autoSize
                             placeholder='Enter your reasoning here'
                             // style={{width: '80%', margin: 'auto'}}
@@ -418,11 +418,11 @@ const TournamentStage = (props: {
                             onChange={(event) => {
                                 setReasoning(event.target.value && event.target.value.length > 240 ? event.target.value.substring(0, 240) : event.target.value);
                             }}
-                        />
+                        /> */}
                         <br></br>
                         <div className='ModalButtons'>
                             <Button
-                                disabled={!inDevMode() && reasoning.trim().length < 10}
+                                // disabled={!inDevMode() && reasoning.trim().length >= 0}
                                 onClick={() => {
                                     beginPlayingRound();
                                 }}
