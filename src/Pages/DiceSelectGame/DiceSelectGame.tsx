@@ -22,8 +22,8 @@ const DiceSelectGame = (props: {
     }, []);
 
     // props will tell if it is the oboarding or offboarding version of the game.
-    const [credits, setCredits] = useState(props?.isOnboarding ? 8 : 10);
-    const [totalToReach] = useState(props?.isOnboarding ? 12 : 16);
+    const [credits, setCredits] = useState(props?.isOnboarding ? 8 : 8);
+    const [totalToReach] = useState(props?.isOnboarding ? 12 : 12);
     const [randomRoll, setRandomRoll] = useState(0);
     const [selectedDie, setSelectedDie] = useState<{ val: number; cost: number; img: string; }[]>([]);
     const [clickedRoll, setClickedRoll] = useState(false);
@@ -31,6 +31,11 @@ const DiceSelectGame = (props: {
     const [reasoning, setReasoning] = useState('');
     const [showSecondModal, setShowSecondModal] = useState(false);
     const [finalReasoning, setFinalReasoning] = useState('');
+    // const [reasoning1, setReasoning1] = useState('');
+    const [reasoning2, setReasoning2] = useState('');
+    const [reasoning3, setReasoning3] = useState('');
+    const [reasoning4, setReasoning4] = useState('');
+    const [reasoning5, setReasoning5] = useState('');
 
     // player id will be pulled from context
     const { playerId, sessionId } = useContext(UserContext) as UserContextType;
@@ -146,6 +151,12 @@ const DiceSelectGame = (props: {
                 onboarding: props.isOnboarding,
                 score: scoreSelectedDie(),
                 reasoning,
+                // reasoning1,
+                reasoning2,
+                reasoning3,
+                reasoning4,
+                reasoning5,
+                
                 finalReasoning
             }));
             if (result.success) {
@@ -183,7 +194,7 @@ const DiceSelectGame = (props: {
                         props.isOnboarding ?
                             "Play the Dice Game to join your session! You have " + credits + " credits to spend by selecting die to roll. Your goal is for the sum of all die you roll to be at least " + totalToReach + ". You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection."
                             :
-                            `Play the Dice Game to view your final results! You now have ${credits} credits to spend by selecting die to roll. Your new goal is for the sum of all die you roll to be at least ${totalToReach}. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection.`
+                            `Play the Dice Game to view your final results! You now have ${credits} credits to spend by selecting die to roll. Your goal is for the sum of all die you roll to be at least ${totalToReach}. You may only roll once. Select die to roll below. Then click the image of the die here to remove them if you want to change your selection.`
                     }
                 </p>
                 <div className='SelectedDie'>
@@ -243,14 +254,15 @@ const DiceSelectGame = (props: {
                             You rolled: {randomRoll}
                         </h2>
                         <p>
-                            {randomRoll >= totalToReach ? " Congratulations!" : " Better Luck Next Time!"}
+                            {/* {randomRoll >= totalToReach ? " Congratulations!" : " Better Luck Next Time!"} */}
                         </p>
-                        {
+                        
+                        {/* {
                             !props.isOnboarding &&
                             <p>
                                 The probaility that you would roll a sum of at least {totalToReach} was {scoreSelectedDie().toFixed(2)}%
                             </p>
-                        }
+                        } */}
                         <h2 style={{ width: '100%', textAlign: 'center' }} >
                             Briefly, could you please explain why you picked this dice combo?
                         </h2>
@@ -258,10 +270,10 @@ const DiceSelectGame = (props: {
                             autoSize
                             placeholder='Enter your reasoning here'
                             // style={{width: '80%', margin: 'auto'}}
-                            maxLength={240}
+                            maxLength={1000}
                             value={reasoning}
                             onChange={(event) => {
-                                setReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 240) : event.target.value);
+                                setReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 1000) : event.target.value);
                             }}
                         />
                         <br></br>
@@ -277,23 +289,142 @@ const DiceSelectGame = (props: {
                 </div>
             }
             {
-            !props.isOnboarding && showSecondModal &&
-            <div className='Modal'>
-                <div className='ModalBody'>
-                    <h2>Compared to the first dice roll, do you think the golf game influenced your decision making for this question? If it did, could you briefly explain how?</h2>
+            // !props.isOnboarding && showSecondModal &&
+            showSecondModal &&
+            <div 
+            className='Modal' 
+            style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '100%',
+                maxWidth: '1200px', // Adjust as needed
+                maxHeight: '300vh', // Limit the height of the modal
+                backgroundColor: 'white',
+                borderRadius: '8px',
+                boxShadow: '0px 5px 15px rgba(0,0,0,0.3)',
+                overflow: 'auto', // Prevent content overflow outside the modal
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
+            <div 
+                className='ModalBody' 
+                style={{
+                    padding: '10px',
+                    width: '97%',
+                    maxHeight: '290vh', // Adjust based on Modal max-height
+                    overflowY: 'visible',
+                    // flexGrow: 1 // Enable vertical scrolling if content overflows
+                }}
+            >
+                    <h2 style={{ marginBottom: '1px', width: '100%', fontSize: '18px'}}> 1. Compared to the first dice roll, do you think the golf game influenced your decision making for this question? If it did, could you briefly explain how?</h2>
                     <TextArea
                             autoSize
-                            placeholder='Enter your input here'
+                            // placeholder='Enter your input here'
+                            style={{
+                                width: '100%', // Make TextArea take up full width
+                                marginBottom: '0px',
+                                padding: '5px',
+                                fontSize: '18px',
+                                boxSizing: 'border-box',
+                                height:'max-content',
+                            }}
                             // style={{width: '80%', margin: 'auto'}}
-                            maxLength={240}
+                            maxLength={3000}
                             value={finalReasoning}
                             onChange={(event) => {
-                                setFinalReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 240) : event.target.value);
+                                setFinalReasoning(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 3000) : event.target.value);
+                            }}
+                        />
+                        <br></br>
+
+                    <h2 style={{ marginBottom: '1px', width: '100%', fontSize: '18px'}}> 2. Could you please list any good heuristics that you were able to identify in this game?</h2>
+                    <TextArea
+                            autoSize
+                            // placeholder='Enter your input here'
+                            style={{
+                                width: '100%', // Make TextArea take up full width
+                                marginBottom: '0px',
+                                padding: '5px',
+                                fontSize: '18px',
+                                boxSizing: 'border-box',
+                                height:'max-content',
+                            }}
+                            // style={{width: '80%', margin: 'auto'}}
+                            maxLength={3000}
+                            value={reasoning2}
+                            onChange={(event) => {
+                                setReasoning2(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 3000) : event.target.value);
+                            }}
+                        />
+                        <br></br>
+
+                    <h2 style={{ marginBottom: '1px', width: '100%', fontSize: '18px'}}> 3. Do you think the heuristics you listed in the previous question could be applicable to real-world problems? Please briefly explain why? </h2>
+                    <TextArea
+                            autoSize
+                            // placeholder='Enter your input here'
+                            style={{
+                                width: '100%', // Make TextArea take up full width
+                                marginBottom: '0px',
+                                padding: '5px',
+                                fontSize: '18px',
+                                boxSizing: 'border-box',
+                                height:'max-content',
+                            }}
+                            // style={{width: '80%', margin: 'auto'}}
+                            maxLength={3000}
+                            value={reasoning3}
+                            onChange={(event) => {
+                                setReasoning3(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 3000) : event.target.value);
+                            }}
+                        />
+                        <br></br>
+                    
+                    <h2 style={{ marginBottom: '1px', width: '100%', fontSize: '18px'}}> 4. Could you please list any bad heuristics that you were able to identify in this game? </h2>
+                    <TextArea
+                            autoSize
+                            // placeholder='Enter your input here'
+                            style={{
+                                width: '100%', // Make TextArea take up full width
+                                marginBottom: '0px',
+                                padding: '5px',
+                                fontSize: '18px',
+                                boxSizing: 'border-box',
+                                height:'max-content',
+                            }}
+                            // style={{width: '80%', margin: 'auto'}}
+                            maxLength={3000}
+                            value={reasoning4}
+                            onChange={(event) => {
+                                setReasoning4(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 3000) : event.target.value);
+                            }}
+                        />
+                        <br></br>
+
+                    <h2 style={{ marginBottom: '1px', width: '100%', fontSize: '18px'}}>5. Do you think the bad heuristics you listed in the previous question could be applicable to real-world problems? Please briefly explain why? </h2>
+                    <TextArea
+                            autoSize
+                            // placeholder='Enter your input here'
+                            style={{
+                                width: '100%', // Make TextArea take up full width
+                                marginBottom: '0px',
+                                padding: '5px',
+                                fontSize: '18px',
+                                boxSizing: 'border-box',
+                                height:'max-content',
+                            }}
+                            // style={{width: '80%', margin: 'auto'}}
+                            maxLength={3000}
+                            value={reasoning5}
+                            onChange={(event) => {
+                                setReasoning5(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 3000) : event.target.value);
                             }}
                         />
                         <br></br>
                         <Button
-                            disabled={!inDevMode() && finalReasoning.trim().length < 10}
+                            disabled={!inDevMode() && reasoning5.trim().length < 10}
                             onClick={() => {
                                 saveAndContinue();
                                 setShowSecondModal(false);
