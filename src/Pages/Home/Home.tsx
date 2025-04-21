@@ -150,7 +150,7 @@ const Home = () => {
                             realistic complex system settings.
                         </p><p>
                             This web application utilizes the golf simulation written in R from the research paper. The web application
-                            was created by Jacob Conklin and is maintained by Jannatul Shefa.
+                            is created by Jacob Conklin and maintained by Jannatul Shefa.
                         </p>
                     </div>
                 </div>
