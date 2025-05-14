@@ -136,11 +136,20 @@ const WaitRoom = (props: {
 
     const [messageApi, contextHolder] = message.useMessage();
 
+    // Determine if this player needs to play the dice game
+    // Only half the players need to play, based on player ID
+    const shouldPlayDiceGame = () => {
+        if (!playerId) return false;
+        // Use a hash of the player ID to determine if they should play
+        // This ensures consistent results for the same player
+        const hashCode = playerId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return hashCode % 2 === 0; // Only even hash values play the game
+    };
 
     return (
         <>
             {
-                !finishedDiceGame ?
+                !finishedDiceGame && shouldPlayDiceGame() ?
                     <DiceSelectGame isOnboarding={true} finished={() => {
                             setFinishedDiceGame(true);
                             props.onboardingCompleted();
