@@ -9,7 +9,7 @@ import GolfBall from '../../ReusableComponents/GolfBall';
 import { PlayerBrief, UserContextType } from '../../Utils/Types';
 import { CopyOutlined } from '@ant-design/icons';
 import DiceSelectGame from '../DiceSelectGame/DiceSelectGame';
-import { clearObjectFromStorage, getObjectFromStorage } from '../../Utils/Utils';
+import { clearObjectFromStorage, getObjectFromStorage, saveObjectToStorage } from '../../Utils/Utils';
 
 // Shows all players in a given session. If the user is the host they can remove players or begin the session.
 // other wise players have to wait or leave the session. Also show Hosts the session join code (and maybe link) so they
@@ -26,12 +26,34 @@ const WaitRoom = (props: {
 
     // if user refreshes page, check if they have already played the dice game for THIS session
     useEffect(() => {
+        // Determine if this player needs to play the dice game
+        // Only half the players need to play, based on player ID
+        const shouldPlayDiceGame = () => {
+            if (!playerId) return false;
+            // Use a hash of the player ID to determine if they should play
+            // This ensures consistent results for the same player
+            const hashCode = playerId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            return hashCode % 2 === 0; // Only even hash values play the game
+        };
+
+
+        // FIRST: Pull from local storage to see if the user has played the dice game
         const diceGameFinished = getObjectFromStorage('diceGameFinished');
-        if (diceGameFinished) {
+        if (diceGameFinished) { 
+            // IF They have check if it was for THIS session specifically
             if (diceGameFinished.sessionId === sessionId && diceGameFinished.playerId === playerId && diceGameFinished.onboarding) {
+                // IF it was, "onboarding" is complete, so we can call the callback and set the state
                 props.onboardingCompleted();
                 setFinishedDiceGame(true);
             }
+        } else if (shouldPlayDiceGame()) {
+            // IF they have not played the dice game, and they should play it DETERMINED BY HASH, set the state to false
+            setFinishedDiceGame(false);
+        } else {
+            // IF they have not played the dice game, and they should NOT play it, save the fact that they have played it for future references
+            // and set the state to true
+            saveObjectToStorage('diceGameFinished', { sessionId, playerId, onboarding: true });
+            setFinishedDiceGame(true);
         }
     }, [sessionId, playerId, props])
 
@@ -135,7 +157,6 @@ const WaitRoom = (props: {
     ))
 
     const [messageApi, contextHolder] = message.useMessage();
-
 
     return (
         <>
