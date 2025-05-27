@@ -117,6 +117,7 @@ export interface EssentialPlayerInformation {
     sessionId: number | null;
     playerId: string | null;
     playerColor: string | null;
+    shouldPlayDiceGame?: boolean;
 }
 
 export interface UserContextType {

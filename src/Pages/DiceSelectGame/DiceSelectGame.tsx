@@ -10,7 +10,7 @@ import { postRequest } from '../../Utils/Api';
 import { UserContext } from '../../App';
 import { UserContextType } from '../../Utils/Types';
 import TextArea from 'antd/es/input/TextArea';
-import { inDevMode, saveObjectToStorage } from '../../Utils/Utils';
+import { getObjectFromStorage, inDevMode, saveObjectToStorage } from '../../Utils/Utils';
 const DiceSelectGame = (props: {
     isOnboarding: boolean;
     finished: () => void;
@@ -20,6 +20,18 @@ const DiceSelectGame = (props: {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+
+    // Check if the player should be playing the dice game (local storage check) if so, call the props.finished() function
+    useEffect(() => {
+        const essentialPlayerInformation = getObjectFromStorage('essentialPlayerInformation');
+        console.log("essentialPlayerInformation: ", essentialPlayerInformation);
+        if (essentialPlayerInformation && essentialPlayerInformation.shouldPlayDiceGame === false) {
+            saveObjectToStorage('diceGameFinished', { sessionId, playerId, onboarding: true });
+            props.finished();
+            console.log("Player should not play the dice game, calling finished");
+        }
+    }, [props.isOnboarding]);
 
     // props will tell if it is the oboarding or offboarding version of the game.
     const [credits, setCredits] = useState(props?.isOnboarding ? 8 : 8);

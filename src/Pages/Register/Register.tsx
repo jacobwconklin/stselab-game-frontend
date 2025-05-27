@@ -352,13 +352,20 @@ const Register = () => {
                         setSessionId(submitResult.joinCode);
                         setPlayerId(submitResult.playerId);
                         setPlayerColor(color);
+                        const shouldPlayDiceGame = () => {
+                            const hashCode = submitResult.playerId.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+                            // console.log("hashCode: ", hashCode);
+                            // console.log("shouldPlayDiceGame: ", hashCode % 2 === 0);
+                            return hashCode % 2 === 0; // Only even hash values play the game
+                        }
                         // save essential information to local storage
                         const essentialPlayerInformation: EssentialPlayerInformation =
                         {
                             isHost: true,
                             sessionId: submitResult.joinCode,
                             playerId: submitResult.playerId,
-                            playerColor: color
+                            playerColor: color,
+                            shouldPlayDiceGame: shouldPlayDiceGame()
                         }
                         saveObjectToStorage('essentialPlayerInformation', essentialPlayerInformation);
 

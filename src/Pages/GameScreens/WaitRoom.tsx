@@ -29,11 +29,10 @@ const WaitRoom = (props: {
         // Determine if this player needs to play the dice game
         // Only half the players need to play, based on player ID
         const shouldPlayDiceGame = () => {
-            if (!playerId) return false;
-            // Use a hash of the player ID to determine if they should play
-            // This ensures consistent results for the same player
-            const hashCode = playerId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-            return hashCode % 2 === 0; // Only even hash values play the game
+            // Fetch from local storage essentialPlayerInformation.shouldPlayDiceGame
+            const essentialPlayerInformation = getObjectFromStorage('essentialPlayerInformation');
+            if (!essentialPlayerInformation) return false;
+            return essentialPlayerInformation.shouldPlayDiceGame;
         };
 
 
@@ -43,15 +42,18 @@ const WaitRoom = (props: {
             // IF They have check if it was for THIS session specifically
             if (diceGameFinished.sessionId === sessionId && diceGameFinished.playerId === playerId && diceGameFinished.onboarding) {
                 // IF it was, "onboarding" is complete, so we can call the callback and set the state
+                console.log("Determined that they have played the dice game");
                 props.onboardingCompleted();
                 setFinishedDiceGame(true);
             }
         } else if (shouldPlayDiceGame()) {
             // IF they have not played the dice game, and they should play it DETERMINED BY HASH, set the state to false
+            console.log("Determined that they should play the dice game");
             setFinishedDiceGame(false);
         } else {
             // IF they have not played the dice game, and they should NOT play it, save the fact that they have played it for future references
             // and set the state to true
+            console.log("Determined that they should not play the dice game, saving to local storage");
             saveObjectToStorage('diceGameFinished', { sessionId, playerId, onboarding: true });
             setFinishedDiceGame(true);
         }
